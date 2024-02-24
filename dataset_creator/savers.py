@@ -19,7 +19,7 @@ class Saver(abc.ABC, Generic[_T]):
         raise NotImplementedError()
 
 
-class TextSaver(Saver[str]):
+class LocalFileSaver(Saver[str]):
     def __init__(self: Self, config: dict[str, Any]) -> None:
         self._file_pathname = config['file_pathname']
 

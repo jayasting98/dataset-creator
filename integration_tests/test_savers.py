@@ -6,7 +6,7 @@ import unittest
 from dataset_creator import savers
 
 
-class TextSaverTest(unittest.TestCase):
+class LocalFileSaverTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls._test_directory = os.path.join('tests', 'text_saver')
@@ -21,7 +21,7 @@ class TextSaverTest(unittest.TestCase):
         pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
         file_pathname = (os.path.join(directory, 'non_existent.txt'))
         config = {'file_pathname': file_pathname}
-        saver = savers.TextSaver(config)
+        saver = savers.LocalFileSaver(config)
         samples = ['Hello', 'World!']
         saver.save(samples)
         with open(file_pathname) as file:
@@ -35,7 +35,7 @@ class TextSaverTest(unittest.TestCase):
         file_pathname = (os.path.join(directory, 'empty.txt'))
         open(file_pathname, 'w').close()
         config = {'file_pathname': file_pathname}
-        saver = savers.TextSaver(config)
+        saver = savers.LocalFileSaver(config)
         samples = ['Hello', 'World!']
         saver.save(samples)
         with open(file_pathname) as file:
@@ -50,7 +50,7 @@ class TextSaverTest(unittest.TestCase):
         with open(file_pathname, 'w') as file:
             file.write('Message\n')
         config = {'file_pathname': file_pathname}
-        saver = savers.TextSaver(config)
+        saver = savers.LocalFileSaver(config)
         samples = ['Hello', 'World!']
         saver.save(samples)
         with open(file_pathname) as file:
