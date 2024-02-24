@@ -29,11 +29,11 @@ class Processor(abc.ABC, Generic[_T, _U]):
         raise NotImplementedError()
 
 
-class TheStackRepositoryProcessor(Processor[dict[str, Any], str]):
+class TheStackRepositoryProcessor(Processor[dict[str, Any], dict[str, str]]):
     def __init__(
         self: Self,
-        loader: Loader[_T],
-        saver: Saver[_U],
+        loader: Loader[dict[str, Any]],
+        saver: Saver[dict[str, str]],
         config: dict[str, Any],
     ) -> None:
         self._loader = loader
@@ -41,14 +41,17 @@ class TheStackRepositoryProcessor(Processor[dict[str, Any], str]):
         self._unique_repository_names = set()
 
     def process(self: Self) -> None:
-        dataset: datasets.IterableDataset | datasets.Dataset
-        dataset = self._loader.load()
-        repository_ds = dataset.select_columns('max_stars_repo_name')
-        deduplicated_ds = repository_ds.filter(self._is_unique)
-        self._saver.save(deduplicated_ds)
+        samples = self._loader.load()
+        def create_iterator():
+            for sample in samples:
+                repository_name = sample['max_stars_repo_name']
+                if not self._is_unique(repository_name):
+                    continue
+                yield {'repository_name': repository_name}
+        iterator = create_iterator()
+        self._saver.save(iterator)
 
-    def _is_unique(self: Self, sample: dict[str, str]) -> bool:
-        repository_name = sample['max_stars_repo_name']
+    def _is_unique(self: Self, repository_name: str) -> bool:
         if repository_name in self._unique_repository_names:
             return False
         self._unique_repository_names.add(repository_name)
