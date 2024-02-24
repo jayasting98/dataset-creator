@@ -9,7 +9,7 @@ from dataset_creator import savers
 class LocalFileSaverTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls._test_directory = os.path.join('tests', 'text_saver')
+        cls._test_directory = os.path.join('test_work_dir', 'local_file_saver')
         pathlib.Path(cls._test_directory).mkdir(parents=True, exist_ok=True)
 
     @classmethod
