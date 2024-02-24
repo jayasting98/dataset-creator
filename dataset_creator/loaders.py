@@ -21,11 +21,11 @@ class Loader(abc.ABC, Generic[_T]):
         raise NotImplementedError()
 
 
-class HuggingFaceLoader(Loader[_T]):
+class HuggingFaceLoader(Loader[dict[str, Any]]):
     def __init__(self: Self, config: dict[str, Any]) -> None:
         self._config = dict(streaming=True, **config)
 
-    def load(self: Self) -> Iterator[_T]:
+    def load(self: Self) -> Iterator[dict[str, Any]]:
         dataset = datasets.load_dataset(**self._config)
         iterator = self._create_iterator(dataset)
         return iterator
@@ -33,6 +33,6 @@ class HuggingFaceLoader(Loader[_T]):
     def _create_iterator(
         self: Self,
         dataset: datasets.Dataset | datasets.IterableDataset,
-    ) -> Iterator[_T]:
+    ) -> Iterator[dict[str, Any]]:
         for sample in dataset:
             yield sample

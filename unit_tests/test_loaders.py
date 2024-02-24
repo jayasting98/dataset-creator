@@ -1,4 +1,3 @@
-from typing import Any
 import unittest
 from unittest import mock
 
@@ -10,7 +9,7 @@ from dataset_creator import loaders
 class HuggingFaceLoaderTest(unittest.TestCase):
     def test_load__streaming_not_configured__loads_via_stream(self):
         config = {'path': 'path'}
-        loader = loaders.HuggingFaceLoader[dict[str, Any]](config)
+        loader = loaders.HuggingFaceLoader(config)
         def generator():
             yield {'message': 'Hello'}
             yield {'message': 'World!'}
