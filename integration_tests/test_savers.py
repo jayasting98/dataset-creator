@@ -20,8 +20,7 @@ class LocalFileSaverTest(unittest.TestCase):
         directory = os.path.join(self.__class__._test_directory, 'save')
         pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
         file_pathname = (os.path.join(directory, 'non_existent.txt'))
-        config = {'file_pathname': file_pathname}
-        saver = savers.LocalFileSaver(config)
+        saver = savers.LocalFileSaver(file_pathname)
         samples = ['Hello', 'World!']
         saver.save(samples)
         with open(file_pathname) as file:
@@ -34,8 +33,7 @@ class LocalFileSaverTest(unittest.TestCase):
         pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
         file_pathname = (os.path.join(directory, 'empty.txt'))
         open(file_pathname, 'w').close()
-        config = {'file_pathname': file_pathname}
-        saver = savers.LocalFileSaver(config)
+        saver = savers.LocalFileSaver(file_pathname)
         samples = ['Hello', 'World!']
         saver.save(samples)
         with open(file_pathname) as file:
@@ -49,8 +47,7 @@ class LocalFileSaverTest(unittest.TestCase):
         file_pathname = (os.path.join(directory, 'non_empty.txt'))
         with open(file_pathname, 'w') as file:
             file.write('Message\n')
-        config = {'file_pathname': file_pathname}
-        saver = savers.LocalFileSaver(config)
+        saver = savers.LocalFileSaver(file_pathname)
         samples = ['Hello', 'World!']
         saver.save(samples)
         with open(file_pathname) as file:

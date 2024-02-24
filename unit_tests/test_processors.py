@@ -18,7 +18,7 @@ class TheStackRepositoryProcessorTest(unittest.TestCase):
         mock_loader.load.return_value = iter(dataset)
         mock_saver = mock.MagicMock()
         processor = (processors
-            .TheStackRepositoryProcessor(mock_loader, mock_saver, {}))
+            .TheStackRepositoryProcessor(mock_loader, mock_saver))
         processor.process()
         mock_saver.save.assert_called_once()
         save_call = mock_saver.save.call_args

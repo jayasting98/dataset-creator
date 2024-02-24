@@ -13,10 +13,6 @@ _T = TypeVar('_T')
 
 class Loader(abc.ABC, Generic[_T]):
     @abc.abstractmethod
-    def __init__(self: Self, config: dict[str, Any]) -> None:
-        raise NotImplementedError()
-
-    @abc.abstractmethod
     def load(self: Self) -> Iterator[_T]:
         raise NotImplementedError()
 

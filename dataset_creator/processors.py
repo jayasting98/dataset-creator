@@ -14,15 +14,6 @@ _U = TypeVar('_U')
 
 class Processor(abc.ABC, Generic[_T, _U]):
     @abc.abstractmethod
-    def __init__(
-        self: Self,
-        loader: Loader[_T],
-        saver: Saver[_U],
-        config: dict[str, Any],
-    ) -> None:
-        raise NotImplementedError()
-
-    @abc.abstractmethod
     def process(self: Self) -> None:
         raise NotImplementedError()
 
@@ -32,7 +23,6 @@ class TheStackRepositoryProcessor(Processor[dict[str, Any], dict[str, str]]):
         self: Self,
         loader: Loader[dict[str, Any]],
         saver: Saver[dict[str, str]],
-        config: dict[str, Any],
     ) -> None:
         self._loader = loader
         self._saver = saver
