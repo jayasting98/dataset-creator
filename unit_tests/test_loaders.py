@@ -10,7 +10,7 @@ class HuggingFaceLoaderTest(unittest.TestCase):
         loader = loaders.HuggingFaceLoader[str](config)
         with mock.patch('datasets.load_dataset') as mock_load_dataset:
             mock_load_dataset.return_value = ['Hello', 'World!']
-            dataset = loader.load()
+            iterator = loader.load()
         mock_load_dataset.assert_called_once_with(path='path', streaming=True)
-        self.assertEqual('Hello', dataset[0])
-        self.assertEqual('World!', dataset[1])
+        self.assertEqual('Hello', next(iterator))
+        self.assertEqual('World!', next(iterator))

@@ -1,7 +1,7 @@
 import abc
 from typing import Any
 from typing import Generic
-from typing import Iterable
+from typing import Iterator
 from typing import Self
 from typing import TypeVar
 
@@ -17,7 +17,7 @@ class Loader(abc.ABC, Generic[_T]):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def load(self: Self) -> Iterable[_T]:
+    def load(self: Self) -> Iterator[_T]:
         raise NotImplementedError()
 
 
@@ -25,6 +25,14 @@ class HuggingFaceLoader(Loader[_T]):
     def __init__(self: Self, config: dict[str, Any]) -> None:
         self._config = dict(streaming=True, **config)
 
-    def load(self: Self) -> Iterable[_T]:
+    def load(self: Self) -> Iterator[_T]:
         dataset = datasets.load_dataset(**self._config)
-        return dataset
+        iterator = self._create_iterator(dataset)
+        return iterator
+
+    def _create_iterator(
+        self: Self,
+        dataset: datasets.Dataset | datasets.IterableDataset,
+    ) -> Iterator[_T]:
+        for sample in dataset:
+            yield sample
