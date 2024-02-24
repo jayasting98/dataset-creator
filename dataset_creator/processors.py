@@ -1,7 +1,6 @@
 import abc
 from typing import Any
 from typing import Generic
-from typing import Iterable
 from typing import Self
 from typing import TypeVar
 
