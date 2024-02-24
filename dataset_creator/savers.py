@@ -19,12 +19,13 @@ class Saver(abc.ABC, Generic[_T]):
         raise NotImplementedError()
 
 
-class LocalFileSaver(Saver[str]):
+class LocalFileSaver(Saver[Any]):
     def __init__(self: Self, config: dict[str, Any]) -> None:
         self._file_pathname = config['file_pathname']
 
-    def save(self: Self, samples: Iterator[str]) -> None:
+    def save(self: Self, samples: Iterator[Any]) -> None:
         with open(self._file_pathname, mode='a') as file:
             for sample in samples:
-                line = f'{sample.strip()}\n'
+                sample_str = str(sample).strip()
+                line = f'{sample_str}\n'
                 file.write(line)
