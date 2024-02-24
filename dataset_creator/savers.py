@@ -1,7 +1,7 @@
 import abc
 from typing import Any
 from typing import Generic
-from typing import Iterable
+from typing import Iterator
 from typing import Self
 from typing import TypeVar
 
@@ -15,7 +15,7 @@ class Saver(abc.ABC, Generic[_T]):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def save(self: Self, samples: Iterable[_T]) -> None:
+    def save(self: Self, samples: Iterator[_T]) -> None:
         raise NotImplementedError()
 
 
@@ -23,7 +23,8 @@ class LocalFileSaver(Saver[str]):
     def __init__(self: Self, config: dict[str, Any]) -> None:
         self._file_pathname = config['file_pathname']
 
-    def save(self: Self, samples: Iterable[str]) -> None:
-        lines = [f'{sample.strip()}\n' for sample in samples]
+    def save(self: Self, samples: Iterator[str]) -> None:
         with open(self._file_pathname, mode='a') as file:
-            file.writelines(lines)
+            for sample in samples:
+                line = f'{sample.strip()}\n'
+                file.write(line)
