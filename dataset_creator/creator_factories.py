@@ -4,9 +4,9 @@ from typing import Generic
 from typing import Self
 from typing import TypeVar
 
-from dataset_creator.loaders import Loader
-from dataset_creator.processors import Processor
-from dataset_creator.savers import Saver
+from dataset_creator import loaders
+from dataset_creator import processors
+from dataset_creator import savers
 
 
 _T = TypeVar('_T')
@@ -19,17 +19,17 @@ class CreatorFactory(abc.ABC, Generic[_T, _U]):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def create_loader(self: Self) -> Loader[_T]:
+    def create_loader(self: Self) -> loaders.Loader[_T]:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def create_saver(self: Self) -> Saver[_U]:
+    def create_saver(self: Self) -> savers.Saver[_U]:
         raise NotImplementedError()
 
     @abc.abstractmethod
     def create_processor(
         self: Self,
-        loader: Loader[_T],
-        saver: Saver[_U],
-    ) -> Processor[_T, _U]:
+        loader: loaders.Loader[_T],
+        saver: savers.Saver[_U],
+    ) -> processors.Processor[_T, _U]:
         raise NotImplementedError()

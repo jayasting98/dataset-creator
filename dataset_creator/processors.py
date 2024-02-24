@@ -4,8 +4,8 @@ from typing import Generic
 from typing import Self
 from typing import TypeVar
 
-from dataset_creator.loaders import Loader
-from dataset_creator.savers import Saver
+from dataset_creator import loaders
+from dataset_creator import savers
 
 
 _T = TypeVar('_T')
@@ -21,8 +21,8 @@ class Processor(abc.ABC, Generic[_T, _U]):
 class TheStackRepositoryProcessor(Processor[dict[str, Any], dict[str, str]]):
     def __init__(
         self: Self,
-        loader: Loader[dict[str, Any]],
-        saver: Saver[dict[str, str]],
+        loader: loaders.Loader[dict[str, Any]],
+        saver: savers.Saver[dict[str, str]],
     ) -> None:
         self._loader = loader
         self._saver = saver
