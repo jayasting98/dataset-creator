@@ -24,5 +24,5 @@ class Processor(abc.ABC, Generic[_T, _U]):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def load(self: Self) -> Iterable[_T]:
+    def process(self: Self) -> None:
         raise NotImplementedError()
