@@ -69,7 +69,7 @@ class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
 ):
     def __init__(self: Self, config: dict[str, Any]) -> None:
         self._loader_config = config['loader']
-        self._saver_config = config['saver']
+        self._saver_config: dict[str, Any] = config['saver']
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
         loader = loaders.HuggingFaceLoader(self._loader_config)
@@ -79,8 +79,9 @@ class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
         project_id = self._saver_config['project_id']
         bucket_name = self._saver_config['bucket_name']
         pathname = self._saver_config['pathname']
+        limit = self._saver_config.get('limit')
         saver = savers.HuggingFaceGoogleCloudStorageSaver(
-            project_id, bucket_name, pathname)
+            project_id, bucket_name, pathname, limit=limit)
         return saver
 
     def create_processor(

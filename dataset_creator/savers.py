@@ -51,16 +51,24 @@ class HuggingFaceGoogleCloudStorageSaver(Saver[dict[str, str]]):
         project_id: str,
         bucket_name: str,
         pathname: str,
+        limit: int | None = None,
     ) -> None:
         self._storage_options = {'project': project_id}
         self._file_system = gcsfs.GCSFileSystem(**self._storage_options)
         self._bucket_name = bucket_name
         self._pathname = pathname
+        self._limit = limit
 
     def save(self: Self, samples: Iterator[dict[str, str]]) -> None:
         def generator():
+            i = 0
             for sample in samples:
                 yield sample
+                if self._limit is None:
+                    continue
+                i += 1
+                if i >= self._limit:
+                    break
         dataset = datasets.Dataset.from_generator(generator)
         dataset_path = os.path.join(f'gs://{self._bucket_name}', self._pathname)
         (dataset
