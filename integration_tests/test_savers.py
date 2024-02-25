@@ -23,10 +23,7 @@ class LocalFileSaverTest(unittest.TestCase):
         saver = savers.LocalFileSaver(file_pathname)
         samples = ['Hello', 'World!']
         saver.save(samples)
-        expected_lines = [
-            'Hello\n',
-            'World!\n',
-        ]
+        expected_lines = ['Hello\n', 'World!\n']
         with open(file_pathname) as file:
             actual_lines = file.readlines()
             self.assertEqual(expected_lines, actual_lines)
@@ -39,10 +36,7 @@ class LocalFileSaverTest(unittest.TestCase):
         saver = savers.LocalFileSaver(file_pathname)
         samples = ['Hello', 'World!']
         saver.save(samples)
-        expected_lines = [
-            'Hello\n',
-            'World!\n',
-        ]
+        expected_lines = ['Hello\n', 'World!\n']
         with open(file_pathname) as file:
             actual_lines = file.readlines()
             self.assertEqual(expected_lines, actual_lines)
@@ -55,9 +49,7 @@ class LocalFileSaverTest(unittest.TestCase):
         saver = savers.LocalFileSaver(file_pathname, limit=1)
         samples = ['Hello', 'World!']
         saver.save(samples)
-        expected_lines = [
-            'Hello\n',
-        ]
+        expected_lines = ['Hello\n']
         with open(file_pathname) as file:
             actual_lines = file.readlines()
             self.assertEqual(expected_lines, actual_lines)
@@ -71,11 +63,7 @@ class LocalFileSaverTest(unittest.TestCase):
         saver = savers.LocalFileSaver(file_pathname)
         samples = ['Hello', 'World!']
         saver.save(samples)
-        expected_lines = [
-            'Message\n',
-            'Hello\n',
-            'World!\n',
-        ]
+        expected_lines = ['Message\n', 'Hello\n', 'World!\n']
         with open(file_pathname) as file:
             actual_lines = file.readlines()
             self.assertEqual(expected_lines, actual_lines)
