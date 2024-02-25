@@ -1,9 +1,13 @@
 import abc
+import os
 from typing import Any
 from typing import Generic
 from typing import Iterator
 from typing import Self
 from typing import TypeVar
+
+import datasets
+import gcsfs
 
 
 _T = TypeVar('_T')
@@ -25,3 +29,25 @@ class LocalFileSaver(Saver[Any]):
                 sample_str = str(sample).strip()
                 line = f'{sample_str}\n'
                 file.write(line)
+
+
+class HuggingFaceGoogleCloudStorageSaver(Saver[dict[str, str]]):
+    def __init__(
+        self: Self,
+        project_id: str,
+        bucket_name: str,
+        pathname: str,
+    ) -> None:
+        self._storage_options = {'project': project_id}
+        self._file_system = gcsfs.GCSFileSystem(**self._storage_options)
+        self._bucket_name = bucket_name
+        self._pathname = pathname
+
+    def save(self: Self, samples: Iterator[dict[str, str]]) -> None:
+        def generator():
+            for sample in samples:
+                yield sample
+        dataset = datasets.Dataset.from_generator(generator)
+        dataset_path = os.path.join(f'gs://{self._bucket_name}', self._pathname)
+        (dataset
+            .save_to_disk(dataset_path, storage_options=self._storage_options))
