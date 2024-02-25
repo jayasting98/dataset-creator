@@ -42,6 +42,7 @@ class _ParserInfo(TypedDict):
 
 
 _parser_info: _ParserInfo = _ParserInfo(subparsers=dict(), arguments=dict())
+_parser_info['arguments']['--config_path'] = _ArgumentInfo()
 
 
 def parser_argument_choice(

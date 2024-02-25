@@ -4,6 +4,7 @@ from typing import Generic
 from typing import Self
 from typing import TypeVar
 
+from dataset_creator import argument_parsers
 from dataset_creator import loaders
 from dataset_creator import processors
 from dataset_creator import savers
@@ -35,6 +36,7 @@ class CreatorFactory(abc.ABC, Generic[_T, _U]):
         raise NotImplementedError()
 
 
+@argument_parsers.parser_argument_choice('--creator', 'stack_local')
 class TheStackRepositoryLocalDataFactory(
     CreatorFactory[dict[str, Any], dict[str, str]],
 ):
@@ -60,6 +62,7 @@ class TheStackRepositoryLocalDataFactory(
         return processor
 
 
+@argument_parsers.parser_argument_choice('--creator', 'stack_gcs')
 class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
     CreatorFactory[dict[str, Any], dict[str, str]],
 ):
