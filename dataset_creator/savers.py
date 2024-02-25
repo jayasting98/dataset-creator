@@ -1,5 +1,6 @@
 import abc
 import os
+import pathlib
 from typing import Any
 from typing import Generic
 from typing import Iterator
@@ -24,6 +25,8 @@ class LocalFileSaver(Saver[Any]):
         self._file_pathname = file_pathname
 
     def save(self: Self, samples: Iterator[Any]) -> None:
+        file_parent_dir_path = pathlib.Path(self._file_pathname).parent
+        file_parent_dir_path.mkdir(parents=True, exist_ok=True)
         with open(self._file_pathname, mode='a') as file:
             for sample in samples:
                 sample_str = str(sample).strip()

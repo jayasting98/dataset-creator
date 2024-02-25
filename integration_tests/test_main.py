@@ -25,7 +25,7 @@ class MainTest(unittest.TestCase):
         config_file_pathname = (
             os.path.join(self.__class__._test_directory, 'typical.json'))
         save_file_pathname = (
-            os.path.join(self.__class__._test_directory, 'typical.out'))
+            os.path.join(self.__class__._test_directory, 'dir', 'typical.out'))
         config = {'loader': {}, 'saver': {'file_pathname': save_file_pathname}}
         with open(config_file_pathname, mode='w') as config_file:
             json.dump(config, config_file)

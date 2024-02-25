@@ -29,7 +29,7 @@ class LocalFileSaverTest(unittest.TestCase):
             self.assertEqual('World!\n', lines[1])
 
     def test_save__empty_file__appends_and_saves(self):
-        directory = os.path.join(self.__class__._test_directory, 'save')
+        directory = os.path.join(self.__class__._test_directory, 'save', 'dir')
         pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
         file_pathname = (os.path.join(directory, 'empty.txt'))
         open(file_pathname, 'w').close()
