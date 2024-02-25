@@ -11,9 +11,24 @@ class HuggingFaceGoogleCloudStorageSaver(unittest.TestCase):
                 'project_id', 'bucket_name', 'path/name')
         mock_gcsfs.assert_called_once_with(project='project_id')
         samples = [{'data': 0}, {'data': 1}, {'data': 2}, {'data': 3}]
-        with mock.patch('datasets.Dataset.save_to_disk') as mock_save_to_disk:
+        mock_dataset = mock.MagicMock()
+        with (mock
+            .patch('datasets.Dataset.from_generator') as mock_from_generator):
+            mock_from_generator.return_value = mock_dataset
             saver.save(iter(samples))
-        mock_save_to_disk.assert_called_once_with(
+        mock_from_generator.assert_called_once()
+        call = mock_from_generator.call_args
+        args = call.args
+        self.assertEqual(1, len(args))
+        generator = args[0]
+        iterator = generator()
+        self.assertEqual({'data': 0}, next(iterator))
+        self.assertEqual({'data': 1}, next(iterator))
+        self.assertEqual({'data': 2}, next(iterator))
+        self.assertEqual({'data': 3}, next(iterator))
+        with self.assertRaises(StopIteration):
+            next(iterator)
+        mock_dataset.save_to_disk.assert_called_once_with(
             'gs://bucket_name/path/name',
             storage_options={'project': 'project_id'},
         )
