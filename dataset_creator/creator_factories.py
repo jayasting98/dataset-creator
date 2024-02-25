@@ -58,3 +58,31 @@ class TheStackRepositoryLocalDataFactory(
     ) -> processors.Processor[dict[str, Any], dict[str, str]]:
         processor = processors.TheStackRepositoryProcessor(loader, saver)
         return processor
+
+
+class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
+    CreatorFactory[dict[str, Any], dict[str, str]],
+):
+    def __init__(self: Self, config: dict[str, Any]) -> None:
+        self._loader_config = config['loader']
+        self._saver_config = config['saver']
+
+    def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
+        loader = loaders.HuggingFaceLoader(self._loader_config)
+        return loader
+
+    def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
+        project_id = self._saver_config['project_id']
+        bucket_name = self._saver_config['bucket_name']
+        pathname = self._saver_config['pathname']
+        saver = savers.HuggingFaceGoogleCloudStorageSaver(
+            project_id, bucket_name, pathname)
+        return saver
+
+    def create_processor(
+        self: Self,
+        loader: loaders.Loader[dict[str, Any]],
+        saver: savers.Saver[dict[str, str]],
+    ) -> processors.Processor[dict[str, Any], dict[str, str]]:
+        processor = processors.TheStackRepositoryProcessor(loader, saver)
+        return processor
