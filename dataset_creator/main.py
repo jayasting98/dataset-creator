@@ -1,10 +1,6 @@
 import argparse
 
-
-def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args()
-    return args
+from dataset_creator import argument_parsers
 
 
 def main(args: argparse.Namespace) -> None:
@@ -12,5 +8,6 @@ def main(args: argparse.Namespace) -> None:
 
 
 if __name__ == '__main__':
-    args = _parse_args()
+    parser = argument_parsers.create_parser()
+    args = parser.parse_args()
     main(args)
