@@ -23,10 +23,13 @@ class LocalFileSaverTest(unittest.TestCase):
         saver = savers.LocalFileSaver(file_pathname)
         samples = ['Hello', 'World!']
         saver.save(samples)
+        expected_lines = [
+            'Hello\n',
+            'World!\n',
+        ]
         with open(file_pathname) as file:
-            lines = file.readlines()
-            self.assertEqual('Hello\n', lines[0])
-            self.assertEqual('World!\n', lines[1])
+            actual_lines = file.readlines()
+            self.assertEqual(expected_lines, actual_lines)
 
     def test_save__empty_file__appends_and_saves(self):
         directory = os.path.join(self.__class__._test_directory, 'save', 'dir')
@@ -36,10 +39,13 @@ class LocalFileSaverTest(unittest.TestCase):
         saver = savers.LocalFileSaver(file_pathname)
         samples = ['Hello', 'World!']
         saver.save(samples)
+        expected_lines = [
+            'Hello\n',
+            'World!\n',
+        ]
         with open(file_pathname) as file:
-            lines = file.readlines()
-            self.assertEqual('Hello\n', lines[0])
-            self.assertEqual('World!\n', lines[1])
+            actual_lines = file.readlines()
+            self.assertEqual(expected_lines, actual_lines)
 
     def test_save__non_empty_file_with_limit__appends_until_limit(self):
         directory = os.path.join(self.__class__._test_directory, 'save')
@@ -49,10 +55,12 @@ class LocalFileSaverTest(unittest.TestCase):
         saver = savers.LocalFileSaver(file_pathname, limit=1)
         samples = ['Hello', 'World!']
         saver.save(samples)
+        expected_lines = [
+            'Hello\n',
+        ]
         with open(file_pathname) as file:
-            lines = file.readlines()
-            self.assertEqual(1, len(lines))
-            self.assertEqual('Hello\n', lines[0])
+            actual_lines = file.readlines()
+            self.assertEqual(expected_lines, actual_lines)
 
     def test_save__non_empty_file__appends_and_saves(self):
         directory = os.path.join(self.__class__._test_directory, 'save')
@@ -63,8 +71,11 @@ class LocalFileSaverTest(unittest.TestCase):
         saver = savers.LocalFileSaver(file_pathname)
         samples = ['Hello', 'World!']
         saver.save(samples)
+        expected_lines = [
+            'Message\n',
+            'Hello\n',
+            'World!\n',
+        ]
         with open(file_pathname) as file:
-            lines = file.readlines()
-            self.assertEqual('Message\n', lines[0])
-            self.assertEqual('Hello\n', lines[1])
-            self.assertEqual('World!\n', lines[2])
+            actual_lines = file.readlines()
+            self.assertEqual(expected_lines, actual_lines)

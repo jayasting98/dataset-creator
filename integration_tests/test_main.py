@@ -41,14 +41,14 @@ class MainTest(unittest.TestCase):
         with mock.patch('datasets.load_dataset') as mock_load_dataset:
             mock_load_dataset.return_value = dataset
             main.main(args)
+        expected_lines = [
+            "{'repository_name': 'user1/repo1'}\n",
+            "{'repository_name': 'user1/repo2'}\n",
+            "{'repository_name': 'user2/repo1'}\n",
+        ]
         with open(save_file_pathname) as file:
-            lines = file.readlines()
-            self.assertEqual(
-                "{'repository_name': 'user1/repo1'}\n", lines[0])
-            self.assertEqual(
-                "{'repository_name': 'user1/repo2'}\n", lines[1])
-            self.assertEqual(
-                "{'repository_name': 'user2/repo1'}\n", lines[2])
+            actual_lines = file.readlines()
+            self.assertEqual(expected_lines, actual_lines)
 
     def test_main__with_limit__creates_dataset(self):
         config_file_pathname = (
@@ -73,10 +73,10 @@ class MainTest(unittest.TestCase):
         with mock.patch('datasets.load_dataset') as mock_load_dataset:
             mock_load_dataset.return_value = dataset
             main.main(args)
+        expected_lines = [
+            "{'repository_name': 'user1/repo1'}\n",
+            "{'repository_name': 'user1/repo2'}\n",
+        ]
         with open(save_file_pathname) as file:
-            lines = file.readlines()
-            self.assertEqual(2, len(lines))
-            self.assertEqual(
-                "{'repository_name': 'user1/repo1'}\n", lines[0])
-            self.assertEqual(
-                "{'repository_name': 'user1/repo2'}\n", lines[1])
+            actual_lines = file.readlines()
+            self.assertEqual(expected_lines, actual_lines)
