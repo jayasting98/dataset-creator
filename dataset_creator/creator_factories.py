@@ -42,7 +42,7 @@ class TheStackRepositoryLocalDataFactory(
 ):
     def __init__(self: Self, config: dict[str, Any]) -> None:
         self._loader_config = config['loader']
-        self._saver_config = config['saver']
+        self._saver_config: dict[str, Any] = config['saver']
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
         loader = loaders.HuggingFaceLoader(self._loader_config)
@@ -50,7 +50,8 @@ class TheStackRepositoryLocalDataFactory(
 
     def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
         file_pathname = self._saver_config['file_pathname']
-        saver = savers.LocalFileSaver(file_pathname)
+        limit = self._saver_config.get('limit')
+        saver = savers.LocalFileSaver(file_pathname, limit=limit)
         return saver
 
     def create_processor(

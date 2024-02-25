@@ -21,17 +21,28 @@ class Saver(abc.ABC, Generic[_T]):
 
 
 class LocalFileSaver(Saver[Any]):
-    def __init__(self: Self, file_pathname: str) -> None:
+    def __init__(
+        self: Self,
+        file_pathname: str,
+        limit: int | None = None,
+    ) -> None:
         self._file_pathname = file_pathname
+        self._limit = limit
 
     def save(self: Self, samples: Iterator[Any]) -> None:
         file_parent_dir_path = pathlib.Path(self._file_pathname).parent
         file_parent_dir_path.mkdir(parents=True, exist_ok=True)
+        i = 0
         with open(self._file_pathname, mode='a') as file:
             for sample in samples:
                 sample_str = str(sample).strip()
                 line = f'{sample_str}\n'
                 file.write(line)
+                if self._limit is None:
+                    continue
+                i += 1
+                if i >= self._limit:
+                    break
 
 
 class HuggingFaceGoogleCloudStorageSaver(Saver[dict[str, str]]):

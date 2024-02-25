@@ -49,3 +49,34 @@ class MainTest(unittest.TestCase):
                 "{'repository_name': 'user1/repo2'}\n", lines[1])
             self.assertEqual(
                 "{'repository_name': 'user2/repo1'}\n", lines[2])
+
+    def test_main__with_limit__creates_dataset(self):
+        config_file_pathname = (
+            os.path.join(self.__class__._test_directory, 'typical.json'))
+        save_file_pathname = (os.path
+            .join(self.__class__._test_directory, 'dir', 'limit_typical.out'))
+        config = {
+            'loader': {},
+            'saver': {'file_pathname': save_file_pathname, 'limit': 2},
+        }
+        with open(config_file_pathname, mode='w') as config_file:
+            json.dump(config, config_file)
+        def generator():
+            yield {'ignore': 'me', 'max_stars_repo_name': 'user1/repo1'}
+            yield {'ignore': 'me', 'max_stars_repo_name': 'user1/repo2'}
+            yield {'ignore': 'me', 'max_stars_repo_name': 'user2/repo1'}
+            yield {'ignore': 'me too', 'max_stars_repo_name': 'user1/repo2'}
+        dataset = datasets.Dataset.from_generator(generator)
+        parser = argument_parsers.create_parser()
+        args = parser.parse_args(
+            ['--creator', 'stack_local', '--config_path', config_file_pathname])
+        with mock.patch('datasets.load_dataset') as mock_load_dataset:
+            mock_load_dataset.return_value = dataset
+            main.main(args)
+        with open(save_file_pathname) as file:
+            lines = file.readlines()
+            self.assertEqual(2, len(lines))
+            self.assertEqual(
+                "{'repository_name': 'user1/repo1'}\n", lines[0])
+            self.assertEqual(
+                "{'repository_name': 'user1/repo2'}\n", lines[1])

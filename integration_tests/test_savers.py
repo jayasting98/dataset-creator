@@ -41,6 +41,19 @@ class LocalFileSaverTest(unittest.TestCase):
             self.assertEqual('Hello\n', lines[0])
             self.assertEqual('World!\n', lines[1])
 
+    def test_save__non_empty_file_with_limit__appends_until_limit(self):
+        directory = os.path.join(self.__class__._test_directory, 'save')
+        pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
+        file_pathname = (os.path.join(directory, 'limit_empty.txt'))
+        open(file_pathname, 'w').close()
+        saver = savers.LocalFileSaver(file_pathname, limit=1)
+        samples = ['Hello', 'World!']
+        saver.save(samples)
+        with open(file_pathname) as file:
+            lines = file.readlines()
+            self.assertEqual(1, len(lines))
+            self.assertEqual('Hello\n', lines[0])
+
     def test_save__non_empty_file__appends_and_saves(self):
         directory = os.path.join(self.__class__._test_directory, 'save')
         pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
