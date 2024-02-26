@@ -91,3 +91,30 @@ class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
     ) -> processors.Processor[dict[str, Any], dict[str, str]]:
         processor = processors.TheStackRepositoryProcessor(loader, saver)
         return processor
+
+
+@argument_parsers.parser_argument_choice('--creator', 'gcs_local')
+class HuggingFaceGoogleCloudStorageToLocalDataFactory(
+    CreatorFactory[dict[str, Any], dict[str, Any]],
+):
+    def __init__(self: Self, config: dict[str, Any]) -> None:
+        self._loader_config = config['loader']
+        self._saver_config: dict[str, Any] = config['saver']
+
+    def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
+        loader = loaders.HuggingFaceLoader(self._loader_config)
+        return loader
+
+    def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
+        file_pathname = self._saver_config['file_pathname']
+        limit = self._saver_config.get('limit')
+        saver = savers.LocalFileSaver(file_pathname, limit=limit)
+        return saver
+
+    def create_processor(
+        self: Self,
+        loader: loaders.Loader[dict[str, Any]],
+        saver: savers.Saver[dict[str, Any]],
+    ) -> processors.Processor[dict[str, Any], dict[str, Any]]:
+        processor = processors.IdentityProcessor(loader, saver)
+        return processor
