@@ -1,11 +1,14 @@
 import argparse
 import json
 
+import dotenv
+
 from dataset_creator import argument_parsers
 from dataset_creator import creator_factories
 
 
 def main(args: argparse.Namespace) -> None:
+    dotenv.load_dotenv()
     config_file_pathname: str = args.config_path
     with open(config_file_pathname) as config_file:
         config = json.load(config_file)
