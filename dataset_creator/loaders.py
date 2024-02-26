@@ -7,6 +7,8 @@ from typing import TypeVar
 
 import datasets
 
+from dataset_creator import utilities
+
 
 _T = TypeVar('_T')
 
@@ -23,12 +25,8 @@ class HuggingFaceLoader(Loader[dict[str, Any]]):
 
     def load(self: Self) -> Iterator[dict[str, Any]]:
         dataset = datasets.load_dataset(**self._config)
-        iterator = self._create_iterator(dataset)
+        def create_generator():
+            for sample in dataset:
+                yield sample
+        iterator = utilities.GeneratorFunctionIterator(create_generator)
         return iterator
-
-    def _create_iterator(
-        self: Self,
-        dataset: datasets.Dataset | datasets.IterableDataset,
-    ) -> Iterator[dict[str, Any]]:
-        for sample in dataset:
-            yield sample

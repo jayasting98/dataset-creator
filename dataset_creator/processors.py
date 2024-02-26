@@ -6,6 +6,7 @@ from typing import TypeVar
 
 from dataset_creator import loaders
 from dataset_creator import savers
+from dataset_creator import utilities
 
 
 _T = TypeVar('_T')
@@ -30,13 +31,13 @@ class TheStackRepositoryProcessor(Processor[dict[str, Any], dict[str, str]]):
 
     def process(self: Self) -> None:
         samples = self._loader.load()
-        def create_iterator():
+        def create_generator():
             for sample in samples:
                 repository_name = sample['max_stars_repo_name']
                 if not self._is_unique(repository_name):
                     continue
                 yield {'repository_name': repository_name}
-        iterator = create_iterator()
+        iterator = utilities.GeneratorFunctionIterator(create_generator)
         self._saver.save(iterator)
 
     def _is_unique(self: Self, repository_name: str) -> bool:
