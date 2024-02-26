@@ -33,3 +33,22 @@ class TheStackRepositoryProcessorTest(unittest.TestCase):
             {'repository_name': 'user2/repo1'}, next(actual_iterator))
         with self.assertRaises(StopIteration):
             next(actual_iterator)
+
+
+class IdentityProcessorTest(unittest.TestCase):
+    def test_process__typical_data__saves_loaded_data_exactly(self):
+        mock_loader = mock.MagicMock()
+        dataset = ['Hello', 'World!']
+        mock_loader.load.return_value = iter(dataset)
+        mock_saver = mock.MagicMock()
+        processor = processors.IdentityProcessor(mock_loader, mock_saver)
+        processor.process()
+        mock_saver.save.assert_called_once()
+        save_call = mock_saver.save.call_args
+        save_args = save_call.args
+        self.assertEqual(1, len(save_args))
+        actual_iterator = save_args[0]
+        self.assertEqual('Hello', next(actual_iterator))
+        self.assertEqual('World!', next(actual_iterator))
+        with self.assertRaises(StopIteration):
+            next(actual_iterator)

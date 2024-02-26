@@ -45,3 +45,17 @@ class TheStackRepositoryProcessor(Processor[dict[str, Any], dict[str, str]]):
             return False
         self._unique_repository_names.add(repository_name)
         return True
+
+
+class IdentityProcessor(Processor[_T, _T]):
+    def __init__(
+        self: Self,
+        loader: loaders.Loader[_T],
+        saver: savers.Saver[_T],
+    ) -> None:
+        self._loader = loader
+        self._saver = saver
+
+    def process(self: Self) -> None:
+        iterator = self._loader.load()
+        self._saver.save(iterator)
