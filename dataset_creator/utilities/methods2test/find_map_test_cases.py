@@ -1,3 +1,7 @@
+"""Functions to obtain the test methods in a repository and their focal methods.
+
+Adapted from Methods2Test (https://arxiv.org/abs/2203.12776).
+"""
 import os
 import csv
 import json

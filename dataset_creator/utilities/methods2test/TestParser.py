@@ -1,3 +1,7 @@
+"""Parser for parsing a Java code file.
+
+Adapted from Methods2Test (https://arxiv.org/abs/2203.12776).
+"""
 from tree_sitter import Language, Parser
 from typing import List, Dict, Any, Set, Optional
 
