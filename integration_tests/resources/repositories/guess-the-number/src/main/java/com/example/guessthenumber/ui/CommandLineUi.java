@@ -62,7 +62,7 @@ public class CommandLineUi implements UserInterface {
     }
 
     int parseGuess() throws IOException {
-        do {
+        while (true) {
             try {
                 informUser(TAKE_A_GUESS_MESSAGE);
                 String input = inputReader.readLine();
@@ -71,7 +71,7 @@ public class CommandLineUi implements UserInterface {
             } catch (NumberFormatException nfe) {
                 informUser(PARSE_ERROR_MESSAGE);
             }
-        } while (true);
+        }
     }
 
     void handleEnd(GameState state) {
