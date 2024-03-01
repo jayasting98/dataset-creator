@@ -28,7 +28,7 @@ public class CommandLineUi implements UserInterface {
 
     @Override
     public void run() {
-        GameState state = GameState.START;
+        GameState state = logic.getState();
         while (logic.isAbleToGuess()) {
             int guessedNumber;
             try {
