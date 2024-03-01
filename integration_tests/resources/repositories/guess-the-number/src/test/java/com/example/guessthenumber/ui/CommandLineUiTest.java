@@ -7,7 +7,50 @@ import java.io.PrintStream;
 
 import org.junit.Test;
 
+import com.example.guessthenumber.logic.GameState;
+import com.example.guessthenumber.logic.Logic;
+
 public class CommandLineUiTest {
+    @Test
+    public void testHandleEnd_startState_informsUserOfDefeat() {
+        OutputWriterMock outputWriter = new OutputWriterMock(System.out);
+        Logic logic = new LogicStub(42);
+        CommandLineUi clui = new CommandLineUi(null, outputWriter, logic);
+        clui.handleEnd(GameState.START);
+        String expectedMessage = "Sorry, you lose. The number was 42.";
+        assertEquals(expectedMessage, outputWriter.getMessage());
+    }
+
+    @Test
+    public void testHandleEnd_overestimate_informsUserOfDefeat() {
+        OutputWriterMock outputWriter = new OutputWriterMock(System.out);
+        Logic logic = new LogicStub(42);
+        CommandLineUi clui = new CommandLineUi(null, outputWriter, logic);
+        clui.handleEnd(GameState.OVERESTIMATE);
+        String expectedMessage = "Sorry, you lose. The number was 42.";
+        assertEquals(expectedMessage, outputWriter.getMessage());
+    }
+
+    @Test
+    public void testHandleEnd_underestimate_informsUserOfDefeat() {
+        OutputWriterMock outputWriter = new OutputWriterMock(System.out);
+        Logic logic = new LogicStub(42);
+        CommandLineUi clui = new CommandLineUi(null, outputWriter, logic);
+        clui.handleEnd(GameState.UNDERESTIMATE);
+        String expectedMessage = "Sorry, you lose. The number was 42.";
+        assertEquals(expectedMessage, outputWriter.getMessage());
+    }
+
+    @Test
+    public void testHandleEnd_correctGuess_informsUserOfDefeat() {
+        OutputWriterMock outputWriter = new OutputWriterMock(System.out);
+        Logic logic = new LogicStub(42);
+        CommandLineUi clui = new CommandLineUi(null, outputWriter, logic);
+        clui.handleEnd(GameState.CORRECT);
+        String expectedMessage = "Good job! You guessed my number.";
+        assertEquals(expectedMessage, outputWriter.getMessage());
+    }
+
     @Test
     public void testInformUser() {
         OutputWriterMock outputWriter = new OutputWriterMock(System.out);
@@ -31,6 +74,18 @@ public class CommandLineUiTest {
 
         private String getMessage() {
             return message;
+        }
+    }
+
+    private class LogicStub implements Logic {
+        private int numberToGuess;
+
+        private LogicStub(int numberToGuess) {
+            this.numberToGuess = numberToGuess;
+        }
+
+        public int getNumberToGuess() {
+            return numberToGuess;
         }
     }
 }
