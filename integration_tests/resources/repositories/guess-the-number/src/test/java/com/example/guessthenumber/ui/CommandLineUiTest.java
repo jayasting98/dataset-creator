@@ -19,6 +19,35 @@ import com.example.guessthenumber.logic.Logic;
 
 public class CommandLineUiTest {
     @Test
+    public void testRun_ioExceptionThrown_exitsGracefully() throws IOException {
+        BufferedReader mockBufferedReader = mock(BufferedReader.class);
+        when(mockBufferedReader.readLine()).thenThrow(IOException.class);
+        PrintStream mockOutputWriter = mock(PrintStream.class);
+        InOrder inOrder = inOrder(mockOutputWriter);
+        Logic mockLogic = mock(Logic.class);
+        when(mockLogic.isAbleToGuess()).thenReturn(true);
+        CommandLineUi clui = new CommandLineUi(mockBufferedReader, mockOutputWriter, mockLogic);
+        clui.run();
+        inOrder.verify(mockOutputWriter).println("Take a guess.");
+        inOrder.verify(mockOutputWriter).println("Unexpected error faced. Exiting...");
+    }
+
+    @Test
+    public void testRun_typicalWin_parsesProcessesAndInformsUserCorrectly() throws IOException {
+        BufferedReader mockBufferedReader = mock(BufferedReader.class);
+        when(mockBufferedReader.readLine()).thenReturn("42");
+        PrintStream mockOutputWriter = mock(PrintStream.class);
+        InOrder inOrder = inOrder(mockOutputWriter);
+        Logic mockLogic = mock(Logic.class);
+        when(mockLogic.isAbleToGuess()).thenReturn(true).thenReturn(false);
+        when(mockLogic.getState()).thenReturn(GameState.CORRECT);
+        CommandLineUi clui = new CommandLineUi(mockBufferedReader, mockOutputWriter, mockLogic);
+        clui.run();
+        inOrder.verify(mockOutputWriter).println("Take a guess.");
+        inOrder.verify(mockOutputWriter).println("Good job! You guessed my number.");
+    }
+
+    @Test
     public void testParseGuess() throws IOException {
         BufferedReader mockBufferedReader = mock(BufferedReader.class);
         when(mockBufferedReader.readLine()).thenReturn("not an integer").thenReturn("42");

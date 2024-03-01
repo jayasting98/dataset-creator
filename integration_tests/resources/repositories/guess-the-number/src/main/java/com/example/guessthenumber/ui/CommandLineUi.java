@@ -14,6 +14,7 @@ public class CommandLineUi implements UserInterface {
 
     static final String TAKE_A_GUESS_MESSAGE = "Take a guess.";
     static final String PARSE_ERROR_MESSAGE = "I did not understand that.";
+    static final String UNEXPECTED_ERROR_MESSAGE = "Unexpected error faced. Exiting...";
     static final String OVERESTIMATE_MESSAGE = "Your guess was too high. :(";
     static final String UNDERESTIMATE_MESSAGE = "Your guess was too low. :(";
     static final String WIN_MESSAGE = "Good job! You guessed my number.";
@@ -25,7 +26,22 @@ public class CommandLineUi implements UserInterface {
         this.logic = logic;
     }
 
-    public void run() {}
+    public void run() {
+        GameState state = GameState.START;
+        while (logic.isAbleToGuess()) {
+            int guessedNumber;
+            try {
+                guessedNumber = parseGuess();
+            } catch (IOException ioe) {
+                informUser(UNEXPECTED_ERROR_MESSAGE);
+                return;
+            }
+            logic.process(guessedNumber);
+            state = logic.getState();
+            handleState(state);
+        }
+        handleEnd(state);
+    }
 
     void handleState(GameState state) {
         String message;
