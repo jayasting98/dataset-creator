@@ -25,8 +25,14 @@ public class StandardLogic implements Logic {
 
     @Override
     public void process(int guessedNumber) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'process'");
+        numGuessesTaken++;
+        if (guessedNumber > numberToGuess) {
+            state = GameState.OVERESTIMATE;
+        } else if (guessedNumber < numberToGuess) {
+            state = GameState.UNDERESTIMATE;
+        } else {
+            state = GameState.CORRECT;
+        }
     }
 
     @Override
@@ -37,5 +43,9 @@ public class StandardLogic implements Logic {
     @Override
     public int getNumberToGuess() {
         return numberToGuess;
+    }
+
+    int getNumGuessesTaken() {
+        return numGuessesTaken;
     }
 }
