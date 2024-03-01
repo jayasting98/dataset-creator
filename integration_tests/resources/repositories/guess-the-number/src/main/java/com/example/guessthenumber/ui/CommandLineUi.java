@@ -1,6 +1,7 @@
 package com.example.guessthenumber.ui;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import com.example.guessthenumber.logic.GameState;
@@ -11,6 +12,8 @@ public class CommandLineUi implements UserInterface {
     private PrintStream outputWriter;
     private Logic logic;
 
+    static final String TAKE_A_GUESS_MESSAGE = "Take a guess.";
+    static final String PARSE_ERROR_MESSAGE = "I did not understand that.";
     static final String OVERESTIMATE_MESSAGE = "Your guess was too high. :(";
     static final String UNDERESTIMATE_MESSAGE = "Your guess was too low. :(";
     static final String WIN_MESSAGE = "Good job! You guessed my number.";
@@ -37,6 +40,19 @@ public class CommandLineUi implements UserInterface {
                 return;
         }
         informUser(message);
+    }
+
+    int parseGuess() throws IOException {
+        do {
+            try {
+                informUser(TAKE_A_GUESS_MESSAGE);
+                String input = inputReader.readLine();
+                int guessedNumber = Integer.parseInt(input);
+                return guessedNumber;
+            } catch (NumberFormatException nfe) {
+                informUser(PARSE_ERROR_MESSAGE);
+            }
+        } while (true);
     }
 
     void handleEnd(GameState state) {
