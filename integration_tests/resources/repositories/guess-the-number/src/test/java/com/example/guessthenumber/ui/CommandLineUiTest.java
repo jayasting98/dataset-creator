@@ -30,7 +30,7 @@ public class CommandLineUiTest {
         clui.run();
         inOrder.verify(mockOutputWriter).println("Hello! I am thinking of a number from 1 to 100.");
         inOrder.verify(mockOutputWriter).println("Take a guess.");
-        inOrder.verify(mockOutputWriter).println("Unexpected error faced. Exiting...");
+        inOrder.verify(mockOutputWriter).println("An unexpected error was encountered. Exiting...");
     }
 
     @Test
@@ -60,7 +60,7 @@ public class CommandLineUiTest {
         int actualGuessedNumber = clui.parseGuess();
         assertEquals(expectedGuessedNumber, actualGuessedNumber);
         inOrder.verify(mockOutputWriter).println("Take a guess.");
-        inOrder.verify(mockOutputWriter).println("I did not understand that.");
+        inOrder.verify(mockOutputWriter).println("Sorry, I did not understand that.");
         inOrder.verify(mockOutputWriter).println("Take a guess.");
     }
 

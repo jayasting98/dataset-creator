@@ -14,8 +14,8 @@ public class CommandLineUi implements UserInterface {
 
     static final String OPENING_MESSAGE = "Hello! I am thinking of a number from 1 to 100.";
     static final String TAKE_A_GUESS_MESSAGE = "Take a guess.";
-    static final String PARSE_ERROR_MESSAGE = "I did not understand that.";
-    static final String UNEXPECTED_ERROR_MESSAGE = "Unexpected error faced. Exiting...";
+    static final String PARSE_ERROR_MESSAGE = "Sorry, I did not understand that.";
+    static final String UNEXPECTED_ERROR_MESSAGE = "An unexpected error was encountered. Exiting...";
     static final String OVERESTIMATE_MESSAGE = "Your guess was too high. :(";
     static final String UNDERESTIMATE_MESSAGE = "Your guess was too low. :(";
     static final String WIN_MESSAGE = "Good job! You guessed my number.";
