@@ -81,7 +81,7 @@ public class CommandLineUiTest {
     }
 
     @Test
-    public void testHandleEnd_correctGuess_informsUserOfDefeat() {
+    public void testHandleEnd_correctGuess_informsUserOfWin() {
         PrintStream mockOutputWriter = mock(PrintStream.class);
         CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);
         clui.handleEnd(GameState.CORRECT);
