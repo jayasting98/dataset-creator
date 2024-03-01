@@ -11,6 +11,8 @@ public class CommandLineUi implements UserInterface {
     private PrintStream outputWriter;
     private Logic logic;
 
+    static final String OVERESTIMATE_MESSAGE = "Your guess was too high. :(";
+    static final String UNDERESTIMATE_MESSAGE = "Your guess was too low. :(";
     static final String WIN_MESSAGE = "Good job! You guessed my number.";
     static final String DEFEAT_TEMPLATE = "Sorry, you lose. The number was %d.";
 
@@ -21,6 +23,21 @@ public class CommandLineUi implements UserInterface {
     }
 
     public void run() {}
+
+    void handleState(GameState state) {
+        String message;
+        switch (state) {
+            case OVERESTIMATE:
+                message = OVERESTIMATE_MESSAGE;
+                break;
+            case UNDERESTIMATE:
+                message = UNDERESTIMATE_MESSAGE;
+                break;
+            default:
+                return;
+        }
+        informUser(message);
+    }
 
     void handleEnd(GameState state) {
         if (state == GameState.CORRECT) {

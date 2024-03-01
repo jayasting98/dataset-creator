@@ -2,6 +2,7 @@ package com.example.guessthenumber.ui;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.PrintStream;
@@ -12,6 +13,40 @@ import com.example.guessthenumber.logic.GameState;
 import com.example.guessthenumber.logic.Logic;
 
 public class CommandLineUiTest {
+    @Test
+    public void testHandleState_startState_doesNotInformUser() {
+        PrintStream mockOutputWriter = mock(PrintStream.class);
+        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);
+        clui.handleState(GameState.START);
+        verifyNoInteractions(mockOutputWriter);
+    }
+
+    @Test
+    public void testHandleState_overestimate_informsUser() {
+        PrintStream mockOutputWriter = mock(PrintStream.class);
+        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);
+        clui.handleState(GameState.OVERESTIMATE);
+        String expectedMessage = "Your guess was too high. :(";
+        verify(mockOutputWriter).println(expectedMessage);
+    }
+
+    @Test
+    public void testHandleState_underestimate_informsUser() {
+        PrintStream mockOutputWriter = mock(PrintStream.class);
+        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);
+        clui.handleState(GameState.UNDERESTIMATE);
+        String expectedMessage = "Your guess was too low. :(";
+        verify(mockOutputWriter).println(expectedMessage);
+    }
+
+    @Test
+    public void testHandleState_correctGuess_doesNotInformUser() {
+        PrintStream mockOutputWriter = mock(PrintStream.class);
+        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);
+        clui.handleState(GameState.CORRECT);
+        verifyNoInteractions(mockOutputWriter);
+    }
+
     @Test
     public void testHandleEnd_startState_informsUserOfDefeat() {
         PrintStream mockOutputWriter = mock(PrintStream.class);
