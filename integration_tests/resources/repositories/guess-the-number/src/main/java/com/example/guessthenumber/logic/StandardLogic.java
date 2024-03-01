@@ -19,8 +19,11 @@ public class StandardLogic implements Logic {
 
     @Override
     public boolean isAbleToGuess() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isAbleToGuess'");
+        if (state == GameState.CORRECT) {
+            return false;
+        }
+        boolean hasGuessesLeft = numGuessesTaken < MAX_NUM_GUESSES;
+        return hasGuessesLeft;
     }
 
     @Override

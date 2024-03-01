@@ -10,6 +10,39 @@ import org.junit.Test;
 
 public class StandardLogicTest {
     @Test
+    public void testIsAbleToGuess_correctGuess_returnsFalse() {
+        Random random = mock(Random.class);
+        when(random.nextInt(100)).thenReturn(41);
+        StandardLogic logic = new StandardLogic(random);
+        logic.process(42);
+        assertEquals(false, logic.isAbleToGuess());
+    }
+
+    @Test
+    public void testIsAbleToGuess_notCorrectYetAndHasGuessesLeft_returnsTrue() {
+        Random random = mock(Random.class);
+        when(random.nextInt(100)).thenReturn(41);
+        StandardLogic logic = new StandardLogic(random);
+        logic.process(41);
+        assertEquals(true, logic.isAbleToGuess());
+    }
+
+    @Test
+    public void testIsAbleToGuess_notCorrectYetAndHasNoGuessesLeft_returnsFalse() {
+        Random random = mock(Random.class);
+        when(random.nextInt(100)).thenReturn(41);
+        StandardLogic logic = new StandardLogic(random);
+        logic.process(41);
+        logic.process(41);
+        logic.process(41);
+        logic.process(41);
+        logic.process(41);
+        assertEquals(true, logic.isAbleToGuess());
+        logic.process(41);
+        assertEquals(false, logic.isAbleToGuess());
+    }
+
+    @Test
     public void testProcess_overestimate_incrementsNumGuessesTakenAndTransitionsToOverestimateState() {
         Random random = mock(Random.class);
         when(random.nextInt(100)).thenReturn(41);
