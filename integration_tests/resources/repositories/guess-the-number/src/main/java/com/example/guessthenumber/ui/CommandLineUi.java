@@ -12,6 +12,7 @@ public class CommandLineUi implements UserInterface {
     private PrintStream outputWriter;
     private Logic logic;
 
+    static final String OPENING_MESSAGE = "Hello! I am thinking of a number from 1 to 100.";
     static final String TAKE_A_GUESS_MESSAGE = "Take a guess.";
     static final String PARSE_ERROR_MESSAGE = "I did not understand that.";
     static final String UNEXPECTED_ERROR_MESSAGE = "Unexpected error faced. Exiting...";
@@ -29,6 +30,7 @@ public class CommandLineUi implements UserInterface {
     @Override
     public void run() {
         GameState state = logic.getState();
+        informUser(OPENING_MESSAGE);
         while (logic.isAbleToGuess()) {
             int guessedNumber;
             try {

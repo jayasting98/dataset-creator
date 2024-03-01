@@ -28,6 +28,7 @@ public class CommandLineUiTest {
         when(mockLogic.isAbleToGuess()).thenReturn(true);
         CommandLineUi clui = new CommandLineUi(mockBufferedReader, mockOutputWriter, mockLogic);
         clui.run();
+        inOrder.verify(mockOutputWriter).println("Hello! I am thinking of a number from 1 to 100.");
         inOrder.verify(mockOutputWriter).println("Take a guess.");
         inOrder.verify(mockOutputWriter).println("Unexpected error faced. Exiting...");
     }
@@ -43,6 +44,7 @@ public class CommandLineUiTest {
         when(mockLogic.getState()).thenReturn(GameState.CORRECT);
         CommandLineUi clui = new CommandLineUi(mockBufferedReader, mockOutputWriter, mockLogic);
         clui.run();
+        inOrder.verify(mockOutputWriter).println("Hello! I am thinking of a number from 1 to 100.");
         inOrder.verify(mockOutputWriter).println("Take a guess.");
         inOrder.verify(mockOutputWriter).println("Good job! You guessed my number.");
     }
