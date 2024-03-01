@@ -17,4 +17,8 @@ public class CommandLineUi implements UserInterface {
     }
 
     public void run() {}
+
+    void informUser(String message) {
+        outputWriter.println(message);
+    }
 }
