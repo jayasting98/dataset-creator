@@ -12,7 +12,7 @@ import shutil
 import multiprocessing
 import tqdm
 import copy
-from TestParser import TestParser
+from dataset_creator.methods2test.code_parsers import TestParser
 
 
 
