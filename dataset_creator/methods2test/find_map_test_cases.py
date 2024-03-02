@@ -12,7 +12,7 @@ import shutil
 import multiprocessing
 import tqdm
 import copy
-from dataset_creator.methods2test.code_parsers import TestParser
+from dataset_creator.methods2test.code_parsers import CodeParser
 
 
 
@@ -121,7 +121,7 @@ def find_map_test_cases(root, grammar_file, language, output, repo):
 	#Map Test Case -> Focal Method
 	log.write("Mapping test cases" '\n')
 	mtc_list = list()
-	parser = TestParser(grammar_file, language)
+	parser = CodeParser(grammar_file, language)
 	for test, focal in mapped_tests.items():
 		log.write("----------" + '\n')
 		log.write("Test: " + test + '\n')

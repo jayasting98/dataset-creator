@@ -5,7 +5,7 @@ Adapted from Methods2Test (https://arxiv.org/abs/2203.12776).
 from tree_sitter import Language, Parser
 from typing import List, Dict, Any, Set, Optional
 
-class TestParser():
+class CodeParser():
 	
 	def __init__(self, grammar_file, language):
 		JAVA_LANGUAGE = Language(grammar_file, language)
@@ -47,7 +47,7 @@ class TestParser():
 					if node.type == 'method_declaration' or node.type == 'constructor_declaration':	
 						
 						#Read Method metadata
-						method_metadata = TestParser.get_function_metadata(class_identifier, node, content)
+						method_metadata = CodeParser.get_function_metadata(class_identifier, node, content)
 						methods.append(method_metadata)
 
 			class_metadata['methods'] = methods
@@ -74,15 +74,15 @@ class TestParser():
 		#Superclass
 		superclass = class_node.child_by_field_name('superclass')
 		if superclass:
-			metadata['superclass'] = TestParser.match_from_span(superclass, blob)
+			metadata['superclass'] = CodeParser.match_from_span(superclass, blob)
 		
 		#Interfaces
 		interfaces = class_node.child_by_field_name('interfaces')
 		if interfaces:
-			metadata['interfaces'] = TestParser.match_from_span(interfaces, blob)
+			metadata['interfaces'] = CodeParser.match_from_span(interfaces, blob)
 		
 		#Fields
-		fields = TestParser.get_class_fields(class_node, blob)
+		fields = CodeParser.get_class_fields(class_node, blob)
 		metadata['fields'] = fields
 
 		#Identifier and Arguments
@@ -90,9 +90,9 @@ class TestParser():
 		for n in class_node.children:
 			if is_header:
 				if n.type == 'identifier':
-					metadata['identifier'] = TestParser.match_from_span(n, blob).strip('(:')
+					metadata['identifier'] = CodeParser.match_from_span(n, blob).strip('(:')
 				elif n.type == 'argument_list':
-					metadata['argument_list'] = TestParser.match_from_span(n, blob)
+					metadata['argument_list'] = CodeParser.match_from_span(n, blob)
 			if n.type == 'class':
 				is_header = True
 			elif n.type == ':':
@@ -110,31 +110,31 @@ class TestParser():
 		body_node = class_node.child_by_field_name("body")
 		fields = []
 		
-		for f in TestParser.children_of_type(body_node, "field_declaration"):
+		for f in CodeParser.children_of_type(body_node, "field_declaration"):
 			field_dict = {}
 
 			#Complete field
-			field_dict["original_string"] = TestParser.match_from_span(f, blob)
+			field_dict["original_string"] = CodeParser.match_from_span(f, blob)
 
 			#Modifier
-			modifiers_node_list = TestParser.children_of_type(f, "modifiers")
+			modifiers_node_list = CodeParser.children_of_type(f, "modifiers")
 			if len(modifiers_node_list) > 0:
 				modifiers_node = modifiers_node_list[0]
-				field_dict["modifier"] = TestParser.match_from_span(modifiers_node, blob)
+				field_dict["modifier"] = CodeParser.match_from_span(modifiers_node, blob)
 			else:
 				field_dict["modifier"] = ""
 
 			#Type
 			type_node = f.child_by_field_name("type")
-			field_dict["type"] = TestParser.match_from_span(type_node, blob)
+			field_dict["type"] = CodeParser.match_from_span(type_node, blob)
 
 			#Declarator
 			declarator_node = f.child_by_field_name("declarator")
-			field_dict["declarator"] = TestParser.match_from_span(declarator_node, blob)
+			field_dict["declarator"] = CodeParser.match_from_span(declarator_node, blob)
 			
 			#Var name
 			var_node = declarator_node.child_by_field_name("name")
-			field_dict["var_name"] = TestParser.match_from_span(var_node, blob)
+			field_dict["var_name"] = CodeParser.match_from_span(var_node, blob)
 
 			fields.append(field_dict)
 
@@ -163,17 +163,17 @@ class TestParser():
 
 		# Parameters
 		declarators = []
-		TestParser.traverse_type(function_node, declarators, '{}_declaration'.format(function_node.type.split('_')[0]))
+		CodeParser.traverse_type(function_node, declarators, '{}_declaration'.format(function_node.type.split('_')[0]))
 		parameters = []
 		for n in declarators[0].children:
 			if n.type == 'identifier':
-				metadata['identifier'] = TestParser.match_from_span(n, blob).strip('(')
+				metadata['identifier'] = CodeParser.match_from_span(n, blob).strip('(')
 			elif n.type == 'formal_parameters':
-				parameters.append(TestParser.match_from_span(n, blob))
+				parameters.append(CodeParser.match_from_span(n, blob))
 		metadata['parameters'] = ' '.join(parameters)
 
 		#Body
-		metadata['body'] = TestParser.match_from_span(function_node, blob)
+		metadata['body'] = CodeParser.match_from_span(function_node, blob)
 		metadata['class'] = class_identifier
 
 		#Constructor
@@ -182,29 +182,29 @@ class TestParser():
 			metadata['constructor'] = True
 
 		#Test Case
-		modifiers_node_list = TestParser.children_of_type(function_node, "modifiers")
+		modifiers_node_list = CodeParser.children_of_type(function_node, "modifiers")
 		metadata['testcase'] = False
 		for m in modifiers_node_list:
-			modifier = TestParser.match_from_span(m, blob)
+			modifier = CodeParser.match_from_span(m, blob)
 			if '@Test' in modifier:
 				metadata['testcase'] = True
 
 		#Method Invocations
 		invocation = []
 		method_invocations = list()
-		TestParser.traverse_type(function_node, invocation, '{}_invocation'.format(function_node.type.split('_')[0]))
+		CodeParser.traverse_type(function_node, invocation, '{}_invocation'.format(function_node.type.split('_')[0]))
 		for inv in invocation:
 			name = inv.child_by_field_name('name')
-			method_invocation = TestParser.match_from_span(name, blob)
+			method_invocation = CodeParser.match_from_span(name, blob)
 			method_invocations.append(method_invocation)
 		metadata['invocations'] = method_invocations
 
 		#Modifiers and Return Value
 		for child in function_node.children:
 			if child.type == "modifiers":
-				metadata['modifiers']  = ' '.join(TestParser.match_from_span(child, blob).split())
+				metadata['modifiers']  = ' '.join(CodeParser.match_from_span(child, blob).split())
 			if("type" in child.type):
-				metadata['return'] = TestParser.match_from_span(child, blob)
+				metadata['return'] = CodeParser.match_from_span(child, blob)
 		
 		#Signature
 		metadata['signature'] = '{} {}{}'.format(metadata['return'], metadata['identifier'], metadata['parameters'])
@@ -235,10 +235,10 @@ class TestParser():
 			for child in (child for child in _class.children if child.type == 'class_body'):
 				for _, node in enumerate(child.children):
 					if node.type == 'method_declaration':
-						if not TestParser.is_method_body_empty(node):
+						if not CodeParser.is_method_body_empty(node):
 							
 							#Method Name
-							method_name = TestParser.get_function_name(node, content)
+							method_name = CodeParser.get_function_name(node, content)
 							method_names.append(method_name)
 
 		return method_names
@@ -250,10 +250,10 @@ class TestParser():
 		Extract method name
 		"""
 		declarators = []
-		TestParser.traverse_type(function_node, declarators, '{}_declaration'.format(function_node.type.split('_')[0]))
+		CodeParser.traverse_type(function_node, declarators, '{}_declaration'.format(function_node.type.split('_')[0]))
 		for n in declarators[0].children:
 			if n.type == 'identifier':
-				return TestParser.match_from_span(n, blob).strip('(')
+				return CodeParser.match_from_span(n, blob).strip('(')
 
 
 	@staticmethod
@@ -282,7 +282,7 @@ class TestParser():
 		if not node.children:
 			return
 		for n in node.children:
-			TestParser.traverse_type(n, results, kind)
+			CodeParser.traverse_type(n, results, kind)
 
 
 	@staticmethod
@@ -314,5 +314,5 @@ class TestParser():
 			list of nodes of type in types
 		"""
 		if isinstance(types, str):
-			return TestParser.children_of_type(node, (types,))
+			return CodeParser.children_of_type(node, (types,))
 		return [child for child in node.children if child.type in types]

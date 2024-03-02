@@ -5,11 +5,11 @@ import unittest
 from dataset_creator.methods2test import code_parsers
 
 
-class TestParserTest(unittest.TestCase):
+class CodeParserTest(unittest.TestCase):
     def setUp(self) -> None:
         grammar_file_pathname = 'java-grammar.so'
         language = 'java'
-        self._parser = code_parsers.TestParser(grammar_file_pathname, language)
+        self._parser = code_parsers.CodeParser(grammar_file_pathname, language)
         repo_dir_pathname = os.path.join('integration_tests', 'resources',
             'repositories', 'guess-the-number')
         self._focal_dir_pathname = os.path.join(repo_dir_pathname, 'src',
