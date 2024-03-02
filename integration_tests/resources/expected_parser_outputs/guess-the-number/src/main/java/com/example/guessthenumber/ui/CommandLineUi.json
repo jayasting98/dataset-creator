@@ -1,0 +1,197 @@
+[
+    {
+        "identifier": "CommandLineUi",
+        "superclass": "",
+        "interfaces": "implements UserInterface",
+        "fields": [
+            {
+                "original_string": "private BufferedReader inputReader;",
+                "modifier": "private",
+                "type": "BufferedReader",
+                "declarator": "inputReader",
+                "var_name": "inputReader"
+            },
+            {
+                "original_string": "private PrintStream outputWriter;",
+                "modifier": "private",
+                "type": "PrintStream",
+                "declarator": "outputWriter",
+                "var_name": "outputWriter"
+            },
+            {
+                "original_string": "private Logic logic;",
+                "modifier": "private",
+                "type": "Logic",
+                "declarator": "logic",
+                "var_name": "logic"
+            },
+            {
+                "original_string": "static final String OPENING_MESSAGE = \"Hello! I am thinking of a number from 1 to 100.\";",
+                "modifier": "static final",
+                "type": "String",
+                "declarator": "OPENING_MESSAGE = \"Hello! I am thinking of a number from 1 to 100.\"",
+                "var_name": "OPENING_MESSAGE"
+            },
+            {
+                "original_string": "static final String TAKE_A_GUESS_MESSAGE = \"Take a guess.\";",
+                "modifier": "static final",
+                "type": "String",
+                "declarator": "TAKE_A_GUESS_MESSAGE = \"Take a guess.\"",
+                "var_name": "TAKE_A_GUESS_MESSAGE"
+            },
+            {
+                "original_string": "static final String PARSE_ERROR_MESSAGE = \"Sorry, I did not understand that.\";",
+                "modifier": "static final",
+                "type": "String",
+                "declarator": "PARSE_ERROR_MESSAGE = \"Sorry, I did not understand that.\"",
+                "var_name": "PARSE_ERROR_MESSAGE"
+            },
+            {
+                "original_string": "static final String UNEXPECTED_ERROR_MESSAGE = \"An unexpected error was encountered. Exiting...\";",
+                "modifier": "static final",
+                "type": "String",
+                "declarator": "UNEXPECTED_ERROR_MESSAGE = \"An unexpected error was encountered. Exiting...\"",
+                "var_name": "UNEXPECTED_ERROR_MESSAGE"
+            },
+            {
+                "original_string": "static final String OVERESTIMATE_MESSAGE = \"Your guess was too high. :(\";",
+                "modifier": "static final",
+                "type": "String",
+                "declarator": "OVERESTIMATE_MESSAGE = \"Your guess was too high. :(\"",
+                "var_name": "OVERESTIMATE_MESSAGE"
+            },
+            {
+                "original_string": "static final String UNDERESTIMATE_MESSAGE = \"Your guess was too low. :(\";",
+                "modifier": "static final",
+                "type": "String",
+                "declarator": "UNDERESTIMATE_MESSAGE = \"Your guess was too low. :(\"",
+                "var_name": "UNDERESTIMATE_MESSAGE"
+            },
+            {
+                "original_string": "static final String WIN_MESSAGE = \"Good job! You guessed my number.\";",
+                "modifier": "static final",
+                "type": "String",
+                "declarator": "WIN_MESSAGE = \"Good job! You guessed my number.\"",
+                "var_name": "WIN_MESSAGE"
+            },
+            {
+                "original_string": "static final String DEFEAT_TEMPLATE = \"Sorry, you lose. The number was %d.\";",
+                "modifier": "static final",
+                "type": "String",
+                "declarator": "DEFEAT_TEMPLATE = \"Sorry, you lose. The number was %d.\"",
+                "var_name": "DEFEAT_TEMPLATE"
+            }
+        ],
+        "argument_list": "",
+        "methods": [
+            {
+                "identifier": "CommandLineUi",
+                "parameters": "(BufferedReader inputReader, PrintStream outputWriter, Logic logic)",
+                "modifiers": "public",
+                "return": "",
+                "body": "public CommandLineUi(BufferedReader inputReader, PrintStream outputWriter, Logic logic) {\n        this.inputReader = inputReader;\n        this.outputWriter = outputWriter;\n        this.logic = logic;\n    }",
+                "class": "CommandLineUi",
+                "signature": " CommandLineUi(BufferedReader inputReader, PrintStream outputWriter, Logic logic)",
+                "full_signature": "public  CommandLineUi(BufferedReader inputReader, PrintStream outputWriter, Logic logic)",
+                "class_method_signature": "CommandLineUi.CommandLineUi(BufferedReader inputReader, PrintStream outputWriter, Logic logic)",
+                "testcase": false,
+                "constructor": true,
+                "invocations": []
+            },
+            {
+                "identifier": "run",
+                "parameters": "()",
+                "modifiers": "@Override public",
+                "return": "void",
+                "body": "@Override\n    public void run() {\n        GameState state = logic.getState();\n        informUser(OPENING_MESSAGE);\n        while (logic.isAbleToGuess()) {\n            int guessedNumber;\n            try {\n                guessedNumber = parseGuess();\n            } catch (IOException ioe) {\n                informUser(UNEXPECTED_ERROR_MESSAGE);\n                return;\n            }\n            logic.process(guessedNumber);\n            state = logic.getState();\n            handleState(state);\n        }\n        handleEnd(state);\n    }",
+                "class": "CommandLineUi",
+                "signature": "void run()",
+                "full_signature": "@Override public void run()",
+                "class_method_signature": "CommandLineUi.run()",
+                "testcase": false,
+                "constructor": false,
+                "invocations": [
+                    "getState",
+                    "informUser",
+                    "isAbleToGuess",
+                    "parseGuess",
+                    "informUser",
+                    "process",
+                    "getState",
+                    "handleState",
+                    "handleEnd"
+                ]
+            },
+            {
+                "identifier": "handleState",
+                "parameters": "(GameState state)",
+                "modifiers": "",
+                "return": "void",
+                "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }",
+                "class": "CommandLineUi",
+                "signature": "void handleState(GameState state)",
+                "full_signature": " void handleState(GameState state)",
+                "class_method_signature": "CommandLineUi.handleState(GameState state)",
+                "testcase": false,
+                "constructor": false,
+                "invocations": [
+                    "informUser"
+                ]
+            },
+            {
+                "identifier": "parseGuess",
+                "parameters": "()",
+                "modifiers": "",
+                "return": "int",
+                "body": "int parseGuess() throws IOException {\n        while (true) {\n            try {\n                informUser(TAKE_A_GUESS_MESSAGE);\n                String input = inputReader.readLine();\n                int guessedNumber = Integer.parseInt(input);\n                return guessedNumber;\n            } catch (NumberFormatException nfe) {\n                informUser(PARSE_ERROR_MESSAGE);\n            }\n        }\n    }",
+                "class": "CommandLineUi",
+                "signature": "int parseGuess()",
+                "full_signature": " int parseGuess()",
+                "class_method_signature": "CommandLineUi.parseGuess()",
+                "testcase": false,
+                "constructor": false,
+                "invocations": [
+                    "informUser",
+                    "readLine",
+                    "parseInt",
+                    "informUser"
+                ]
+            },
+            {
+                "identifier": "handleEnd",
+                "parameters": "(GameState state)",
+                "modifiers": "",
+                "return": "void",
+                "body": "void handleEnd(GameState state) {\n        if (state == GameState.CORRECT) {\n            informUser(WIN_MESSAGE);\n        } else {\n            int numberToGuess = logic.getNumberToGuess();\n            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);\n            informUser(defeatMessage);\n        }\n    }",
+                "class": "CommandLineUi",
+                "signature": "void handleEnd(GameState state)",
+                "full_signature": " void handleEnd(GameState state)",
+                "class_method_signature": "CommandLineUi.handleEnd(GameState state)",
+                "testcase": false,
+                "constructor": false,
+                "invocations": [
+                    "informUser",
+                    "getNumberToGuess",
+                    "format",
+                    "informUser"
+                ]
+            },
+            {
+                "identifier": "informUser",
+                "parameters": "(String message)",
+                "modifiers": "",
+                "return": "void",
+                "body": "void informUser(String message) {\n        outputWriter.println(message);\n    }",
+                "class": "CommandLineUi",
+                "signature": "void informUser(String message)",
+                "full_signature": " void informUser(String message)",
+                "class_method_signature": "CommandLineUi.informUser(String message)",
+                "testcase": false,
+                "constructor": false,
+                "invocations": [
+                    "println"
+                ]
+            }
+        ]
+    }
+]
