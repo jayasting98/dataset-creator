@@ -66,6 +66,10 @@ class CodeParser():
 			'identifier': '',
 			'superclass': '',
 			'interfaces': '',
+			'line_start': '',
+			'col_start': '',
+			'line_end': '',
+			'col_end': '',
 			'fields': '',
 			'argument_list': '',
 			'methods':'',
@@ -97,6 +101,13 @@ class CodeParser():
 				is_header = True
 			elif n.type == ':':
 				break
+
+		# Start and end points of the class
+		metadata['line_start'] = class_node.start_point[0]
+		metadata['col_start'] = class_node.start_point[1]
+		metadata['line_end'] = class_node.end_point[0]
+		metadata['col_end'] = class_node.end_point[1]
+
 		return metadata
 
 
@@ -152,6 +163,10 @@ class CodeParser():
 			'parameters': '',
 			'modifiers': '',
 			'return' : '',
+			'line_start': '',
+			'col_start': '',
+			'line_end': '',
+			'col_end': '',
 			'body': '',
 			'class': '',
 			'signature': '',
@@ -173,6 +188,10 @@ class CodeParser():
 		metadata['parameters'] = ' '.join(parameters)
 
 		#Body
+		metadata['line_start'] = function_node.start_point[0]
+		metadata['col_start'] = function_node.start_point[1]
+		metadata['line_end'] = function_node.end_point[0]
+		metadata['col_end'] = function_node.end_point[1]
 		metadata['body'] = CodeParser.match_from_span(function_node, blob)
 		metadata['class'] = class_identifier
 
