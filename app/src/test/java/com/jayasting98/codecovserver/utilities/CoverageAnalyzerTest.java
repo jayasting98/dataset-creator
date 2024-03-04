@@ -2,10 +2,10 @@ package com.jayasting98.codecovserver.utilities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +23,7 @@ public class CoverageAnalyzerTest {
         String testMethodName = "testHandleEnd_correctGuess_informsUserOfWin";
         CoverageAnalyzer analyzer = new CoverageAnalyzer(jarPathnames, focalClasspath,
             testClasspath, focalClassName, testClassName, testMethodName);
-        Set<Integer> expectedCoveredLineNumbers = new HashSet<>();
+        List<Integer> expectedCoveredLineNumbers = new ArrayList<>();
         expectedCoveredLineNumbers.add(24);
         expectedCoveredLineNumbers.add(25);
         expectedCoveredLineNumbers.add(26);
@@ -33,7 +33,7 @@ public class CoverageAnalyzerTest {
         expectedCoveredLineNumbers.add(85);
         expectedCoveredLineNumbers.add(88);
         expectedCoveredLineNumbers.add(89);
-        Set<Integer> actualCoveredLineNumbers = analyzer.findCoveredLineNumbers();
+        List<Integer> actualCoveredLineNumbers = analyzer.findCoveredLineNumbers();
         assertEquals(expectedCoveredLineNumbers, actualCoveredLineNumbers);
     }
 }

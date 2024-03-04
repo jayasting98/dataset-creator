@@ -48,7 +48,7 @@ public class CoverageAnalyzer {
         this.testMethodName = testMethodName;
     }
 
-    public Set<Integer> findCoveredLineNumbers() throws Exception {
+    public List<Integer> findCoveredLineNumbers() throws Exception {
         IRuntime runtime = new LoggerRuntime();
         Instrumenter instrumenter = new Instrumenter(runtime);
         byte[] instrumentedDefinition;
@@ -78,7 +78,7 @@ public class CoverageAnalyzer {
             findClassDefinition(focalClasspath, focalClassName)) {
             analyzer.analyzeClass(focalClassDefinition, focalClassName);
         }
-        Set<Integer> coveredLineNumbers = new HashSet<>();
+        List<Integer> coveredLineNumbers = new ArrayList<>();
         for (IClassCoverage classCoverage : coverageBuilder.getClasses()) {
             for (int i = classCoverage.getFirstLine(); i <= classCoverage.getLastLine(); i++) {
                 ILine line = classCoverage.getLine(i);

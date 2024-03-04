@@ -1,19 +1,19 @@
 package com.jayasting98.codecovserver.coverages;
 
-import java.util.Set;
+import java.util.List;
 
 class Coverage {
-    private Set<Integer> coveredLineNumbers;
+    private List<Integer> coveredLineNumbers;
 
-    Coverage(Set<Integer> coveredLineNumbers) {
+    Coverage(List<Integer> coveredLineNumbers) {
         this.coveredLineNumbers = coveredLineNumbers;
     }
 
-    void setCoveredLineNumbers(Set<Integer> coveredLineNumbers) {
+    void setCoveredLineNumbers(List<Integer> coveredLineNumbers) {
         this.coveredLineNumbers = coveredLineNumbers;
     }
 
-    Set<Integer> getCoveredLineNumbers() {
+    List<Integer> getCoveredLineNumbers() {
         return coveredLineNumbers;
     }
 }
