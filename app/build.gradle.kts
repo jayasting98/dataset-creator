@@ -27,6 +27,7 @@ dependencies {
 
     // This dependency is used by the application.
     implementation(libs.guava)
+    implementation("org.jacoco:org.jacoco.core:0.8.8")
 	implementation("org.springframework.boot:spring-boot-starter")
 }
 
