@@ -70,6 +70,12 @@ def find_java_files(root: str) -> list[str]:
 	return java_files
 
 
+def find_focal_files(java_files: list[str], test_files: list[str]) -> list[str]:
+	main_files = [file for file in java_files if 'src/test' not in file]
+	focal_files = sorted(list(set(main_files) - set(test_files)))
+	return focal_files
+
+
 def find_map_test_cases(root, grammar_file, language, output, repo):
 	"""
 	Finds test cases using @Test annotation
