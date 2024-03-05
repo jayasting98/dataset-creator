@@ -1,3 +1,4 @@
+import json
 import os
 import unittest
 
@@ -52,6 +53,8 @@ class FindMapTestCasesTest(unittest.TestCase):
             self._standard_logic_test_file,
             self._command_line_ui_test_file,
         ]
+        self._output_dir_pathname = os.path.join('integration_tests',
+            'resources', 'expected_focal_method_samples', 'guess-the-number')
 
     def test_find_test_files__typical_case__finds_correctly(self):
         expected_test_files = self._test_files
@@ -159,3 +162,16 @@ class FindMapTestCasesTest(unittest.TestCase):
                 simplified_focal_methods, simplified_test_methods))
         self.assertEqual(expected_focal_file_method_samples,
             actual_focal_file_method_samples)
+
+    def test_find_focal_method_samples__typical_case__finds_correctly(self):
+        output_file_pathname = (
+            os.path.join(self._output_dir_pathname, 'typical_case.json'))
+        grammar_file_pathname = 'java-grammar.so'
+        language = 'java'
+        with open(output_file_pathname) as output_file:
+            expected_focal_method_samples = json.load(output_file)
+        actual_focal_method_samples = (find_map_test_cases
+            .find_focal_method_samples(
+                self._root, grammar_file_pathname, language))
+        self.assertEqual(
+            expected_focal_method_samples, actual_focal_method_samples)

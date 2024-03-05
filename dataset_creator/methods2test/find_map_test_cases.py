@@ -125,6 +125,28 @@ def find_focal_file_method_samples(focal_methods, test_methods) -> list:
 	return focal_class_method_samples
 
 
+def find_focal_method_samples(root, grammar_file, language) -> list:
+	focal_method_samples = list()
+	if not os.path.exists(root):
+		return focal_method_samples
+	try:
+		test_files = find_test_files(root)
+		java_files = find_java_files(root)
+	except Exception:
+		return focal_method_samples
+	focal_files = find_focal_files(java_files, test_files)
+	test_to_focal_files = map_test_to_focal_files(focal_files, test_files)
+	parser = CodeParser(grammar_file, language)
+	for test_file, focal_file in test_to_focal_files.items():
+		with utilities.WorkingDirectory(root):
+			test_methods = parse_test_cases(parser, test_file)
+			focal_methods = parse_potential_focal_methods(parser, focal_file)
+		focal_file_method_samples = find_focal_file_method_samples(
+			focal_methods, test_methods)
+		focal_method_samples.extend(focal_file_method_samples)
+	return focal_method_samples
+
+
 def find_map_test_cases(root, grammar_file, language, output, repo):
 	"""
 	Finds test cases using @Test annotation
