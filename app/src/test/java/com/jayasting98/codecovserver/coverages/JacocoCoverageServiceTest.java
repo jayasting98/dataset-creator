@@ -2,6 +2,8 @@ package com.jayasting98.codecovserver.coverages;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,9 +20,8 @@ public class JacocoCoverageServiceTest {
 
     @Test
     public void testCreateCoverage_typicalCase_createsCorrectly() throws Exception {
-        String repositoryDirPathname = "/mnt/c/Users/Jasti/Documents/Work/NUS/AY2324 S1/"
-            + "CP4101 B.Comp. Dissertation/repos/dataset-creator/integration_tests/resources/"
-            + "repositories/guess-the-number/";
+        String repositoryDirPathname = Paths.get("").toAbsolutePath().getParent().toString()
+            + File.separator + "integration_tests/resources/repositories/guess-the-number/";
         Collection<String> jarPathnames = Arrays.asList();
         String focalClasspath = repositoryDirPathname + "target/classes/";
         String testClasspath = repositoryDirPathname + "target/test-classes/";

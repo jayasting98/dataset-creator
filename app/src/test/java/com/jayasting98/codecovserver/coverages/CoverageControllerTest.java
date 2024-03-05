@@ -1,5 +1,6 @@
 package com.jayasting98.codecovserver.coverages;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,9 +26,8 @@ public class CoverageControllerTest {
 
     @Test
     public void testCreateCoverage_typicalCase_createsCorrectly() throws Exception {
-        String repositoryDirPathname = "/mnt/c/Users/Jasti/Documents/Work/NUS/AY2324 S1/"
-            + "CP4101 B.Comp. Dissertation/repos/dataset-creator/integration_tests/resources/"
-            + "repositories/guess-the-number/";
+        String repositoryDirPathname = Paths.get("").toAbsolutePath().getParent().toString()
+            + File.separator + "integration_tests/resources/repositories/guess-the-number/";
         String junitJarPathname = Paths.get(System.getProperty("user.home"),
             ".m2/repository/junit/junit/4.11/junit-4.11.jar").toString();
         List<String> jarPathnames = Arrays.asList(junitJarPathname);
