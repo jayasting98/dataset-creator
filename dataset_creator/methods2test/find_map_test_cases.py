@@ -76,6 +76,23 @@ def find_focal_files(java_files: list[str], test_files: list[str]) -> list[str]:
 	return focal_files
 
 
+def map_test_to_focal_files(
+	focal_files: list[str],
+	test_files: list[str],
+) -> dict[str, str]:
+	norm_focal_files = [f.lower() for f in focal_files]
+	test_to_focal_files = dict()
+	for test_file in test_files:
+		norm_test_files = test_file.lower().replace('src/test/', 'src/main/')
+		norm_test_files = norm_test_files.replace('test', '')
+		if norm_test_files not in norm_focal_files:
+			continue
+		index = norm_focal_files.index(norm_test_files)
+		focal_file = focal_files[index]
+		test_to_focal_files[test_file] = focal_file
+	return test_to_focal_files
+
+
 def find_map_test_cases(root, grammar_file, language, output, repo):
 	"""
 	Finds test cases using @Test annotation
