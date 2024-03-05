@@ -14,6 +14,8 @@ import tqdm
 import copy
 from dataset_creator.methods2test.code_parsers import CodeParser
 
+from dataset_creator import utilities
+
 
 
 def analyze_project(repo_git, repo_id, grammar_file, tmp, output):
@@ -51,6 +53,13 @@ def analyze_project(repo_git, repo_id, grammar_file, tmp, output):
 	print("Test Cases: " + str(tot_tc))
 	print("Mapped Test Cases: " + str(tot_mtc))
 
+
+def find_test_files(root: str) -> list[str]:
+	with utilities.WorkingDirectory(root):
+		result = (subprocess
+			.check_output(r'grep -l -r @Test --include \*.java', shell=True))
+	test_files = result.decode('ascii').splitlines()
+	return test_files
 
 
 def find_map_test_cases(root, grammar_file, language, output, repo):
