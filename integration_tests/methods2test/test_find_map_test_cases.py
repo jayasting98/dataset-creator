@@ -79,3 +79,83 @@ class FindMapTestCasesTest(unittest.TestCase):
             .map_test_to_focal_files(self._focal_files, self._test_files))
         self.assertEqual(
             expected_test_to_focal_files, actual_test_to_focal_files)
+
+    def test_find_focal_file_method_samples__typical_case__finds_correctly(
+        self,
+    ):
+        simplified_focal_methods = [
+            {
+                'identifier': 'doSomething0',
+            },
+            {
+                'identifier': 'doSomething1',
+            },
+        ]
+        simplified_test_methods = [
+            {
+                'identifier': 'testDoSomething0',
+                'invocations': [
+                    'doSomething0',
+                    'doSomething1',
+                ],
+            },
+            {
+                'identifier': 'shouldDoSomething0',
+                'invocations': [
+                    'doSomething0',
+                ],
+            },
+            {
+                'identifier': 'shouldDoSomething1',
+                'invocations': [
+                    'doSomething0',
+                    'doSomething1',
+                ],
+            },
+            {
+                'identifier': 'shouldDoSomething1',
+                'invocations': [
+                    'doSomething1',
+                ],
+            },
+        ]
+        expected_focal_file_method_samples = [
+            {
+                'focal_method': {
+                    'identifier': 'doSomething0',
+                },
+                'test_methods': [
+                    {
+                        'identifier': 'testDoSomething0',
+                        'invocations': [
+                            'doSomething0',
+                            'doSomething1',
+                        ],
+                    },
+                    {
+                        'identifier': 'shouldDoSomething0',
+                        'invocations': [
+                            'doSomething0',
+                        ],
+                    },
+                ],
+            },
+            {
+                'focal_method': {
+                    'identifier': 'doSomething1',
+                },
+                'test_methods': [
+                    {
+                        'identifier': 'shouldDoSomething1',
+                        'invocations': [
+                            'doSomething1',
+                        ],
+                    },
+                ],
+            },
+        ]
+        actual_focal_file_method_samples = (find_map_test_cases
+            .find_focal_file_method_samples(
+                simplified_focal_methods, simplified_test_methods))
+        self.assertEqual(expected_focal_file_method_samples,
+            actual_focal_file_method_samples)

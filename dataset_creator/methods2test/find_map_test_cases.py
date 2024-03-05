@@ -93,6 +93,38 @@ def map_test_to_focal_files(
 	return test_to_focal_files
 
 
+def find_focal_file_method_samples(focal_methods, test_methods) -> list:
+	focal_index_test_methods: dict[int, list] = dict()
+	focal_class_method_samples = list()
+	norm_focal_method_ids = [f['identifier'].lower() for f in focal_methods]
+	for test_method in test_methods:
+		norm_test_method_id = (
+			test_method['identifier'].lower().replace('test', ''))
+		focal_method_index = None
+		if norm_test_method_id in norm_focal_method_ids:
+			focal_method_index = (
+				norm_focal_method_ids.index(norm_test_method_id))
+		else:
+			norm_invocations = [i.lower() for i in test_method['invocations']]
+			overlapping_invocations = list(
+				set(norm_invocations).intersection(set(norm_focal_method_ids)))
+			if len(overlapping_invocations) != 1:
+				continue
+			focal_method_index = (
+				norm_focal_method_ids.index(overlapping_invocations[0]))
+		if focal_method_index is None:
+			continue
+		if focal_method_index not in focal_index_test_methods:
+			focal_index_test_methods[focal_method_index] = list()
+		focal_index_test_methods[focal_method_index].append(test_method)
+	for index, focal_test_methods in focal_index_test_methods.items():
+		focal_method_sample = dict()
+		focal_method_sample['focal_method'] = focal_methods[index]
+		focal_method_sample['test_methods'] = focal_test_methods
+		focal_class_method_samples.append(focal_method_sample)
+	return focal_class_method_samples
+
+
 def find_map_test_cases(root, grammar_file, language, output, repo):
 	"""
 	Finds test cases using @Test annotation
