@@ -62,6 +62,14 @@ def find_test_files(root: str) -> list[str]:
 	return test_files
 
 
+def find_java_files(root: str) -> list[str]:
+	with utilities.WorkingDirectory(root):
+		result = subprocess.check_output(['find', '-name', '*.java'])
+	files = result.decode('ascii').splitlines()
+	java_files = [f.replace('./', '') for f in files]
+	return java_files
+
+
 def find_map_test_cases(root, grammar_file, language, output, repo):
 	"""
 	Finds test cases using @Test annotation
