@@ -13,7 +13,7 @@ class Coverage {
         this.coveredLineNumbers = coveredLineNumbers;
     }
 
-    List<Integer> getCoveredLineNumbers() {
+    public List<Integer> getCoveredLineNumbers() {
         return coveredLineNumbers;
     }
 }
