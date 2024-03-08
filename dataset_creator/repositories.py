@@ -1,5 +1,8 @@
 import abc
+import subprocess
 from typing import Self
+
+from dataset_creator import utilities
 
 
 class Repository(abc.ABC):
@@ -37,7 +40,10 @@ class MavenRepository(Repository):
         self._root_dir_pathname = root_dir_pathname
 
     def compile(self: Self) -> None:
-        return super().compile()
+        with utilities.WorkingDirectory(self._root_dir_pathname):
+	        completed_process = subprocess.run(
+                ['mvn', 'clean', 'test-compile'], stdout=subprocess.DEVNULL)
+        completed_process.check_returncode()
 
     def get_jar_pathnames(self: Self) -> list[str]:
         return super().get_jar_pathnames()
