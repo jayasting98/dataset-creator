@@ -8,3 +8,7 @@ class CreateCoverageRequestData(TypedDict):
     focalClassName: str
     testClassName: str
     testMethodName: str
+
+
+class Coverage(TypedDict):
+    coveredLineNumbers: list[int]
