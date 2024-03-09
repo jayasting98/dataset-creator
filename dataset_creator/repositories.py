@@ -1,4 +1,5 @@
 import abc
+import os
 import subprocess
 from typing import Self
 
@@ -57,7 +58,15 @@ class MavenRepository(Repository):
         return jar_pathnames
 
     def find_focal_classpath(self: Self) -> str:
-        return super().find_focal_classpath()
+        with utilities.WorkingDirectory(self._root_dir_pathname):
+            args = ['mvn', 'help:evaluate',
+                '-Dexpression=project.build.outputDirectory', '-q',
+                '-DforceStdout']
+            completed_process = (
+                subprocess.run(args, capture_output=True, text=True))
+        completed_process.check_returncode()
+        focal_classpath = completed_process.stdout
+        return focal_classpath
 
     def find_test_classpath(self: Self) -> str:
         return super().find_test_classpath()

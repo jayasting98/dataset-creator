@@ -43,3 +43,10 @@ class MavenRepositoryTest(unittest.TestCase):
         ]
         actual_jar_pathnames = self._repo.find_jar_pathnames()
         self.assertCountEqual(expected_jar_pathnames, actual_jar_pathnames)
+
+    def test_find_focal_classpath__typical_case__finds_correctly(self):
+        expected_focal_classpath = os.path.join(os.getcwd(),
+            'integration_tests', 'resources', 'repositories',
+            'guess-the-number', 'target', 'classes')
+        actual_focal_classpath = self._repo.find_focal_classpath()
+        self.assertEqual(expected_focal_classpath, actual_focal_classpath)
