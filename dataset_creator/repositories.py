@@ -13,7 +13,7 @@ class Repository(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def find_jar_pathnames(self: Self) -> list[str]:
+    def find_classpath_pathnames(self: Self) -> list[str]:
         raise NotImplementedError()
 
     @abc.abstractmethod
@@ -31,7 +31,7 @@ class MavenRepository(Repository):
             completed_process = subprocess.run(args, stdout=subprocess.DEVNULL)
         completed_process.check_returncode()
 
-    def find_jar_pathnames(self: Self) -> list[str]:
+    def find_classpath_pathnames(self: Self) -> list[str]:
         args = ['mvn', 'dependency:build-classpath',
             '-Dmdep.outputFile=/dev/stdout', '-q']
         with utilities.WorkingDirectory(self._root_dir_pathname):
@@ -39,8 +39,12 @@ class MavenRepository(Repository):
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
         output = completed_process.stdout
-        jar_pathnames = output.split(os.pathsep)
-        return jar_pathnames
+        classpath_pathnames = output.split(os.pathsep)
+        classpath_pathnames.append(self.find_focal_classpath())
+        classpath_pathnames.append(self._find_test_classpath())
+        classpath_pathnames.append(self._find_focal_resources_classpath())
+        classpath_pathnames.append(self._find_test_resources_classpath())
+        return classpath_pathnames
 
     def find_focal_classpath(self: Self) -> str:
         args = ['mvn', 'help:evaluate',
@@ -63,6 +67,28 @@ class MavenRepository(Repository):
         test_classpath = completed_process.stdout
         return test_classpath
 
+    def _find_focal_resources_classpath(self: Self) -> str:
+        args = ['mvn', 'help:evaluate',
+            '-Dexpression=project.build.resources[0].directory', '-q',
+            '-DforceStdout']
+        with utilities.WorkingDirectory(self._root_dir_pathname):
+            completed_process = (
+                subprocess.run(args, capture_output=True, text=True))
+        completed_process.check_returncode()
+        focal_resources_classpath = completed_process.stdout
+        return focal_resources_classpath
+
+    def _find_test_resources_classpath(self: Self) -> str:
+        args = ['mvn', 'help:evaluate',
+            '-Dexpression=project.build.testResources[0].directory',
+            '-q', '-DforceStdout']
+        with utilities.WorkingDirectory(self._root_dir_pathname):
+            completed_process = (
+                subprocess.run(args, capture_output=True, text=True))
+        completed_process.check_returncode()
+        test_resources_classpath = completed_process.stdout
+        return test_resources_classpath
+
 
 _gradle_init_script_pathname = (
     os.path.join(os.getcwd(), 'scripts', 'init.gradle.kts'))
@@ -81,7 +107,7 @@ class GradleRepository(Repository):
                 args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         completed_process.check_returncode()
 
-    def find_jar_pathnames(self: Self) -> list[str]:
+    def find_classpath_pathnames(self: Self) -> list[str]:
         project_name = self._find_project_name()
         args = ['gradle', '-q', '--init-script', self._init_script_rel_pathname,
             f'{project_name}:buildTestRuntimeClasspath']
@@ -92,9 +118,7 @@ class GradleRepository(Repository):
         output = completed_process.stdout
         line = output.split(os.linesep)[0]
         classpath_pathnames = line.split(os.pathsep)
-        jar_pathnames = [pathname
-            for pathname in classpath_pathnames if pathname.endswith('.jar')]
-        return jar_pathnames
+        return classpath_pathnames
 
     def find_focal_classpath(self: Self) -> str:
         project_name = self._find_project_name()

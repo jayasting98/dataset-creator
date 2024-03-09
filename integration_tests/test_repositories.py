@@ -9,7 +9,7 @@ from dataset_creator import repositories
 
 class MavenRepositoryTest(unittest.TestCase):
     def setUp(self) -> None:
-        self._repo_dir_pathname = os.path.join('integration_tests',
+        self._repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
             'resources', 'repositories', 'maven', 'guess-the-number')
         self._repo = repositories.MavenRepository(self._repo_dir_pathname)
         self._home_dir_pathname = str(pathlib.Path.home())
@@ -25,10 +25,10 @@ class MavenRepositoryTest(unittest.TestCase):
             with self.assertRaises(subprocess.CalledProcessError):
                 repo.compile()
 
-    def test_find_jar_pathnames__typical_case__finds_correctly(self):
+    def test_find_classpath_pathnames__typical_case__finds_correctly(self):
         maven_dir_pathname = (
             os.path.join(self._home_dir_pathname, '.m2', 'repository'))
-        expected_jar_pathnames = [
+        expected_classpath_pathnames = [
             os.path.join(maven_dir_pathname, 'junit', 'junit', '4.11',
                 'junit-4.11.jar'),
             os.path.join(maven_dir_pathname, 'org', 'hamcrest', 'hamcrest-core',
@@ -41,9 +41,14 @@ class MavenRepositoryTest(unittest.TestCase):
                 'byte-buddy-agent', '1.11.13', 'byte-buddy-agent-1.11.13.jar'),
             os.path.join(maven_dir_pathname, 'org', 'objenesis', 'objenesis',
                 '3.2', 'objenesis-3.2.jar'),
+            os.path.join(self._repo_dir_pathname, 'target', 'classes'),
+            os.path.join(self._repo_dir_pathname, 'target', 'test-classes'),
+            os.path.join(self._repo_dir_pathname, 'src', 'main', 'resources'),
+            os.path.join(self._repo_dir_pathname, 'src', 'test', 'resources'),
         ]
-        actual_jar_pathnames = self._repo.find_jar_pathnames()
-        self.assertCountEqual(expected_jar_pathnames, actual_jar_pathnames)
+        actual_classpath_pathnames = self._repo.find_classpath_pathnames()
+        self.assertCountEqual(
+            expected_classpath_pathnames, actual_classpath_pathnames)
 
     def test_find_focal_classpath__typical_case__finds_correctly(self):
         expected_focal_classpath = os.path.join(os.getcwd(),
@@ -55,7 +60,7 @@ class MavenRepositoryTest(unittest.TestCase):
 
 class GradleRepositoryTest(unittest.TestCase):
     def setUp(self) -> None:
-        self._repo_dir_pathname = os.path.join('integration_tests',
+        self._repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
             'resources', 'repositories', 'gradle', 'guess-the-number')
         self._repo = repositories.GradleRepository(self._repo_dir_pathname)
         self._home_dir_pathname = str(pathlib.Path.home())
@@ -71,10 +76,18 @@ class GradleRepositoryTest(unittest.TestCase):
             with self.assertRaises(subprocess.CalledProcessError):
                 repo.compile()
 
-    def test_find_jar_pathnames__typical_case__finds_correctly(self):
+    def test_find_classpath_pathnames__typical_case__finds_correctly(self):
         gradle_dir_pathname = os.path.join(self._home_dir_pathname, '.gradle',
             'caches', 'modules-2', 'files-2.1')
-        expected_jar_pathnames = [
+        expected_classpath_pathnames = [
+            os.path.join(self._repo_dir_pathname, 'app', 'build', 'classes',
+                'java', 'main'),
+            os.path.join(self._repo_dir_pathname, 'app', 'build', 'classes',
+                'java', 'test'),
+            os.path.join(self._repo_dir_pathname, 'app', 'build', 'resources',
+                'main'),
+            os.path.join(self._repo_dir_pathname, 'app', 'build', 'resources',
+                'test'),
             os.path.join(gradle_dir_pathname, 'junit', 'junit', '4.11',
                 '4e031bb61df09069aeb2bffb4019e7a5034a4ee0', 'junit-4.11.jar'),
             os.path.join(gradle_dir_pathname, 'org.hamcrest', 'hamcrest-core',
@@ -94,8 +107,10 @@ class GradleRepositoryTest(unittest.TestCase):
                 '3.2', '7fadf57620c8b8abdf7519533e5527367cb51f09',
                 'objenesis-3.2.jar'),
         ]
-        actual_jar_pathnames = self._repo.find_jar_pathnames()
-        self.assertCountEqual(expected_jar_pathnames, actual_jar_pathnames)
+        self.maxDiff = None
+        actual_classpath_pathnames = self._repo.find_classpath_pathnames()
+        self.assertCountEqual(
+            expected_classpath_pathnames, actual_classpath_pathnames)
 
     def test_find_focal_classpath__typical_case__finds_correctly(self):
         expected_focal_classpath = os.path.join(os.getcwd(),
