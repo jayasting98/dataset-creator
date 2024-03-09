@@ -1,4 +1,5 @@
 import abc
+import glob
 import os
 import subprocess
 from typing import Self
@@ -146,3 +147,18 @@ class GradleRepository(Repository):
             project_names = output.split(os.linesep)
             self._project_name = project_names[0]
             return self._project_name
+
+def create_repository(root_dir_pathname: str) -> Repository:
+    if os.path.isfile(os.path.join(root_dir_pathname, 'pom.xml')):
+        return MavenRepository(root_dir_pathname)
+    if (os.path.isfile(os.path.join(root_dir_pathname, 'build.gradle'))
+        or os.path.isfile(os.path.join(root_dir_pathname, 'build.gradle.kts'))):
+        return GradleRepository(root_dir_pathname)
+    possible_build_gradle_pathnames = (glob
+        .glob('**/build.gradle', recursive=True, root_dir=root_dir_pathname))
+    possible_build_gradle_pathnames.extend(glob.glob(
+        '**/build.gradle.kts', recursive=True, root_dir=root_dir_pathname))
+    for file_pathname in possible_build_gradle_pathnames:
+        if os.path.isfile(file_pathname):
+            return GradleRepository(root_dir_pathname)
+    raise ValueError()

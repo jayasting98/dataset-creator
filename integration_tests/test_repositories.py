@@ -117,3 +117,22 @@ class GradleRepositoryTest(unittest.TestCase):
             'guess-the-number', 'app', 'build', 'classes', 'java', 'test')
         actual_test_classpath = self._repo.find_test_classpath()
         self.assertEqual(expected_test_classpath, actual_test_classpath)
+
+
+class RepositoriesTest(unittest.TestCase):
+    def test_create_repository__maven_repository__creates_correctly(self):
+        repo_dir_pathname = os.path.join('integration_tests',
+            'resources', 'repositories', 'maven', 'guess-the-number')
+        repo = repositories.create_repository(repo_dir_pathname)
+        self.assertIsInstance(repo, repositories.MavenRepository)
+
+    def test_create_repository__gradle_repository__creates_correctly(self):
+        repo_dir_pathname = os.path.join('integration_tests',
+            'resources', 'repositories', 'gradle', 'guess-the-number')
+        repo = repositories.create_repository(repo_dir_pathname)
+        self.assertIsInstance(repo, repositories.GradleRepository)
+
+    def test_create_repository__unsupported_repo_type__creates_correctly(self):
+        with (tempfile.TemporaryDirectory() as dir,
+            self.assertRaises(ValueError)):
+            repositories.create_repository(dir)
