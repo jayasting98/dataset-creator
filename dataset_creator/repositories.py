@@ -65,3 +65,20 @@ class MavenRepository(Repository):
         completed_process.check_returncode()
         test_classpath = completed_process.stdout
         return test_classpath
+
+
+class GradleRepository(Repository):
+    def __init__(self: Self, root_dir_pathname: str) -> None:
+        self._root_dir_pathname = root_dir_pathname
+
+    def compile(self: Self) -> None:
+        return super().compile()
+
+    def find_jar_pathnames(self: Self) -> list[str]:
+        return super().find_jar_pathnames()
+
+    def find_focal_classpath(self: Self) -> str:
+        return super().find_focal_classpath()
+
+    def find_test_classpath(self: Self) -> str:
+        return super().find_test_classpath()
