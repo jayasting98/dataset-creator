@@ -10,10 +10,10 @@ import com.jayasting98.codecovserver.utilities.CoverageAnalyzer;
 @Service
 class JacocoCoverageService implements CoverageService {
     @Override
-    public Coverage createCoverage(Collection<String> jarPathnames, String focalClasspath,
+    public Coverage createCoverage(Collection<String> classpathPathnames, String focalClasspath,
         String testClasspath, String focalClassName, String testClassName, String testMethodName)
         throws Exception {
-        CoverageAnalyzer analyzer = new CoverageAnalyzer(jarPathnames, focalClasspath,
+        CoverageAnalyzer analyzer = new CoverageAnalyzer(classpathPathnames, focalClasspath,
             testClasspath, focalClassName, testClassName, testMethodName);
         List<Integer> coveredLineNumbers = analyzer.findCoveredLineNumbers();
         Coverage coverage = new Coverage(coveredLineNumbers);

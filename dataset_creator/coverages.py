@@ -6,7 +6,7 @@ import requests
 
 
 class CreateCoverageRequestData(TypedDict):
-    jarPathnames: list[str]
+    classpathPathnames: list[str]
     focalClasspath: str
     testClasspath: str
     focalClassName: str

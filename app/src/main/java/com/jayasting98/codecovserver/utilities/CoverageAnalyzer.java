@@ -31,16 +31,16 @@ import org.jacoco.core.runtime.LoggerRuntime;
 import org.jacoco.core.runtime.RuntimeData;
 
 public class CoverageAnalyzer {
-    private List<String> jarPathnames;
+    private List<String> classpathPathnames;
     private String focalClasspath;
     private String testClasspath;
     private String focalClassName;
     private String testClassName;
     private String testMethodName;
 
-    public CoverageAnalyzer(Collection<String> jarPathnames, String focalClasspath,
+    public CoverageAnalyzer(Collection<String> classpathPathnames, String focalClasspath,
         String testClasspath, String focalClassName, String testClassName, String testMethodName) {
-        this.jarPathnames = new ArrayList<>(jarPathnames);
+        this.classpathPathnames = new ArrayList<>(classpathPathnames);
         this.focalClasspath = focalClasspath;
         this.testClasspath = testClasspath;
         this.focalClassName = focalClassName;
@@ -58,7 +58,7 @@ public class CoverageAnalyzer {
         }
         RuntimeData runtimeData = new RuntimeData();
         runtime.startup(runtimeData);
-        URL[] urls = generateUrls(jarPathnames, focalClasspath, testClasspath);
+        URL[] urls = generateUrls(classpathPathnames, focalClasspath, testClasspath);
         Class<?> testClass;
         try (MemoryClassLoader classLoader = new MemoryClassLoader(urls)) {
             classLoader.put(focalClassName, instrumentedDefinition);
@@ -100,10 +100,10 @@ public class CoverageAnalyzer {
         return classDefinition;
     }
 
-    URL[] generateUrls(Collection<String> jarPathnames,
+    URL[] generateUrls(Collection<String> classpathPathnames,
         String focalClasspath, String testClasspath) throws MalformedURLException {
         Set<String> urlStrings = new HashSet<>();
-        urlStrings.addAll(jarPathnames);
+        urlStrings.addAll(classpathPathnames);
         urlStrings.add(focalClasspath);
         urlStrings.add(testClasspath);
         Set<URL> uniqueUrls = new HashSet<>();

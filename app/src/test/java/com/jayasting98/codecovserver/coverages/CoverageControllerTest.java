@@ -30,13 +30,13 @@ public class CoverageControllerTest {
             + File.separator + "integration_tests/resources/repositories/maven/guess-the-number/";
         String junitJarPathname = Paths.get(System.getProperty("user.home"),
             ".m2/repository/junit/junit/4.11/junit-4.11.jar").toString();
-        List<String> jarPathnames = Arrays.asList(junitJarPathname);
+        List<String> classpathPathnames = Arrays.asList(junitJarPathname);
         String focalClasspath = repositoryDirPathname + "target/classes/";
         String testClasspath = repositoryDirPathname + "target/test-classes/";
         String focalClassName = "com.example.guessthenumber.ui.CommandLineUi";
         String testClassName = "com.example.guessthenumber.ui.CommandLineUiTest";
         String testMethodName = "testParseGuess";
-        CreateCoverageRequestData requestData = new CreateCoverageRequestData(jarPathnames,
+        CreateCoverageRequestData requestData = new CreateCoverageRequestData(classpathPathnames,
             focalClasspath, testClasspath, focalClassName, testClassName, testMethodName);
         ObjectMapper mapper = new ObjectMapper();
         String requestDataJsonString = mapper.writeValueAsString(requestData);
