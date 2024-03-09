@@ -10,7 +10,7 @@ class CodeCovApiTest(unittest.TestCase):
         expected_response = mock.MagicMock()
         def do_side_effect(path, json=None):
             if path != 'http://localhost:8080/coverages':
-                self.fail(msg=path)
+                self.fail()
             if json is None:
                 self.fail()
             if not isinstance(json, dict):
