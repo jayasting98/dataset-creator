@@ -29,15 +29,15 @@ class MavenRepository(Repository):
         self._root_dir_pathname = root_dir_pathname
 
     def compile(self: Self) -> None:
+        args = ['mvn', 'clean', 'test-compile']
         with utilities.WorkingDirectory(self._root_dir_pathname):
-            completed_process = subprocess.run(
-                ['mvn', 'clean', 'test-compile'], stdout=subprocess.DEVNULL)
+            completed_process = subprocess.run(args, stdout=subprocess.DEVNULL)
         completed_process.check_returncode()
 
     def find_jar_pathnames(self: Self) -> list[str]:
+        args = ['mvn', 'dependency:build-classpath',
+            '-Dmdep.outputFile=/dev/stdout', '-q']
         with utilities.WorkingDirectory(self._root_dir_pathname):
-            args = ['mvn', 'dependency:build-classpath',
-                '-Dmdep.outputFile=/dev/stdout', '-q']
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
@@ -46,10 +46,9 @@ class MavenRepository(Repository):
         return jar_pathnames
 
     def find_focal_classpath(self: Self) -> str:
+        args = ['mvn', 'help:evaluate',
+            '-Dexpression=project.build.outputDirectory', '-q', '-DforceStdout']
         with utilities.WorkingDirectory(self._root_dir_pathname):
-            args = ['mvn', 'help:evaluate',
-                '-Dexpression=project.build.outputDirectory', '-q',
-                '-DforceStdout']
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
