@@ -58,7 +58,7 @@ public class CoverageAnalyzer {
         }
         RuntimeData runtimeData = new RuntimeData();
         runtime.startup(runtimeData);
-        URL[] urls = generateUrls(classpathPathnames, focalClasspath, testClasspath);
+        URL[] urls = generateUrls(classpathPathnames);
         Class<?> testClass;
         try (MemoryClassLoader classLoader = new MemoryClassLoader(urls)) {
             classLoader.put(focalClassName, instrumentedDefinition);
@@ -100,12 +100,8 @@ public class CoverageAnalyzer {
         return classDefinition;
     }
 
-    URL[] generateUrls(Collection<String> classpathPathnames,
-        String focalClasspath, String testClasspath) throws MalformedURLException {
-        Set<String> urlStrings = new HashSet<>();
-        urlStrings.addAll(classpathPathnames);
-        urlStrings.add(focalClasspath);
-        urlStrings.add(testClasspath);
+    URL[] generateUrls(Collection<String> classpathPathnames) throws MalformedURLException {
+        Set<String> urlStrings = new HashSet<>(classpathPathnames);
         Set<URL> uniqueUrls = new HashSet<>();
         for (String urlString : urlStrings) {
             URL url = new File(urlString).toURI().toURL();

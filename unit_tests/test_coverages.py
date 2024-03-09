@@ -32,7 +32,13 @@ class CodeCovApiTest(unittest.TestCase):
         session.post.side_effect = do_side_effect
         base_url = 'http://localhost:8080'
         code_cov_api = coverages.CodeCovApi(session, base_url)
+        focal_classpath = ('integration_tests/resources/repositories/maven/'
+            + 'guess-the-number/target/classes/')
+        test_classpath = ('integration_tests/resources/repositories/maven/'
+            + 'guess-the-number/target/test-classes/')
         classpath_pathnames = [
+            focal_classpath,
+            test_classpath,
             '~/.m2/repository/junit/junit/4.11/junit-4.11.jar',
             '~/.m2/repository/org/mockito/mockito-core/3.12.4/'
                 + 'mockito-core-3.12.4.jar',
@@ -44,10 +50,6 @@ class CodeCovApiTest(unittest.TestCase):
                 + 'byte-buddy-agent-1.11.13.jar',
             '~/.m2/repository/org/objenesis/objenesis/3.2/objenesis-3.2.jar',
         ]
-        focal_classpath = ('integration_tests/resources/repositories/maven/'
-            + 'guess-the-number/target/classes/')
-        test_classpath = ('integration_tests/resources/repositories/maven/'
-            + 'guess-the-number/target/test-classes/')
         focal_class_name = 'com.example.guessthenumber.ui.CommandLineUi'
         test_class_name = 'com.example.guessthenumber.ui.CommandLineUiTest'
         test_method_name = 'testRun_ioExceptionThrown_exitsGracefully'

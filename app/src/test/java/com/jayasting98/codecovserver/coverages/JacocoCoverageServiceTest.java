@@ -22,9 +22,9 @@ public class JacocoCoverageServiceTest {
     public void testCreateCoverage_typicalCase_createsCorrectly() throws Exception {
         String repositoryDirPathname = Paths.get("").toAbsolutePath().getParent().toString()
             + File.separator + "integration_tests/resources/repositories/maven/guess-the-number/";
-        Collection<String> classpathPathnames = Arrays.asList();
         String focalClasspath = repositoryDirPathname + "target/classes/";
         String testClasspath = repositoryDirPathname + "target/test-classes/";
+        Collection<String> classpathPathnames = Arrays.asList(focalClasspath, testClasspath);
         String focalClassName = "com.example.guessthenumber.ui.CommandLineUi";
         String testClassName = "com.example.guessthenumber.ui.CommandLineUiTest";
         String testMethodName = "testHandleState_overestimate_informsUser";
