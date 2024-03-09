@@ -26,20 +26,21 @@ class MavenRepositoryTest(unittest.TestCase):
                 repo.compile()
 
     def test_find_jar_pathnames__typical_case__finds_jar_pathnames(self):
+        maven_dir_pathname = (
+            os.path.join(self._home_dir_pathname, '.m2', 'repository'))
         expected_jar_pathnames = [
-            os.path.join(self._home_dir_pathname, '.m2', 'repository', 'junit',
-                'junit', '4.11', 'junit-4.11.jar'),
-            os.path.join(self._home_dir_pathname, '.m2', 'repository', 'org',
-                'hamcrest', 'hamcrest-core', '1.3', 'hamcrest-core-1.3.jar'),
-            os.path.join(self._home_dir_pathname, '.m2', 'repository', 'org',
-                'mockito', 'mockito-core', '3.12.4', 'mockito-core-3.12.4.jar'),
-            os.path.join(self._home_dir_pathname, '.m2', 'repository', 'net',
-                'bytebuddy', 'byte-buddy', '1.11.13', 'byte-buddy-1.11.13.jar'),
-            os.path.join(self._home_dir_pathname, '.m2', 'repository', 'net',
-                'bytebuddy', 'byte-buddy-agent', '1.11.13',
-                'byte-buddy-agent-1.11.13.jar'),
-            os.path.join(self._home_dir_pathname, '.m2', 'repository', 'org',
-                'objenesis', 'objenesis', '3.2', 'objenesis-3.2.jar'),
+            os.path.join(maven_dir_pathname, 'junit', 'junit', '4.11',
+                'junit-4.11.jar'),
+            os.path.join(maven_dir_pathname, 'org', 'hamcrest', 'hamcrest-core',
+                '1.3', 'hamcrest-core-1.3.jar'),
+            os.path.join(maven_dir_pathname, 'org', 'mockito', 'mockito-core',
+                '3.12.4', 'mockito-core-3.12.4.jar'),
+            os.path.join(maven_dir_pathname, 'net', 'bytebuddy', 'byte-buddy',
+                '1.11.13', 'byte-buddy-1.11.13.jar'),
+            os.path.join(maven_dir_pathname, 'net', 'bytebuddy',
+                'byte-buddy-agent', '1.11.13', 'byte-buddy-agent-1.11.13.jar'),
+            os.path.join(maven_dir_pathname, 'org', 'objenesis', 'objenesis',
+                '3.2', 'objenesis-3.2.jar'),
         ]
         actual_jar_pathnames = self._repo.find_jar_pathnames()
         self.assertCountEqual(expected_jar_pathnames, actual_jar_pathnames)
@@ -78,29 +79,26 @@ class GradleRepositoryTest(unittest.TestCase):
                 repo.compile()
 
     def test_find_jar_pathnames__typical_case__finds_correctly(self):
+        gradle_dir_pathname = os.path.join(self._home_dir_pathname, '.gradle',
+            'caches', 'modules-2', 'files-2.1')
         expected_jar_pathnames = [
-            os.path.join(self._home_dir_pathname, '.gradle', 'caches',
-                'modules-2', 'files-2.1', 'junit', 'junit', '4.11',
+            os.path.join(gradle_dir_pathname, 'junit', 'junit', '4.11',
                 '4e031bb61df09069aeb2bffb4019e7a5034a4ee0', 'junit-4.11.jar'),
-            os.path.join(self._home_dir_pathname, '.gradle', 'caches',
-                'modules-2', 'files-2.1', 'org.hamcrest', 'hamcrest-core',
+            os.path.join(gradle_dir_pathname, 'org.hamcrest', 'hamcrest-core',
                 '1.3', '42a25dc3219429f0e5d060061f71acb49bf010a0',
                 'hamcrest-core-1.3.jar'),
-            os.path.join(self._home_dir_pathname, '.gradle', 'caches',
-                'modules-2', 'files-2.1', 'org.mockito', 'mockito-core',
+            os.path.join(gradle_dir_pathname, 'org.mockito', 'mockito-core',
                 '3.12.4', 'f9cdc14ea4a3573c0c0366d47d5ca960be24ddb6',
                 'mockito-core-3.12.4.jar'),
-            os.path.join(self._home_dir_pathname, '.gradle', 'caches',
-                'modules-2', 'files-2.1', 'net.bytebuddy', 'byte-buddy',
+            os.path.join(gradle_dir_pathname, 'net.bytebuddy', 'byte-buddy',
                 '1.11.13', 'a85d4d74de5ce7a4dd5cbbd337ced6af2740acd',
                 'byte-buddy-1.11.13.jar'),
-            os.path.join(self._home_dir_pathname, '.gradle', 'caches',
-                'modules-2', 'files-2.1', 'net.bytebuddy', 'byte-buddy-agent',
-                '1.11.13', '8c7aaa0ef9863fa89a711bfc5d8e2e0affa0d67f',
+            os.path.join(gradle_dir_pathname, 'net.bytebuddy',
+                'byte-buddy-agent', '1.11.13',
+                '8c7aaa0ef9863fa89a711bfc5d8e2e0affa0d67f',
                 'byte-buddy-agent-1.11.13.jar'),
-            os.path.join(self._home_dir_pathname, '.gradle', 'caches',
-                'modules-2', 'files-2.1', 'org.objenesis', 'objenesis', '3.2',
-                '7fadf57620c8b8abdf7519533e5527367cb51f09',
+            os.path.join(gradle_dir_pathname, 'org.objenesis', 'objenesis',
+                '3.2', '7fadf57620c8b8abdf7519533e5527367cb51f09',
                 'objenesis-3.2.jar'),
         ]
         actual_jar_pathnames = self._repo.find_jar_pathnames()
