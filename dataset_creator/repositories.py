@@ -46,7 +46,15 @@ class MavenRepository(Repository):
         completed_process.check_returncode()
 
     def get_jar_pathnames(self: Self) -> list[str]:
-        return super().get_jar_pathnames()
+        with utilities.WorkingDirectory(self._root_dir_pathname):
+            args = ['mvn', 'dependency:build-classpath',
+                '-Dmdep.outputFile=/dev/stdout', '-q']
+            completed_process = (
+                subprocess.run(args, capture_output=True, text=True))
+        completed_process.check_returncode()
+        output = completed_process.stdout
+        jar_pathnames = output.split(':')
+        return jar_pathnames
 
     def get_focal_classpath(self: Self) -> str:
         return super().get_focal_classpath()
