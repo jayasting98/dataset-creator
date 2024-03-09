@@ -67,9 +67,15 @@ class MavenRepository(Repository):
         return test_classpath
 
 
+_gradle_init_script_pathname = (
+    os.path.join(os.getcwd(), 'scripts', 'init.gradle.kts'))
+
+
 class GradleRepository(Repository):
     def __init__(self: Self, root_dir_pathname: str) -> None:
         self._root_dir_pathname = root_dir_pathname
+        self._init_script_rel_pathname = (os.path
+            .relpath(_gradle_init_script_pathname, self._root_dir_pathname))
 
     def compile(self: Self) -> None:
         args = ['gradle', 'clean', 'testClasses']
@@ -79,10 +85,38 @@ class GradleRepository(Repository):
         completed_process.check_returncode()
 
     def find_jar_pathnames(self: Self) -> list[str]:
-        return super().find_jar_pathnames()
+        project_name = self._find_project_name()
+        args = ['gradle', '-q', '--init-script', self._init_script_rel_pathname,
+            f'{project_name}:buildTestRuntimeClasspath']
+        with utilities.WorkingDirectory(self._root_dir_pathname):
+            completed_process = (
+                subprocess.run(args, capture_output=True, text=True))
+        completed_process.check_returncode()
+        output = completed_process.stdout
+        line = output.split(os.linesep)[0]
+        classpath_pathnames = line.split(os.pathsep)
+        jar_pathnames = [pathname
+            for pathname in classpath_pathnames if pathname.endswith('.jar')]
+        return jar_pathnames
 
     def find_focal_classpath(self: Self) -> str:
         return super().find_focal_classpath()
 
     def find_test_classpath(self: Self) -> str:
         return super().find_test_classpath()
+
+    def _find_project_name(self: Self) -> str:
+        try:
+            return self._project_name
+        except AttributeError:
+            args = ['gradle', '-q',
+                '--init-script', self._init_script_rel_pathname,
+                ':listSubprojects']
+            with utilities.WorkingDirectory(self._root_dir_pathname):
+                completed_process = (
+                    subprocess.run(args, capture_output=True, text=True))
+            completed_process.check_returncode()
+            output = completed_process.stdout
+            project_names = output.split(os.linesep)
+            self._project_name = project_names[0]
+            return self._project_name
