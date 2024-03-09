@@ -27,7 +27,7 @@ public class CoverageControllerTest {
     @Test
     public void testCreateCoverage_typicalCase_createsCorrectly() throws Exception {
         String repositoryDirPathname = Paths.get("").toAbsolutePath().getParent().toString()
-            + File.separator + "integration_tests/resources/repositories/guess-the-number/";
+            + File.separator + "integration_tests/resources/repositories/maven/guess-the-number/";
         String junitJarPathname = Paths.get(System.getProperty("user.home"),
             ".m2/repository/junit/junit/4.11/junit-4.11.jar").toString();
         List<String> jarPathnames = Arrays.asList(junitJarPathname);

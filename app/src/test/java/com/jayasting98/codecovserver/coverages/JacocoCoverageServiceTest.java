@@ -21,7 +21,7 @@ public class JacocoCoverageServiceTest {
     @Test
     public void testCreateCoverage_typicalCase_createsCorrectly() throws Exception {
         String repositoryDirPathname = Paths.get("").toAbsolutePath().getParent().toString()
-            + File.separator + "integration_tests/resources/repositories/guess-the-number/";
+            + File.separator + "integration_tests/resources/repositories/maven/guess-the-number/";
         Collection<String> jarPathnames = Arrays.asList();
         String focalClasspath = repositoryDirPathname + "target/classes/";
         String testClasspath = repositoryDirPathname + "target/test-classes/";

@@ -11,13 +11,13 @@ class CodeParserTest(unittest.TestCase):
         language = 'java'
         self._parser = code_parsers.CodeParser(grammar_file_pathname, language)
         repo_dir_pathname = os.path.join('integration_tests', 'resources',
-            'repositories', 'guess-the-number')
+            'repositories', 'maven', 'guess-the-number')
         self._focal_dir_pathname = os.path.join(repo_dir_pathname, 'src',
             'main', 'java', 'com', 'example', 'guessthenumber')
         self._test_dir_pathname = os.path.join(repo_dir_pathname, 'src',
             'test', 'java', 'com', 'example', 'guessthenumber')
         output_dir_pathname = os.path.join('integration_tests', 'resources',
-            'expected_parser_outputs', 'guess-the-number')
+            'expected_parser_outputs', 'maven', 'guess-the-number')
         self._focal_output_dir_pathname = os.path.join(output_dir_pathname,
             'src', 'main', 'java', 'com', 'example', 'guessthenumber')
         self._test_output_dir_pathname = os.path.join(output_dir_pathname,

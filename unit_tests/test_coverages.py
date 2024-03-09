@@ -43,9 +43,9 @@ class CodeCovApiTest(unittest.TestCase):
                 + 'byte-buddy-agent-1.11.13.jar',
             '~/.m2/repository/org/objenesis/objenesis/3.2/objenesis-3.2.jar',
         ]
-        focal_classpath = ('integration_tests/resources/repositories/'
+        focal_classpath = ('integration_tests/resources/repositories/maven/'
             + 'guess-the-number/target/classes/')
-        test_classpath = ('integration_tests/resources/repositories/'
+        test_classpath = ('integration_tests/resources/repositories/maven/'
             + 'guess-the-number/target/test-classes/')
         focal_class_name = 'com.example.guessthenumber.ui.CommandLineUi'
         test_class_name = 'com.example.guessthenumber.ui.CommandLineUiTest'

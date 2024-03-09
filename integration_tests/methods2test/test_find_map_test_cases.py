@@ -8,7 +8,7 @@ from dataset_creator.methods2test import find_map_test_cases
 class FindMapTestCasesTest(unittest.TestCase):
     def setUp(self) -> None:
         self._root = os.path.join('integration_tests', 'resources',
-            'repositories', 'guess-the-number')
+            'repositories', 'maven', 'guess-the-number')
         self._focal_dir = os.path.join('src', 'main', 'java', 'com', 'example',
             'guessthenumber')
         self._test_dir = os.path.join('src', 'test', 'java', 'com', 'example',
@@ -54,7 +54,8 @@ class FindMapTestCasesTest(unittest.TestCase):
             self._command_line_ui_test_file,
         ]
         self._output_dir_pathname = os.path.join('integration_tests',
-            'resources', 'expected_focal_method_samples', 'guess-the-number')
+            'resources', 'expected_focal_method_samples', 'maven',
+            'guess-the-number')
 
     def test_find_test_files__typical_case__finds_correctly(self):
         expected_test_files = self._test_files

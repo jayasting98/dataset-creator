@@ -10,7 +10,7 @@ from dataset_creator import repositories
 class MavenRepositoryTest(unittest.TestCase):
     def setUp(self) -> None:
         self._repo_dir_pathname = os.path.join('integration_tests',
-            'resources', 'repositories', 'guess-the-number')
+            'resources', 'repositories', 'maven', 'guess-the-number')
         self._repo = repositories.MavenRepository(self._repo_dir_pathname)
         self._home_dir_pathname = str(pathlib.Path.home())
 
@@ -46,14 +46,14 @@ class MavenRepositoryTest(unittest.TestCase):
 
     def test_find_focal_classpath__typical_case__finds_correctly(self):
         expected_focal_classpath = os.path.join(os.getcwd(),
-            'integration_tests', 'resources', 'repositories',
+            'integration_tests', 'resources', 'repositories', 'maven',
             'guess-the-number', 'target', 'classes')
         actual_focal_classpath = self._repo.find_focal_classpath()
         self.assertEqual(expected_focal_classpath, actual_focal_classpath)
 
     def test_find_test_classpath__typical_case__finds_correctly(self):
         expected_test_classpath = os.path.join(os.getcwd(),
-            'integration_tests', 'resources', 'repositories',
+            'integration_tests', 'resources', 'repositories', 'maven',
             'guess-the-number', 'target', 'test-classes')
         actual_test_classpath = self._repo.find_test_classpath()
         self.assertEqual(expected_test_classpath, actual_test_classpath)
