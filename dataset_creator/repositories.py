@@ -72,7 +72,11 @@ class GradleRepository(Repository):
         self._root_dir_pathname = root_dir_pathname
 
     def compile(self: Self) -> None:
-        return super().compile()
+        args = ['gradle', 'clean', 'testClasses']
+        with utilities.WorkingDirectory(self._root_dir_pathname):
+            completed_process = subprocess.run(
+                args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        completed_process.check_returncode()
 
     def find_jar_pathnames(self: Self) -> list[str]:
         return super().find_jar_pathnames()

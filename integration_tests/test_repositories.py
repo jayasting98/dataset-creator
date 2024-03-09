@@ -57,3 +57,22 @@ class MavenRepositoryTest(unittest.TestCase):
             'guess-the-number', 'target', 'test-classes')
         actual_test_classpath = self._repo.find_test_classpath()
         self.assertEqual(expected_test_classpath, actual_test_classpath)
+
+
+class GradleRepositoryTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self._repo_dir_pathname = os.path.join('integration_tests',
+            'resources', 'repositories', 'gradle', 'guess-the-number')
+        self._repo = repositories.GradleRepository(self._repo_dir_pathname)
+        self._home_dir_pathname = str(pathlib.Path.home())
+
+    def test_compile__typical_case__compiles(self):
+        self._repo.compile()
+        build_dir = os.path.join(self._repo_dir_pathname, 'app', 'build')
+        self.assertTrue(os.path.isdir(build_dir))
+
+    def test_compile__fails__raises_error(self):
+        with tempfile.TemporaryDirectory() as dir:
+            repo = repositories.GradleRepository(dir)
+            with self.assertRaises(subprocess.CalledProcessError):
+                repo.compile()
