@@ -116,7 +116,20 @@ class GradleRepository(Repository):
         return focal_classpath
 
     def find_test_classpath(self: Self) -> str:
-        return super().find_test_classpath()
+        project_name = self._find_project_name()
+        args = ['gradle', '-q', '--init-script', self._init_script_rel_pathname,
+            f'{project_name}:buildTestRuntimeClasspath']
+        with utilities.WorkingDirectory(self._root_dir_pathname):
+            completed_process = (
+                subprocess.run(args, capture_output=True, text=True))
+        completed_process.check_returncode()
+        output = completed_process.stdout
+        line = output.split(os.linesep)[0]
+        classpath_pathnames = line.split(os.pathsep)
+        candidates = [pathname for pathname in classpath_pathnames
+            if 'test' in pathname and 'classes' in pathname]
+        test_classpath = candidates[0]
+        return test_classpath
 
     def _find_project_name(self: Self) -> str:
         try:
