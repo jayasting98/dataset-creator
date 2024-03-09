@@ -23,18 +23,6 @@ class Repository(abc.ABC):
     def find_test_classpath(self: Self) -> str:
         raise NotImplementedError()
 
-    @abc.abstractmethod
-    def find_focal_class_name(self: Self) -> str:
-        raise NotImplementedError()
-
-    @abc.abstractmethod
-    def find_test_class_name(self: Self) -> str:
-        raise NotImplementedError()
-
-    @abc.abstractmethod
-    def find_test_method_name(self: Self) -> str:
-        raise NotImplementedError()
-
 
 class MavenRepository(Repository):
     def __init__(self: Self, root_dir_pathname: str) -> None:
@@ -78,12 +66,3 @@ class MavenRepository(Repository):
         completed_process.check_returncode()
         test_classpath = completed_process.stdout
         return test_classpath
-
-    def find_focal_class_name(self: Self) -> str:
-        return super().find_focal_class_name()
-
-    def find_test_class_name(self: Self) -> str:
-        return super().find_test_class_name()
-
-    def find_test_method_name(self: Self) -> str:
-        return super().find_test_method_name()
