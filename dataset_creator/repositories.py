@@ -69,7 +69,15 @@ class MavenRepository(Repository):
         return focal_classpath
 
     def find_test_classpath(self: Self) -> str:
-        return super().find_test_classpath()
+        args = ['mvn', 'help:evaluate',
+            '-Dexpression=project.build.testOutputDirectory', '-q',
+            '-DforceStdout']
+        with utilities.WorkingDirectory(self._root_dir_pathname):
+            completed_process = (
+                subprocess.run(args, capture_output=True, text=True))
+        completed_process.check_returncode()
+        test_classpath = completed_process.stdout
+        return test_classpath
 
     def find_focal_class_name(self: Self) -> str:
         return super().find_focal_class_name()
