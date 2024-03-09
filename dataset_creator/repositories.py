@@ -41,7 +41,7 @@ class MavenRepository(Repository):
 
     def compile(self: Self) -> None:
         with utilities.WorkingDirectory(self._root_dir_pathname):
-	        completed_process = subprocess.run(
+            completed_process = subprocess.run(
                 ['mvn', 'clean', 'test-compile'], stdout=subprocess.DEVNULL)
         completed_process.check_returncode()
 
