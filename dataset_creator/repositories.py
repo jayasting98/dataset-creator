@@ -11,27 +11,27 @@ class Repository(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_jar_pathnames(self: Self) -> list[str]:
+    def find_jar_pathnames(self: Self) -> list[str]:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_focal_classpath(self: Self) -> str:
+    def find_focal_classpath(self: Self) -> str:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_test_classpath(self: Self) -> str:
+    def find_test_classpath(self: Self) -> str:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_focal_class_name(self: Self) -> str:
+    def find_focal_class_name(self: Self) -> str:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_test_class_name(self: Self) -> str:
+    def find_test_class_name(self: Self) -> str:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_test_method_name(self: Self) -> str:
+    def find_test_method_name(self: Self) -> str:
         raise NotImplementedError()
 
 
@@ -45,7 +45,7 @@ class MavenRepository(Repository):
                 ['mvn', 'clean', 'test-compile'], stdout=subprocess.DEVNULL)
         completed_process.check_returncode()
 
-    def get_jar_pathnames(self: Self) -> list[str]:
+    def find_jar_pathnames(self: Self) -> list[str]:
         with utilities.WorkingDirectory(self._root_dir_pathname):
             args = ['mvn', 'dependency:build-classpath',
                 '-Dmdep.outputFile=/dev/stdout', '-q']
@@ -56,17 +56,17 @@ class MavenRepository(Repository):
         jar_pathnames = output.split(':')
         return jar_pathnames
 
-    def get_focal_classpath(self: Self) -> str:
-        return super().get_focal_classpath()
+    def find_focal_classpath(self: Self) -> str:
+        return super().find_focal_classpath()
 
-    def get_test_classpath(self: Self) -> str:
-        return super().get_test_classpath()
+    def find_test_classpath(self: Self) -> str:
+        return super().find_test_classpath()
 
-    def get_focal_class_name(self: Self) -> str:
-        return super().get_focal_class_name()
+    def find_focal_class_name(self: Self) -> str:
+        return super().find_focal_class_name()
 
-    def get_test_class_name(self: Self) -> str:
-        return super().get_test_class_name()
+    def find_test_class_name(self: Self) -> str:
+        return super().find_test_class_name()
 
-    def get_test_method_name(self: Self) -> str:
-        return super().get_test_method_name()
+    def find_test_method_name(self: Self) -> str:
+        return super().find_test_method_name()

@@ -25,7 +25,7 @@ class MavenRepositoryTest(unittest.TestCase):
             with self.assertRaises(subprocess.CalledProcessError):
                 repo.compile()
 
-    def test_get_jar_pathnames__typical_case__gets_jar_pathnames(self):
+    def test_find_jar_pathnames__typical_case__finds_jar_pathnames(self):
         expected_jar_pathnames = [
             os.path.join(self._home_dir_pathname, '.m2', 'repository', 'junit',
                 'junit', '4.11', 'junit-4.11.jar'),
@@ -41,5 +41,5 @@ class MavenRepositoryTest(unittest.TestCase):
             os.path.join(self._home_dir_pathname, '.m2', 'repository', 'org',
                 'objenesis', 'objenesis', '3.2', 'objenesis-3.2.jar'),
         ]
-        actual_jar_pathnames = self._repo.get_jar_pathnames()
+        actual_jar_pathnames = self._repo.find_jar_pathnames()
         self.assertCountEqual(expected_jar_pathnames, actual_jar_pathnames)
