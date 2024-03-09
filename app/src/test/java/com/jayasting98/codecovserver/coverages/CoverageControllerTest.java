@@ -38,7 +38,7 @@ public class CoverageControllerTest {
         String testClassName = "com.example.guessthenumber.ui.CommandLineUiTest";
         String testMethodName = "testParseGuess";
         CreateCoverageRequestData requestData = new CreateCoverageRequestData(classpathPathnames,
-            focalClasspath, testClasspath, focalClassName, testClassName, testMethodName);
+            focalClasspath, focalClassName, testClassName, testMethodName);
         ObjectMapper mapper = new ObjectMapper();
         String requestDataJsonString = mapper.writeValueAsString(requestData);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/coverages")

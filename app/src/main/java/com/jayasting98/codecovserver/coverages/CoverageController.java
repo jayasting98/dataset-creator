@@ -16,9 +16,8 @@ class CoverageController {
     @ResponseStatus(HttpStatus.CREATED)
     Coverage createCoverage(@RequestBody CreateCoverageRequestData requestData) throws Exception {
         Coverage coverage = coverageService.createCoverage(requestData.getClasspathPathnames(),
-            requestData.getFocalClasspath(), requestData.getTestClasspath(),
-            requestData.getFocalClassName(), requestData.getTestClassName(),
-            requestData.getTestMethodName());
+            requestData.getFocalClasspath(), requestData.getFocalClassName(),
+            requestData.getTestClassName(), requestData.getTestMethodName());
         return coverage;
     }
 }

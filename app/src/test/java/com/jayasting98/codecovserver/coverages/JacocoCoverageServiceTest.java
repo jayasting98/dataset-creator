@@ -29,7 +29,7 @@ public class JacocoCoverageServiceTest {
         String testClassName = "com.example.guessthenumber.ui.CommandLineUiTest";
         String testMethodName = "testHandleState_overestimate_informsUser";
         Coverage coverage = coverageService.createCoverage(classpathPathnames, focalClasspath,
-            testClasspath, focalClassName, testClassName, testMethodName);
+            focalClassName, testClassName, testMethodName);
         List<Integer> expectedCoveredLineNumbers = new ArrayList<>();
         expectedCoveredLineNumbers.add(24);
         expectedCoveredLineNumbers.add(25);

@@ -8,7 +8,6 @@ import requests
 class CreateCoverageRequestData(TypedDict):
     classpathPathnames: list[str]
     focalClasspath: str
-    testClasspath: str
     focalClassName: str
     testClassName: str
     testMethodName: str

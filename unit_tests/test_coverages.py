@@ -20,8 +20,6 @@ class CodeCovApiTest(unittest.TestCase):
                 self.fail()
             if 'focalClasspath' not in json or json['focalClasspath'] is None:
                 self.fail()
-            if 'testClasspath' not in json or json['testClasspath'] is None:
-                self.fail()
             if 'focalClassName' not in json or json['focalClassName'] is None:
                 self.fail()
             if 'testClassName' not in json or json['testClassName'] is None:
@@ -55,8 +53,7 @@ class CodeCovApiTest(unittest.TestCase):
         test_method_name = 'testRun_ioExceptionThrown_exitsGracefully'
         request_data = coverages.CreateCoverageRequestData(
             classpathPathnames=classpath_pathnames,
-            focalClasspath=focal_classpath, testClasspath=test_classpath,
-            focalClassName=focal_class_name, testClassName=test_class_name,
-            testMethodName=test_method_name)
+            focalClasspath=focal_classpath, focalClassName=focal_class_name,
+            testClassName=test_class_name, testMethodName=test_method_name)
         actual_response = code_cov_api.create_coverage(request_data)
         self.assertIs(expected_response, actual_response)

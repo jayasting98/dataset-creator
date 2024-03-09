@@ -11,10 +11,9 @@ import com.jayasting98.codecovserver.utilities.CoverageAnalyzer;
 class JacocoCoverageService implements CoverageService {
     @Override
     public Coverage createCoverage(Collection<String> classpathPathnames, String focalClasspath,
-        String testClasspath, String focalClassName, String testClassName, String testMethodName)
-        throws Exception {
+        String focalClassName, String testClassName, String testMethodName) throws Exception {
         CoverageAnalyzer analyzer = new CoverageAnalyzer(classpathPathnames, focalClasspath,
-            testClasspath, focalClassName, testClassName, testMethodName);
+            focalClassName, testClassName, testMethodName);
         List<Integer> coveredLineNumbers = analyzer.findCoveredLineNumbers();
         Coverage coverage = new Coverage(coveredLineNumbers);
         return coverage;

@@ -33,16 +33,14 @@ import org.jacoco.core.runtime.RuntimeData;
 public class CoverageAnalyzer {
     private List<String> classpathPathnames;
     private String focalClasspath;
-    private String testClasspath;
     private String focalClassName;
     private String testClassName;
     private String testMethodName;
 
     public CoverageAnalyzer(Collection<String> classpathPathnames, String focalClasspath,
-        String testClasspath, String focalClassName, String testClassName, String testMethodName) {
+        String focalClassName, String testClassName, String testMethodName) {
         this.classpathPathnames = new ArrayList<>(classpathPathnames);
         this.focalClasspath = focalClasspath;
-        this.testClasspath = testClasspath;
         this.focalClassName = focalClassName;
         this.testClassName = testClassName;
         this.testMethodName = testMethodName;

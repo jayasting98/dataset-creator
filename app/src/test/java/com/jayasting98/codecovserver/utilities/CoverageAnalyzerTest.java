@@ -23,7 +23,7 @@ public class CoverageAnalyzerTest {
         String testClassName = "com.example.guessthenumber.ui.CommandLineUiTest";
         String testMethodName = "testHandleEnd_correctGuess_informsUserOfWin";
         CoverageAnalyzer analyzer = new CoverageAnalyzer(classpathPathnames, focalClasspath,
-            testClasspath, focalClassName, testClassName, testMethodName);
+            focalClassName, testClassName, testMethodName);
         List<Integer> expectedCoveredLineNumbers = new ArrayList<>();
         expectedCoveredLineNumbers.add(24);
         expectedCoveredLineNumbers.add(25);
