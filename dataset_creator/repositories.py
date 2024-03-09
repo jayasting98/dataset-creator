@@ -42,7 +42,7 @@ class MavenRepository(Repository):
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
         output = completed_process.stdout
-        jar_pathnames = output.split(':')
+        jar_pathnames = output.split(os.pathsep)
         return jar_pathnames
 
     def find_focal_classpath(self: Self) -> str:
