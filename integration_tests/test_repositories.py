@@ -25,7 +25,7 @@ class MavenRepositoryTest(unittest.TestCase):
             with self.assertRaises(subprocess.CalledProcessError):
                 repo.compile()
 
-    def test_find_jar_pathnames__typical_case__finds_jar_pathnames(self):
+    def test_find_jar_pathnames__typical_case__finds_correctly(self):
         maven_dir_pathname = (
             os.path.join(self._home_dir_pathname, '.m2', 'repository'))
         expected_jar_pathnames = [
