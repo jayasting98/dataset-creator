@@ -2,6 +2,7 @@ import json
 import os
 import unittest
 
+from dataset_creator.methods2test import code_parsers
 from dataset_creator.methods2test import find_map_test_cases
 
 
@@ -169,10 +170,10 @@ class FindMapTestCasesTest(unittest.TestCase):
             os.path.join(self._output_dir_pathname, 'typical_case.json'))
         grammar_file_pathname = 'java-grammar.so'
         language = 'java'
+        parser = code_parsers.CodeParser(grammar_file_pathname, language)
         with open(output_file_pathname) as output_file:
             expected_focal_method_samples = json.load(output_file)
         actual_focal_method_samples = (find_map_test_cases
-            .find_focal_method_samples(
-                self._root, grammar_file_pathname, language))
+            .find_focal_method_samples(self._root, parser))
         self.assertEqual(
             expected_focal_method_samples, actual_focal_method_samples)
