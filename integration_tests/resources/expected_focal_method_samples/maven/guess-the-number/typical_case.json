@@ -11,6 +11,7 @@
             "col_end": 5,
             "body": "@Override\n    public void run() {\n        GameState state = logic.getState();\n        informUser(OPENING_MESSAGE);\n        while (logic.isAbleToGuess()) {\n            int guessedNumber;\n            try {\n                guessedNumber = parseGuess();\n            } catch (IOException ioe) {\n                informUser(UNEXPECTED_ERROR_MESSAGE);\n                return;\n            }\n            logic.process(guessedNumber);\n            state = logic.getState();\n            handleState(state);\n        }\n        handleEnd(state);\n    }",
             "class": {
+                "package": "com.example.guessthenumber.ui",
                 "identifier": "CommandLineUi",
                 "superclass": "",
                 "interfaces": "implements UserInterface",
@@ -262,6 +263,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testRun_ioExceptionThrown_exitsGracefully() throws IOException {\n        BufferedReader mockBufferedReader = mock(BufferedReader.class);\n        when(mockBufferedReader.readLine()).thenThrow(IOException.class);\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        InOrder inOrder = inOrder(mockOutputWriter);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.isAbleToGuess()).thenReturn(true);\n        CommandLineUi clui = new CommandLineUi(mockBufferedReader, mockOutputWriter, mockLogic);\n        clui.run();\n        inOrder.verify(mockOutputWriter).println(\"Hello! I am thinking of a number from 1 to 100.\");\n        inOrder.verify(mockOutputWriter).println(\"Take a guess.\");\n        inOrder.verify(mockOutputWriter).println(\"An unexpected error was encountered. Exiting...\");\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
@@ -308,6 +310,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testRun_typicalWin_parsesProcessesAndInformsUserCorrectly() throws IOException {\n        BufferedReader mockBufferedReader = mock(BufferedReader.class);\n        when(mockBufferedReader.readLine()).thenReturn(\"42\");\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        InOrder inOrder = inOrder(mockOutputWriter);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.isAbleToGuess()).thenReturn(true).thenReturn(false);\n        when(mockLogic.getState()).thenReturn(GameState.CORRECT);\n        CommandLineUi clui = new CommandLineUi(mockBufferedReader, mockOutputWriter, mockLogic);\n        clui.run();\n        inOrder.verify(mockOutputWriter).println(\"Hello! I am thinking of a number from 1 to 100.\");\n        inOrder.verify(mockOutputWriter).println(\"Take a guess.\");\n        inOrder.verify(mockOutputWriter).println(\"Good job! You guessed my number.\");\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
@@ -361,6 +364,7 @@
             "col_end": 5,
             "body": "int parseGuess() throws IOException {\n        while (true) {\n            try {\n                informUser(TAKE_A_GUESS_MESSAGE);\n                String input = inputReader.readLine();\n                int guessedNumber = Integer.parseInt(input);\n                return guessedNumber;\n            } catch (NumberFormatException nfe) {\n                informUser(PARSE_ERROR_MESSAGE);\n            }\n        }\n    }",
             "class": {
+                "package": "com.example.guessthenumber.ui",
                 "identifier": "CommandLineUi",
                 "superclass": "",
                 "interfaces": "implements UserInterface",
@@ -607,6 +611,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testParseGuess() throws IOException {\n        BufferedReader mockBufferedReader = mock(BufferedReader.class);\n        when(mockBufferedReader.readLine()).thenReturn(\"not an integer\").thenReturn(\"42\");\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        InOrder inOrder = inOrder(mockOutputWriter);\n        CommandLineUi clui = new CommandLineUi(mockBufferedReader, mockOutputWriter, null);\n        int expectedGuessedNumber = 42;\n        int actualGuessedNumber = clui.parseGuess();\n        assertEquals(expectedGuessedNumber, actualGuessedNumber);\n        inOrder.verify(mockOutputWriter).println(\"Take a guess.\");\n        inOrder.verify(mockOutputWriter).println(\"Sorry, I did not understand that.\");\n        inOrder.verify(mockOutputWriter).println(\"Take a guess.\");\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
@@ -654,6 +659,7 @@
             "col_end": 5,
             "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }",
             "class": {
+                "package": "com.example.guessthenumber.ui",
                 "identifier": "CommandLineUi",
                 "superclass": "",
                 "interfaces": "implements UserInterface",
@@ -897,6 +903,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testHandleState_startState_doesNotInformUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.START);\n        verifyNoInteractions(mockOutputWriter);\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
@@ -929,6 +936,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testHandleState_overestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.OVERESTIMATE);\n        String expectedMessage = \"Your guess was too high. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
@@ -962,6 +970,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testHandleState_underestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.UNDERESTIMATE);\n        String expectedMessage = \"Your guess was too low. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
@@ -995,6 +1004,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testHandleState_correctGuess_doesNotInformUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.CORRECT);\n        verifyNoInteractions(mockOutputWriter);\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
@@ -1030,6 +1040,7 @@
             "col_end": 5,
             "body": "void handleEnd(GameState state) {\n        if (state == GameState.CORRECT) {\n            informUser(WIN_MESSAGE);\n        } else {\n            int numberToGuess = logic.getNumberToGuess();\n            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);\n            informUser(defeatMessage);\n        }\n    }",
             "class": {
+                "package": "com.example.guessthenumber.ui",
                 "identifier": "CommandLineUi",
                 "superclass": "",
                 "interfaces": "implements UserInterface",
@@ -1276,6 +1287,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testHandleEnd_startState_informsUserOfDefeat() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.getNumberToGuess()).thenReturn(42);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, mockLogic);\n        clui.handleEnd(GameState.START);\n        String expectedMessage = \"Sorry, you lose. The number was 42.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
@@ -1313,6 +1325,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testHandleEnd_overestimate_informsUserOfDefeat() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.getNumberToGuess()).thenReturn(42);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, mockLogic);\n        clui.handleEnd(GameState.OVERESTIMATE);\n        String expectedMessage = \"Sorry, you lose. The number was 42.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
@@ -1350,6 +1363,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testHandleEnd_underestimate_informsUserOfDefeat() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.getNumberToGuess()).thenReturn(42);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, mockLogic);\n        clui.handleEnd(GameState.UNDERESTIMATE);\n        String expectedMessage = \"Sorry, you lose. The number was 42.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
@@ -1387,6 +1401,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testHandleEnd_correctGuess_informsUserOfWin() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleEnd(GameState.CORRECT);\n        String expectedMessage = \"Good job! You guessed my number.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
@@ -1423,6 +1438,7 @@
             "col_end": 5,
             "body": "void informUser(String message) {\n        outputWriter.println(message);\n    }",
             "class": {
+                "package": "com.example.guessthenumber.ui",
                 "identifier": "CommandLineUi",
                 "superclass": "",
                 "interfaces": "implements UserInterface",
@@ -1666,6 +1682,7 @@
                 "col_end": 5,
                 "body": "@Test\n    public void testInformUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        String expectedMessage = \"Hello, World!\";\n        clui.informUser(expectedMessage);\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
                 "class": {
+                    "package": "com.example.guessthenumber.ui",
                     "identifier": "CommandLineUiTest",
                     "superclass": "",
                     "interfaces": "",
