@@ -41,10 +41,14 @@ class MavenRepositoryTest(unittest.TestCase):
                 'byte-buddy-agent', '1.11.13', 'byte-buddy-agent-1.11.13.jar'),
             os.path.join(maven_dir_pathname, 'org', 'objenesis', 'objenesis',
                 '3.2', 'objenesis-3.2.jar'),
-            os.path.join(self._repo_dir_pathname, 'target', 'classes'),
-            os.path.join(self._repo_dir_pathname, 'target', 'test-classes'),
-            os.path.join(self._repo_dir_pathname, 'src', 'main', 'resources'),
-            os.path.join(self._repo_dir_pathname, 'src', 'test', 'resources'),
+            (os.path.join(self._repo_dir_pathname, 'target', 'classes')
+                + os.path.sep),
+            (os.path.join(self._repo_dir_pathname, 'target', 'test-classes')
+                + os.path.sep),
+            (os.path.join(self._repo_dir_pathname, 'src', 'main', 'resources')
+                + os.path.sep),
+            (os.path.join(self._repo_dir_pathname, 'src', 'test', 'resources')
+                + os.path.sep),
         ]
         actual_classpath_pathnames = self._repo.find_classpath_pathnames()
         self.assertCountEqual(
@@ -53,7 +57,7 @@ class MavenRepositoryTest(unittest.TestCase):
     def test_find_focal_classpath__typical_case__finds_correctly(self):
         expected_focal_classpath = os.path.join(os.getcwd(),
             'integration_tests', 'resources', 'repositories', 'maven',
-            'guess-the-number', 'target', 'classes')
+            'guess-the-number', 'target', 'classes', '')
         actual_focal_classpath = self._repo.find_focal_classpath()
         self.assertEqual(expected_focal_classpath, actual_focal_classpath)
 
@@ -81,13 +85,13 @@ class GradleRepositoryTest(unittest.TestCase):
             'caches', 'modules-2', 'files-2.1')
         expected_classpath_pathnames = [
             os.path.join(self._repo_dir_pathname, 'app', 'build', 'classes',
-                'java', 'main'),
+                'java', 'main') + os.path.sep,
             os.path.join(self._repo_dir_pathname, 'app', 'build', 'classes',
-                'java', 'test'),
+                'java', 'test') + os.path.sep,
             os.path.join(self._repo_dir_pathname, 'app', 'build', 'resources',
-                'main'),
+                'main') + os.path.sep,
             os.path.join(self._repo_dir_pathname, 'app', 'build', 'resources',
-                'test'),
+                'test') + os.path.sep,
             os.path.join(gradle_dir_pathname, 'junit', 'junit', '4.11',
                 '4e031bb61df09069aeb2bffb4019e7a5034a4ee0', 'junit-4.11.jar'),
             os.path.join(gradle_dir_pathname, 'org.hamcrest', 'hamcrest-core',
@@ -107,7 +111,6 @@ class GradleRepositoryTest(unittest.TestCase):
                 '3.2', '7fadf57620c8b8abdf7519533e5527367cb51f09',
                 'objenesis-3.2.jar'),
         ]
-        self.maxDiff = None
         actual_classpath_pathnames = self._repo.find_classpath_pathnames()
         self.assertCountEqual(
             expected_classpath_pathnames, actual_classpath_pathnames)
@@ -115,7 +118,7 @@ class GradleRepositoryTest(unittest.TestCase):
     def test_find_focal_classpath__typical_case__finds_correctly(self):
         expected_focal_classpath = os.path.join(os.getcwd(),
             'integration_tests', 'resources', 'repositories', 'gradle',
-            'guess-the-number', 'app', 'build', 'classes', 'java', 'main')
+            'guess-the-number', 'app', 'build', 'classes', 'java', 'main', '')
         actual_focal_classpath = self._repo.find_focal_classpath()
         self.assertEqual(expected_focal_classpath, actual_focal_classpath)
 

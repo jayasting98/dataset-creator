@@ -53,7 +53,7 @@ class MavenRepository(Repository):
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
-        focal_classpath = completed_process.stdout
+        focal_classpath = completed_process.stdout + os.path.sep
         return focal_classpath
 
     def _find_test_classpath(self: Self) -> str:
@@ -64,7 +64,7 @@ class MavenRepository(Repository):
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
-        test_classpath = completed_process.stdout
+        test_classpath = completed_process.stdout + os.path.sep
         return test_classpath
 
     def _find_focal_resources_classpath(self: Self) -> str:
@@ -75,7 +75,7 @@ class MavenRepository(Repository):
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
-        focal_resources_classpath = completed_process.stdout
+        focal_resources_classpath = completed_process.stdout + os.path.sep
         return focal_resources_classpath
 
     def _find_test_resources_classpath(self: Self) -> str:
@@ -86,7 +86,7 @@ class MavenRepository(Repository):
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
-        test_resources_classpath = completed_process.stdout
+        test_resources_classpath = completed_process.stdout + os.path.sep
         return test_resources_classpath
 
 
@@ -117,7 +117,10 @@ class GradleRepository(Repository):
         completed_process.check_returncode()
         output = completed_process.stdout
         line = output.split(os.linesep)[0]
-        classpath_pathnames = line.split(os.pathsep)
+        pathnames = line.split(os.pathsep)
+        classpath_pathnames = [
+            pathname if pathname.endswith('.jar') else pathname + os.path.sep
+            for pathname in pathnames]
         return classpath_pathnames
 
     def find_focal_classpath(self: Self) -> str:
@@ -133,7 +136,7 @@ class GradleRepository(Repository):
         classpath_pathnames = line.split(os.pathsep)
         candidates = [pathname for pathname in classpath_pathnames
             if 'main' in pathname and 'classes' in pathname]
-        focal_classpath = candidates[0]
+        focal_classpath = candidates[0] + os.path.sep
         return focal_classpath
 
     def _find_project_name(self: Self) -> str:
