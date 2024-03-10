@@ -1,11 +1,34 @@
+import json
+import os
+from types import TracebackType
+from typing import Any
+from typing import Iterator
+from typing import Self
 import unittest
 from unittest import mock
 
 import datasets
+import requests
 
+from dataset_creator import coverages
 from dataset_creator import loaders
 from dataset_creator import processors
 from dataset_creator import savers
+from dataset_creator.methods2test import code_parsers
+
+
+class _MemoryLoader(loaders.Loader[Any]):
+    def __init__(self: Self, samples: list[Any]) -> None:
+        self._samples = samples
+
+    def load(self: Self) -> loaders.Iterator[Any]:
+        iterator = iter(self._samples)
+        return iterator
+
+
+class _MemorySaver(savers.Saver[Any]):
+    def save(self: Self, samples: Iterator[Any]) -> None:
+        self.samples = list(samples)
 
 
 class TheStackRepositoryProcessorTest(unittest.TestCase):
@@ -40,3 +63,52 @@ class TheStackRepositoryProcessorTest(unittest.TestCase):
             'gs://bucket_name/path/name',
             storage_options={'project': 'project_id'},
         )
+
+
+class StubTemporaryDirectory:
+    def __init__(self: Self, dir_pathname: str) -> None:
+        self._dir_pathname = dir_pathname
+
+    def __enter__(self: Self) -> str:
+        return self._dir_pathname
+
+    def __exit__(
+        self: Self,
+        exception_type: type[BaseException],
+        exception_value: BaseException,
+        exception_traceback: TracebackType,
+    ) -> bool:
+        return False
+
+
+class CoverageSamplesProcessorTest(unittest.TestCase):
+    def setUp(self) -> None:
+        session = requests.Session()
+        base_url = 'http://localhost:8080'
+        self._code_cov_api = coverages.CodeCovApi(session, base_url)
+        self._parser = code_parsers.CodeParser('java-grammar.so', 'java')
+
+    def test_process__typical_case__processes_correctly(self):
+        repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
+            'resources', 'repositories', 'maven', 'guess-the-number')
+        samples_file_pathname = os.path.join('integration_tests', 'resources',
+            'expected_coverage_samples', 'maven', 'guess-the-number',
+            'typical_case.json')
+        mock_repo = mock.MagicMock()
+        mock_repo.head.commit.hexsha = 'hexsha'
+        samples = [
+            {'repository_url': 'https://github.com/username/guess-the-number'}]
+        loader = _MemoryLoader(samples)
+        saver = _MemorySaver()
+        processor = processors.CoverageSamplesProcessor(
+            loader, saver, self._code_cov_api, self._parser)
+        with open(samples_file_pathname) as samples_file:
+            expected_samples = json.load(samples_file)
+        with (mock.patch('tempfile.TemporaryDirectory') as mock_temp_dir,
+            mock.patch('git.Repo.clone_from') as mock_clone_from):
+            mock_temp_dir.return_value = (
+                StubTemporaryDirectory(repo_dir_pathname))
+            mock_clone_from.return_value = mock_repo
+            processor.process()
+        actual_samples = saver.samples
+        self.assertEqual(expected_samples, actual_samples)

@@ -1,0 +1,1282 @@
+[
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "run",
+            "line_start": 29,
+            "col_start": 4,
+            "line_end": 46,
+            "col_end": 5,
+            "body": "@Override\n    public void run() {\n        GameState state = logic.getState();\n        informUser(OPENING_MESSAGE);\n        while (logic.isAbleToGuess()) {\n            int guessedNumber;\n            try {\n                guessedNumber = parseGuess();\n            } catch (IOException ioe) {\n                informUser(UNEXPECTED_ERROR_MESSAGE);\n                return;\n            }\n            logic.process(guessedNumber);\n            state = logic.getState();\n            handleState(state);\n        }\n        handleEnd(state);\n    }"
+        },
+        "focal_line_indices": [
+            33,
+            36,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46
+        ],
+        "focal_lines": [
+            "        while (logic.isAbleToGuess()) {",
+            "                guessedNumber = parseGuess();",
+            "            }",
+            "            logic.process(guessedNumber);",
+            "            state = logic.getState();",
+            "            handleState(state);",
+            "        }",
+            "        handleEnd(state);",
+            "    }"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testRun_ioExceptionThrown_exitsGracefully",
+            "line_start": 20,
+            "col_start": 4,
+            "line_end": 33,
+            "col_end": 5,
+            "body": "@Test\n    public void testRun_ioExceptionThrown_exitsGracefully() throws IOException {\n        BufferedReader mockBufferedReader = mock(BufferedReader.class);\n        when(mockBufferedReader.readLine()).thenThrow(IOException.class);\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        InOrder inOrder = inOrder(mockOutputWriter);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.isAbleToGuess()).thenReturn(true);\n        CommandLineUi clui = new CommandLineUi(mockBufferedReader, mockOutputWriter, mockLogic);\n        clui.run();\n        inOrder.verify(mockOutputWriter).println(\"Hello! I am thinking of a number from 1 to 100.\");\n        inOrder.verify(mockOutputWriter).println(\"Take a guess.\");\n        inOrder.verify(mockOutputWriter).println(\"An unexpected error was encountered. Exiting...\");\n    }",
+            "covered_line_indices": [
+                31,
+                32,
+                37,
+                38,
+                39
+            ],
+            "covered_lines": [
+                "        GameState state = logic.getState();",
+                "        informUser(OPENING_MESSAGE);",
+                "            } catch (IOException ioe) {",
+                "                informUser(UNEXPECTED_ERROR_MESSAGE);",
+                "                return;"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testRun_typicalWin_parsesProcessesAndInformsUserCorrectly",
+            "line_start": 35,
+            "col_start": 4,
+            "line_end": 49,
+            "col_end": 5,
+            "body": "@Test\n    public void testRun_typicalWin_parsesProcessesAndInformsUserCorrectly() throws IOException {\n        BufferedReader mockBufferedReader = mock(BufferedReader.class);\n        when(mockBufferedReader.readLine()).thenReturn(\"42\");\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        InOrder inOrder = inOrder(mockOutputWriter);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.isAbleToGuess()).thenReturn(true).thenReturn(false);\n        when(mockLogic.getState()).thenReturn(GameState.CORRECT);\n        CommandLineUi clui = new CommandLineUi(mockBufferedReader, mockOutputWriter, mockLogic);\n        clui.run();\n        inOrder.verify(mockOutputWriter).println(\"Hello! I am thinking of a number from 1 to 100.\");\n        inOrder.verify(mockOutputWriter).println(\"Take a guess.\");\n        inOrder.verify(mockOutputWriter).println(\"Good job! You guessed my number.\");\n    }",
+            "covered_line_indices": [
+                31,
+                32,
+                33,
+                36,
+                40,
+                41,
+                42,
+                43,
+                44,
+                45,
+                46
+            ],
+            "covered_lines": [
+                "        GameState state = logic.getState();",
+                "        informUser(OPENING_MESSAGE);",
+                "        while (logic.isAbleToGuess()) {",
+                "                guessedNumber = parseGuess();",
+                "            }",
+                "            logic.process(guessedNumber);",
+                "            state = logic.getState();",
+                "            handleState(state);",
+                "        }",
+                "        handleEnd(state);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "run",
+            "line_start": 29,
+            "col_start": 4,
+            "line_end": 46,
+            "col_end": 5,
+            "body": "@Override\n    public void run() {\n        GameState state = logic.getState();\n        informUser(OPENING_MESSAGE);\n        while (logic.isAbleToGuess()) {\n            int guessedNumber;\n            try {\n                guessedNumber = parseGuess();\n            } catch (IOException ioe) {\n                informUser(UNEXPECTED_ERROR_MESSAGE);\n                return;\n            }\n            logic.process(guessedNumber);\n            state = logic.getState();\n            handleState(state);\n        }\n        handleEnd(state);\n    }"
+        },
+        "focal_line_indices": [
+            37,
+            38,
+            39
+        ],
+        "focal_lines": [
+            "            } catch (IOException ioe) {",
+            "                informUser(UNEXPECTED_ERROR_MESSAGE);",
+            "                return;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testRun_typicalWin_parsesProcessesAndInformsUserCorrectly",
+            "line_start": 35,
+            "col_start": 4,
+            "line_end": 49,
+            "col_end": 5,
+            "body": "@Test\n    public void testRun_typicalWin_parsesProcessesAndInformsUserCorrectly() throws IOException {\n        BufferedReader mockBufferedReader = mock(BufferedReader.class);\n        when(mockBufferedReader.readLine()).thenReturn(\"42\");\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        InOrder inOrder = inOrder(mockOutputWriter);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.isAbleToGuess()).thenReturn(true).thenReturn(false);\n        when(mockLogic.getState()).thenReturn(GameState.CORRECT);\n        CommandLineUi clui = new CommandLineUi(mockBufferedReader, mockOutputWriter, mockLogic);\n        clui.run();\n        inOrder.verify(mockOutputWriter).println(\"Hello! I am thinking of a number from 1 to 100.\");\n        inOrder.verify(mockOutputWriter).println(\"Take a guess.\");\n        inOrder.verify(mockOutputWriter).println(\"Good job! You guessed my number.\");\n    }",
+            "covered_line_indices": [
+                31,
+                32,
+                33,
+                36,
+                40,
+                41,
+                42,
+                43,
+                44,
+                45,
+                46
+            ],
+            "covered_lines": [
+                "        GameState state = logic.getState();",
+                "        informUser(OPENING_MESSAGE);",
+                "        while (logic.isAbleToGuess()) {",
+                "                guessedNumber = parseGuess();",
+                "            }",
+                "            logic.process(guessedNumber);",
+                "            state = logic.getState();",
+                "            handleState(state);",
+                "        }",
+                "        handleEnd(state);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testRun_ioExceptionThrown_exitsGracefully",
+            "line_start": 20,
+            "col_start": 4,
+            "line_end": 33,
+            "col_end": 5,
+            "body": "@Test\n    public void testRun_ioExceptionThrown_exitsGracefully() throws IOException {\n        BufferedReader mockBufferedReader = mock(BufferedReader.class);\n        when(mockBufferedReader.readLine()).thenThrow(IOException.class);\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        InOrder inOrder = inOrder(mockOutputWriter);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.isAbleToGuess()).thenReturn(true);\n        CommandLineUi clui = new CommandLineUi(mockBufferedReader, mockOutputWriter, mockLogic);\n        clui.run();\n        inOrder.verify(mockOutputWriter).println(\"Hello! I am thinking of a number from 1 to 100.\");\n        inOrder.verify(mockOutputWriter).println(\"Take a guess.\");\n        inOrder.verify(mockOutputWriter).println(\"An unexpected error was encountered. Exiting...\");\n    }",
+            "covered_line_indices": [
+                31,
+                32,
+                37,
+                38,
+                39
+            ],
+            "covered_lines": [
+                "        GameState state = logic.getState();",
+                "        informUser(OPENING_MESSAGE);",
+                "            } catch (IOException ioe) {",
+                "                informUser(UNEXPECTED_ERROR_MESSAGE);",
+                "                return;"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleState",
+            "line_start": 48,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }"
+        },
+        "focal_line_indices": [
+            52,
+            53,
+            60,
+            61
+        ],
+        "focal_lines": [
+            "                message = OVERESTIMATE_MESSAGE;",
+            "                break;",
+            "        informUser(message);",
+            "    }"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleState_startState_doesNotInformUser",
+            "line_start": 66,
+            "col_start": 4,
+            "line_end": 72,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_startState_doesNotInformUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.START);\n        verifyNoInteractions(mockOutputWriter);\n    }",
+            "covered_line_indices": [
+                58
+            ],
+            "covered_lines": [
+                "                return;"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleState_overestimate_informsUser",
+            "line_start": 74,
+            "col_start": 4,
+            "line_end": 81,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_overestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.OVERESTIMATE);\n        String expectedMessage = \"Your guess was too high. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                52,
+                53,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = OVERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleState",
+            "line_start": 48,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }"
+        },
+        "focal_line_indices": [
+            55,
+            56,
+            60,
+            61
+        ],
+        "focal_lines": [
+            "                message = UNDERESTIMATE_MESSAGE;",
+            "                break;",
+            "        informUser(message);",
+            "    }"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleState_startState_doesNotInformUser",
+            "line_start": 66,
+            "col_start": 4,
+            "line_end": 72,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_startState_doesNotInformUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.START);\n        verifyNoInteractions(mockOutputWriter);\n    }",
+            "covered_line_indices": [
+                58
+            ],
+            "covered_lines": [
+                "                return;"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleState_underestimate_informsUser",
+            "line_start": 83,
+            "col_start": 4,
+            "line_end": 90,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_underestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.UNDERESTIMATE);\n        String expectedMessage = \"Your guess was too low. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                55,
+                56,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = UNDERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleState",
+            "line_start": 48,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }"
+        },
+        "focal_line_indices": [
+            58
+        ],
+        "focal_lines": [
+            "                return;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleState_overestimate_informsUser",
+            "line_start": 74,
+            "col_start": 4,
+            "line_end": 81,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_overestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.OVERESTIMATE);\n        String expectedMessage = \"Your guess was too high. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                52,
+                53,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = OVERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleState_startState_doesNotInformUser",
+            "line_start": 66,
+            "col_start": 4,
+            "line_end": 72,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_startState_doesNotInformUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.START);\n        verifyNoInteractions(mockOutputWriter);\n    }",
+            "covered_line_indices": [
+                58
+            ],
+            "covered_lines": [
+                "                return;"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleState",
+            "line_start": 48,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }"
+        },
+        "focal_line_indices": [
+            55,
+            56
+        ],
+        "focal_lines": [
+            "                message = UNDERESTIMATE_MESSAGE;",
+            "                break;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleState_overestimate_informsUser",
+            "line_start": 74,
+            "col_start": 4,
+            "line_end": 81,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_overestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.OVERESTIMATE);\n        String expectedMessage = \"Your guess was too high. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                52,
+                53,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = OVERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleState_underestimate_informsUser",
+            "line_start": 83,
+            "col_start": 4,
+            "line_end": 90,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_underestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.UNDERESTIMATE);\n        String expectedMessage = \"Your guess was too low. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                55,
+                56,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = UNDERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleState",
+            "line_start": 48,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }"
+        },
+        "focal_line_indices": [
+            58
+        ],
+        "focal_lines": [
+            "                return;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleState_overestimate_informsUser",
+            "line_start": 74,
+            "col_start": 4,
+            "line_end": 81,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_overestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.OVERESTIMATE);\n        String expectedMessage = \"Your guess was too high. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                52,
+                53,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = OVERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleState_correctGuess_doesNotInformUser",
+            "line_start": 92,
+            "col_start": 4,
+            "line_end": 98,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_correctGuess_doesNotInformUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.CORRECT);\n        verifyNoInteractions(mockOutputWriter);\n    }",
+            "covered_line_indices": [
+                58
+            ],
+            "covered_lines": [
+                "                return;"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleState",
+            "line_start": 48,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }"
+        },
+        "focal_line_indices": [
+            58
+        ],
+        "focal_lines": [
+            "                return;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleState_underestimate_informsUser",
+            "line_start": 83,
+            "col_start": 4,
+            "line_end": 90,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_underestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.UNDERESTIMATE);\n        String expectedMessage = \"Your guess was too low. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                55,
+                56,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = UNDERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleState_startState_doesNotInformUser",
+            "line_start": 66,
+            "col_start": 4,
+            "line_end": 72,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_startState_doesNotInformUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.START);\n        verifyNoInteractions(mockOutputWriter);\n    }",
+            "covered_line_indices": [
+                58
+            ],
+            "covered_lines": [
+                "                return;"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleState",
+            "line_start": 48,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }"
+        },
+        "focal_line_indices": [
+            52,
+            53
+        ],
+        "focal_lines": [
+            "                message = OVERESTIMATE_MESSAGE;",
+            "                break;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleState_underestimate_informsUser",
+            "line_start": 83,
+            "col_start": 4,
+            "line_end": 90,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_underestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.UNDERESTIMATE);\n        String expectedMessage = \"Your guess was too low. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                55,
+                56,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = UNDERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleState_overestimate_informsUser",
+            "line_start": 74,
+            "col_start": 4,
+            "line_end": 81,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_overestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.OVERESTIMATE);\n        String expectedMessage = \"Your guess was too high. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                52,
+                53,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = OVERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleState",
+            "line_start": 48,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }"
+        },
+        "focal_line_indices": [
+            58
+        ],
+        "focal_lines": [
+            "                return;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleState_underestimate_informsUser",
+            "line_start": 83,
+            "col_start": 4,
+            "line_end": 90,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_underestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.UNDERESTIMATE);\n        String expectedMessage = \"Your guess was too low. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                55,
+                56,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = UNDERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleState_correctGuess_doesNotInformUser",
+            "line_start": 92,
+            "col_start": 4,
+            "line_end": 98,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_correctGuess_doesNotInformUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.CORRECT);\n        verifyNoInteractions(mockOutputWriter);\n    }",
+            "covered_line_indices": [
+                58
+            ],
+            "covered_lines": [
+                "                return;"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleState",
+            "line_start": 48,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }"
+        },
+        "focal_line_indices": [
+            52,
+            53,
+            60,
+            61
+        ],
+        "focal_lines": [
+            "                message = OVERESTIMATE_MESSAGE;",
+            "                break;",
+            "        informUser(message);",
+            "    }"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleState_correctGuess_doesNotInformUser",
+            "line_start": 92,
+            "col_start": 4,
+            "line_end": 98,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_correctGuess_doesNotInformUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.CORRECT);\n        verifyNoInteractions(mockOutputWriter);\n    }",
+            "covered_line_indices": [
+                58
+            ],
+            "covered_lines": [
+                "                return;"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleState_overestimate_informsUser",
+            "line_start": 74,
+            "col_start": 4,
+            "line_end": 81,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_overestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.OVERESTIMATE);\n        String expectedMessage = \"Your guess was too high. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                52,
+                53,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = OVERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleState",
+            "line_start": 48,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "void handleState(GameState state) {\n        String message;\n        switch (state) {\n            case OVERESTIMATE:\n                message = OVERESTIMATE_MESSAGE;\n                break;\n            case UNDERESTIMATE:\n                message = UNDERESTIMATE_MESSAGE;\n                break;\n            default:\n                return;\n        }\n        informUser(message);\n    }"
+        },
+        "focal_line_indices": [
+            55,
+            56,
+            60,
+            61
+        ],
+        "focal_lines": [
+            "                message = UNDERESTIMATE_MESSAGE;",
+            "                break;",
+            "        informUser(message);",
+            "    }"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleState_correctGuess_doesNotInformUser",
+            "line_start": 92,
+            "col_start": 4,
+            "line_end": 98,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_correctGuess_doesNotInformUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.CORRECT);\n        verifyNoInteractions(mockOutputWriter);\n    }",
+            "covered_line_indices": [
+                58
+            ],
+            "covered_lines": [
+                "                return;"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleState_underestimate_informsUser",
+            "line_start": 83,
+            "col_start": 4,
+            "line_end": 90,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleState_underestimate_informsUser() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleState(GameState.UNDERESTIMATE);\n        String expectedMessage = \"Your guess was too low. :(\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                55,
+                56,
+                60,
+                61
+            ],
+            "covered_lines": [
+                "                message = UNDERESTIMATE_MESSAGE;",
+                "                break;",
+                "        informUser(message);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleEnd",
+            "line_start": 76,
+            "col_start": 4,
+            "line_end": 84,
+            "col_end": 5,
+            "body": "void handleEnd(GameState state) {\n        if (state == GameState.CORRECT) {\n            informUser(WIN_MESSAGE);\n        } else {\n            int numberToGuess = logic.getNumberToGuess();\n            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);\n            informUser(defeatMessage);\n        }\n    }"
+        },
+        "focal_line_indices": [
+            78
+        ],
+        "focal_lines": [
+            "            informUser(WIN_MESSAGE);"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleEnd_startState_informsUserOfDefeat",
+            "line_start": 100,
+            "col_start": 4,
+            "line_end": 109,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_startState_informsUserOfDefeat() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.getNumberToGuess()).thenReturn(42);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, mockLogic);\n        clui.handleEnd(GameState.START);\n        String expectedMessage = \"Sorry, you lose. The number was 42.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                80,
+                81,
+                82,
+                84
+            ],
+            "covered_lines": [
+                "            int numberToGuess = logic.getNumberToGuess();",
+                "            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);",
+                "            informUser(defeatMessage);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleEnd_correctGuess_informsUserOfWin",
+            "line_start": 133,
+            "col_start": 4,
+            "line_end": 140,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_correctGuess_informsUserOfWin() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleEnd(GameState.CORRECT);\n        String expectedMessage = \"Good job! You guessed my number.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                78,
+                84
+            ],
+            "covered_lines": [
+                "            informUser(WIN_MESSAGE);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleEnd",
+            "line_start": 76,
+            "col_start": 4,
+            "line_end": 84,
+            "col_end": 5,
+            "body": "void handleEnd(GameState state) {\n        if (state == GameState.CORRECT) {\n            informUser(WIN_MESSAGE);\n        } else {\n            int numberToGuess = logic.getNumberToGuess();\n            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);\n            informUser(defeatMessage);\n        }\n    }"
+        },
+        "focal_line_indices": [
+            78
+        ],
+        "focal_lines": [
+            "            informUser(WIN_MESSAGE);"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleEnd_overestimate_informsUserOfDefeat",
+            "line_start": 111,
+            "col_start": 4,
+            "line_end": 120,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_overestimate_informsUserOfDefeat() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.getNumberToGuess()).thenReturn(42);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, mockLogic);\n        clui.handleEnd(GameState.OVERESTIMATE);\n        String expectedMessage = \"Sorry, you lose. The number was 42.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                80,
+                81,
+                82,
+                84
+            ],
+            "covered_lines": [
+                "            int numberToGuess = logic.getNumberToGuess();",
+                "            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);",
+                "            informUser(defeatMessage);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleEnd_correctGuess_informsUserOfWin",
+            "line_start": 133,
+            "col_start": 4,
+            "line_end": 140,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_correctGuess_informsUserOfWin() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleEnd(GameState.CORRECT);\n        String expectedMessage = \"Good job! You guessed my number.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                78,
+                84
+            ],
+            "covered_lines": [
+                "            informUser(WIN_MESSAGE);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleEnd",
+            "line_start": 76,
+            "col_start": 4,
+            "line_end": 84,
+            "col_end": 5,
+            "body": "void handleEnd(GameState state) {\n        if (state == GameState.CORRECT) {\n            informUser(WIN_MESSAGE);\n        } else {\n            int numberToGuess = logic.getNumberToGuess();\n            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);\n            informUser(defeatMessage);\n        }\n    }"
+        },
+        "focal_line_indices": [
+            78
+        ],
+        "focal_lines": [
+            "            informUser(WIN_MESSAGE);"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleEnd_underestimate_informsUserOfDefeat",
+            "line_start": 122,
+            "col_start": 4,
+            "line_end": 131,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_underestimate_informsUserOfDefeat() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.getNumberToGuess()).thenReturn(42);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, mockLogic);\n        clui.handleEnd(GameState.UNDERESTIMATE);\n        String expectedMessage = \"Sorry, you lose. The number was 42.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                80,
+                81,
+                82,
+                84
+            ],
+            "covered_lines": [
+                "            int numberToGuess = logic.getNumberToGuess();",
+                "            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);",
+                "            informUser(defeatMessage);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleEnd_correctGuess_informsUserOfWin",
+            "line_start": 133,
+            "col_start": 4,
+            "line_end": 140,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_correctGuess_informsUserOfWin() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleEnd(GameState.CORRECT);\n        String expectedMessage = \"Good job! You guessed my number.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                78,
+                84
+            ],
+            "covered_lines": [
+                "            informUser(WIN_MESSAGE);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleEnd",
+            "line_start": 76,
+            "col_start": 4,
+            "line_end": 84,
+            "col_end": 5,
+            "body": "void handleEnd(GameState state) {\n        if (state == GameState.CORRECT) {\n            informUser(WIN_MESSAGE);\n        } else {\n            int numberToGuess = logic.getNumberToGuess();\n            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);\n            informUser(defeatMessage);\n        }\n    }"
+        },
+        "focal_line_indices": [
+            80,
+            81,
+            82
+        ],
+        "focal_lines": [
+            "            int numberToGuess = logic.getNumberToGuess();",
+            "            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);",
+            "            informUser(defeatMessage);"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleEnd_correctGuess_informsUserOfWin",
+            "line_start": 133,
+            "col_start": 4,
+            "line_end": 140,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_correctGuess_informsUserOfWin() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleEnd(GameState.CORRECT);\n        String expectedMessage = \"Good job! You guessed my number.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                78,
+                84
+            ],
+            "covered_lines": [
+                "            informUser(WIN_MESSAGE);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleEnd_startState_informsUserOfDefeat",
+            "line_start": 100,
+            "col_start": 4,
+            "line_end": 109,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_startState_informsUserOfDefeat() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.getNumberToGuess()).thenReturn(42);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, mockLogic);\n        clui.handleEnd(GameState.START);\n        String expectedMessage = \"Sorry, you lose. The number was 42.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                80,
+                81,
+                82,
+                84
+            ],
+            "covered_lines": [
+                "            int numberToGuess = logic.getNumberToGuess();",
+                "            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);",
+                "            informUser(defeatMessage);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleEnd",
+            "line_start": 76,
+            "col_start": 4,
+            "line_end": 84,
+            "col_end": 5,
+            "body": "void handleEnd(GameState state) {\n        if (state == GameState.CORRECT) {\n            informUser(WIN_MESSAGE);\n        } else {\n            int numberToGuess = logic.getNumberToGuess();\n            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);\n            informUser(defeatMessage);\n        }\n    }"
+        },
+        "focal_line_indices": [
+            80,
+            81,
+            82
+        ],
+        "focal_lines": [
+            "            int numberToGuess = logic.getNumberToGuess();",
+            "            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);",
+            "            informUser(defeatMessage);"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleEnd_correctGuess_informsUserOfWin",
+            "line_start": 133,
+            "col_start": 4,
+            "line_end": 140,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_correctGuess_informsUserOfWin() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleEnd(GameState.CORRECT);\n        String expectedMessage = \"Good job! You guessed my number.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                78,
+                84
+            ],
+            "covered_lines": [
+                "            informUser(WIN_MESSAGE);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleEnd_overestimate_informsUserOfDefeat",
+            "line_start": 111,
+            "col_start": 4,
+            "line_end": 120,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_overestimate_informsUserOfDefeat() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.getNumberToGuess()).thenReturn(42);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, mockLogic);\n        clui.handleEnd(GameState.OVERESTIMATE);\n        String expectedMessage = \"Sorry, you lose. The number was 42.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                80,
+                81,
+                82,
+                84
+            ],
+            "covered_lines": [
+                "            int numberToGuess = logic.getNumberToGuess();",
+                "            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);",
+                "            informUser(defeatMessage);",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUi"
+        },
+        "focal_method": {
+            "identifier": "handleEnd",
+            "line_start": 76,
+            "col_start": 4,
+            "line_end": 84,
+            "col_end": 5,
+            "body": "void handleEnd(GameState state) {\n        if (state == GameState.CORRECT) {\n            informUser(WIN_MESSAGE);\n        } else {\n            int numberToGuess = logic.getNumberToGuess();\n            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);\n            informUser(defeatMessage);\n        }\n    }"
+        },
+        "focal_line_indices": [
+            80,
+            81,
+            82
+        ],
+        "focal_lines": [
+            "            int numberToGuess = logic.getNumberToGuess();",
+            "            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);",
+            "            informUser(defeatMessage);"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/ui/CommandLineUiTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.ui",
+            "identifier": "CommandLineUiTest"
+        },
+        "test_input_method": {
+            "identifier": "testHandleEnd_correctGuess_informsUserOfWin",
+            "line_start": 133,
+            "col_start": 4,
+            "line_end": 140,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_correctGuess_informsUserOfWin() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, null);\n        clui.handleEnd(GameState.CORRECT);\n        String expectedMessage = \"Good job! You guessed my number.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                78,
+                84
+            ],
+            "covered_lines": [
+                "            informUser(WIN_MESSAGE);",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testHandleEnd_underestimate_informsUserOfDefeat",
+            "line_start": 122,
+            "col_start": 4,
+            "line_end": 131,
+            "col_end": 5,
+            "body": "@Test\n    public void testHandleEnd_underestimate_informsUserOfDefeat() {\n        PrintStream mockOutputWriter = mock(PrintStream.class);\n        Logic mockLogic = mock(Logic.class);\n        when(mockLogic.getNumberToGuess()).thenReturn(42);\n        CommandLineUi clui = new CommandLineUi(null, mockOutputWriter, mockLogic);\n        clui.handleEnd(GameState.UNDERESTIMATE);\n        String expectedMessage = \"Sorry, you lose. The number was 42.\";\n        verify(mockOutputWriter).println(expectedMessage);\n    }",
+            "covered_line_indices": [
+                80,
+                81,
+                82,
+                84
+            ],
+            "covered_lines": [
+                "            int numberToGuess = logic.getNumberToGuess();",
+                "            String defeatMessage = String.format(DEFEAT_TEMPLATE, numberToGuess);",
+                "            informUser(defeatMessage);",
+                "    }"
+            ]
+        }
+    }
+]
