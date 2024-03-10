@@ -2,6 +2,7 @@ import abc
 import copy
 import logging
 import tempfile
+import traceback
 from typing import Any
 from typing import Generic
 from typing import Self
@@ -105,7 +106,10 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                         classpath_pathnames = project.find_classpath_pathnames()
                         logging.info(f'repository {i}: finding focal classpath')
                         focal_classpath = project.find_focal_classpath()
-                    except Exception:
+                    except Exception as exception:
+                        logging.warn(f'repository {i}: {exception}')
+                        (logging
+                            .debug(f'repository {i}: {traceback.format_exc()}'))
                         continue
                     (logging
                         .info(f'repository {i}: finding focal method samples'))
