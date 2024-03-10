@@ -7,7 +7,6 @@ from typing import Self
 from typing import TypeVar
 
 import git
-import requests
 
 from dataset_creator import coverages
 from dataset_creator import loaders
