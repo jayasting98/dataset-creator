@@ -25,12 +25,15 @@ class TheStackRepositoryProcessorTest(unittest.TestCase):
         save_args = save_call.args
         self.assertEqual(1, len(save_args))
         actual_iterator = save_args[0]
-        self.assertEqual(
-            {'repository_name': 'user1/repo1'}, next(actual_iterator))
-        self.assertEqual(
-            {'repository_name': 'user1/repo2'}, next(actual_iterator))
-        self.assertEqual(
-            {'repository_name': 'user2/repo1'}, next(actual_iterator))
+        expected_repository_sample_0 = {'repository_name': 'user1/repo1',
+            'repository_url': 'https://github.com/user1/repo1'}
+        self.assertEqual(expected_repository_sample_0, next(actual_iterator))
+        expected_repository_sample_1 = {'repository_name': 'user1/repo2',
+            'repository_url': 'https://github.com/user1/repo2'}
+        self.assertEqual(expected_repository_sample_1, next(actual_iterator))
+        expected_repository_sample_2 = {'repository_name': 'user2/repo1',
+            'repository_url': 'https://github.com/user2/repo1'}
+        self.assertEqual(expected_repository_sample_2, next(actual_iterator))
         with self.assertRaises(StopIteration):
             next(actual_iterator)
 

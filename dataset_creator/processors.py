@@ -45,7 +45,11 @@ class TheStackRepositoryProcessor(Processor[dict[str, Any], dict[str, str]]):
                 repository_name = sample['max_stars_repo_name']
                 if not self._is_unique(repository_name):
                     continue
-                yield {'repository_name': repository_name}
+                repository_sample = dict(
+                    repository_name=repository_name,
+                    repository_url=f'https://github.com/{repository_name}',
+                )
+                yield repository_sample
         iterator = utilities.GeneratorFunctionIterator(create_generator)
         self._saver.save(iterator)
 
