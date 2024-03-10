@@ -95,8 +95,8 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                 with tempfile.TemporaryDirectory() as temp_dir_pathname:
                     repo = (
                         git.Repo.clone_from(repository_url, temp_dir_pathname))
-                    project = projects.create_project(temp_dir_pathname)
                     try:
+                        project = projects.create_project(temp_dir_pathname)
                         project.compile()
                         classpath_pathnames = project.find_classpath_pathnames()
                         focal_classpath = project.find_focal_classpath()
