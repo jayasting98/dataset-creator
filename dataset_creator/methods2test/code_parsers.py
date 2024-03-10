@@ -26,6 +26,14 @@ class CodeParser():
 			except:
 				return list()
 		tree = self.parser.parse(bytes(content, "utf8"))
+		packages = [node for node in tree.root_node.children
+			if node.type == 'package_declaration']
+		package = packages[0]
+		package_identifier_nodes = [node for node in package.children
+			if node.type == 'scoped_identifier']
+		package_identifier_node = package_identifier_nodes[0]
+		package_identifier = (CodeParser
+			.match_from_span(package_identifier_node, content).strip())
 		classes = (node for node in tree.root_node.children if node.type == 'class_declaration')
 		#print(tree.root_node.sexp())
 		
@@ -50,6 +58,7 @@ class CodeParser():
 						method_metadata = CodeParser.get_function_metadata(class_identifier, node, content)
 						methods.append(method_metadata)
 
+			class_metadata['package'] = package_identifier
 			class_metadata['methods'] = methods
 			parsed_classes.append(class_metadata)
 
@@ -63,6 +72,7 @@ class CodeParser():
 		Extract class-level metadata 
 		"""
 		metadata = {
+			'package': '',
 			'identifier': '',
 			'superclass': '',
 			'interfaces': '',

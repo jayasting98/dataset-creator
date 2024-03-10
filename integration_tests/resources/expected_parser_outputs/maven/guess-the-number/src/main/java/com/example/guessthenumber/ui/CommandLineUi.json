@@ -1,5 +1,6 @@
 [
     {
+        "package": "com.example.guessthenumber.ui",
         "identifier": "CommandLineUi",
         "superclass": "",
         "interfaces": "implements UserInterface",
