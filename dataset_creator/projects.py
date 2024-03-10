@@ -7,7 +7,7 @@ from typing import Self
 from dataset_creator import utilities
 
 
-class Repository(abc.ABC):
+class Project(abc.ABC):
     @abc.abstractmethod
     def compile(self: Self) -> None:
         raise NotImplementedError()
@@ -21,7 +21,7 @@ class Repository(abc.ABC):
         raise NotImplementedError()
 
 
-class MavenRepository(Repository):
+class MavenProject(Project):
     def __init__(self: Self, root_dir_pathname: str) -> None:
         self._root_dir_pathname = root_dir_pathname
 
@@ -94,7 +94,7 @@ _gradle_init_script_pathname = (
     os.path.join(os.getcwd(), 'scripts', 'init.gradle.kts'))
 
 
-class GradleRepository(Repository):
+class GradleProject(Project):
     def __init__(self: Self, root_dir_pathname: str) -> None:
         self._root_dir_pathname = root_dir_pathname
         self._init_script_rel_pathname = (os.path
@@ -155,17 +155,17 @@ class GradleRepository(Repository):
             self._project_name = project_names[0]
             return self._project_name
 
-def create_repository(root_dir_pathname: str) -> Repository:
+def create_project(root_dir_pathname: str) -> Project:
     if os.path.isfile(os.path.join(root_dir_pathname, 'pom.xml')):
-        return MavenRepository(root_dir_pathname)
+        return MavenProject(root_dir_pathname)
     if (os.path.isfile(os.path.join(root_dir_pathname, 'build.gradle'))
         or os.path.isfile(os.path.join(root_dir_pathname, 'build.gradle.kts'))):
-        return GradleRepository(root_dir_pathname)
+        return GradleProject(root_dir_pathname)
     possible_build_gradle_pathnames = (glob
         .glob('**/build.gradle', recursive=True, root_dir=root_dir_pathname))
     possible_build_gradle_pathnames.extend(glob.glob(
         '**/build.gradle.kts', recursive=True, root_dir=root_dir_pathname))
     for file_pathname in possible_build_gradle_pathnames:
         if os.path.isfile(file_pathname):
-            return GradleRepository(root_dir_pathname)
+            return GradleProject(root_dir_pathname)
     raise ValueError()

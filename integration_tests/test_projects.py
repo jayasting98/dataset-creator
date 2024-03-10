@@ -4,26 +4,26 @@ import subprocess
 import tempfile
 import unittest
 
-from dataset_creator import repositories
+from dataset_creator import projects
 
 
-class MavenRepositoryTest(unittest.TestCase):
+class MavenProjectTest(unittest.TestCase):
     def setUp(self) -> None:
-        self._repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
+        self._proj_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
             'resources', 'repositories', 'maven', 'guess-the-number')
-        self._repo = repositories.MavenRepository(self._repo_dir_pathname)
+        self._proj = projects.MavenProject(self._proj_dir_pathname)
         self._home_dir_pathname = str(pathlib.Path.home())
 
     def test_compile__typical_case__compiles(self):
-        self._repo.compile()
-        build_dir = os.path.join(self._repo_dir_pathname, 'target')
+        self._proj.compile()
+        build_dir = os.path.join(self._proj_dir_pathname, 'target')
         self.assertTrue(os.path.isdir(build_dir))
 
     def test_compile__fails__raises_error(self):
         with tempfile.TemporaryDirectory() as dir:
-            repo = repositories.MavenRepository(dir)
+            proj = projects.MavenProject(dir)
             with self.assertRaises(subprocess.CalledProcessError):
-                repo.compile()
+                proj.compile()
 
     def test_find_classpath_pathnames__typical_case__finds_correctly(self):
         maven_dir_pathname = (
@@ -41,16 +41,16 @@ class MavenRepositoryTest(unittest.TestCase):
                 'byte-buddy-agent', '1.11.13', 'byte-buddy-agent-1.11.13.jar'),
             os.path.join(maven_dir_pathname, 'org', 'objenesis', 'objenesis',
                 '3.2', 'objenesis-3.2.jar'),
-            (os.path.join(self._repo_dir_pathname, 'target', 'classes')
+            (os.path.join(self._proj_dir_pathname, 'target', 'classes')
                 + os.path.sep),
-            (os.path.join(self._repo_dir_pathname, 'target', 'test-classes')
+            (os.path.join(self._proj_dir_pathname, 'target', 'test-classes')
                 + os.path.sep),
-            (os.path.join(self._repo_dir_pathname, 'src', 'main', 'resources')
+            (os.path.join(self._proj_dir_pathname, 'src', 'main', 'resources')
                 + os.path.sep),
-            (os.path.join(self._repo_dir_pathname, 'src', 'test', 'resources')
+            (os.path.join(self._proj_dir_pathname, 'src', 'test', 'resources')
                 + os.path.sep),
         ]
-        actual_classpath_pathnames = self._repo.find_classpath_pathnames()
+        actual_classpath_pathnames = self._proj.find_classpath_pathnames()
         self.assertCountEqual(
             expected_classpath_pathnames, actual_classpath_pathnames)
 
@@ -58,39 +58,39 @@ class MavenRepositoryTest(unittest.TestCase):
         expected_focal_classpath = os.path.join(os.getcwd(),
             'integration_tests', 'resources', 'repositories', 'maven',
             'guess-the-number', 'target', 'classes', '')
-        actual_focal_classpath = self._repo.find_focal_classpath()
+        actual_focal_classpath = self._proj.find_focal_classpath()
         self.assertEqual(expected_focal_classpath, actual_focal_classpath)
 
 
-class GradleRepositoryTest(unittest.TestCase):
+class GradleProjectTest(unittest.TestCase):
     def setUp(self) -> None:
-        self._repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
+        self._proj_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
             'resources', 'repositories', 'gradle', 'guess-the-number')
-        self._repo = repositories.GradleRepository(self._repo_dir_pathname)
+        self._proj = projects.GradleProject(self._proj_dir_pathname)
         self._home_dir_pathname = str(pathlib.Path.home())
 
     def test_compile__typical_case__compiles(self):
-        self._repo.compile()
-        build_dir = os.path.join(self._repo_dir_pathname, 'app', 'build')
+        self._proj.compile()
+        build_dir = os.path.join(self._proj_dir_pathname, 'app', 'build')
         self.assertTrue(os.path.isdir(build_dir))
 
     def test_compile__fails__raises_error(self):
         with tempfile.TemporaryDirectory() as dir:
-            repo = repositories.GradleRepository(dir)
+            proj = projects.GradleProject(dir)
             with self.assertRaises(subprocess.CalledProcessError):
-                repo.compile()
+                proj.compile()
 
     def test_find_classpath_pathnames__typical_case__finds_correctly(self):
         gradle_dir_pathname = os.path.join(self._home_dir_pathname, '.gradle',
             'caches', 'modules-2', 'files-2.1')
         expected_classpath_pathnames = [
-            os.path.join(self._repo_dir_pathname, 'app', 'build', 'classes',
+            os.path.join(self._proj_dir_pathname, 'app', 'build', 'classes',
                 'java', 'main') + os.path.sep,
-            os.path.join(self._repo_dir_pathname, 'app', 'build', 'classes',
+            os.path.join(self._proj_dir_pathname, 'app', 'build', 'classes',
                 'java', 'test') + os.path.sep,
-            os.path.join(self._repo_dir_pathname, 'app', 'build', 'resources',
+            os.path.join(self._proj_dir_pathname, 'app', 'build', 'resources',
                 'main') + os.path.sep,
-            os.path.join(self._repo_dir_pathname, 'app', 'build', 'resources',
+            os.path.join(self._proj_dir_pathname, 'app', 'build', 'resources',
                 'test') + os.path.sep,
             os.path.join(gradle_dir_pathname, 'junit', 'junit', '4.11',
                 '4e031bb61df09069aeb2bffb4019e7a5034a4ee0', 'junit-4.11.jar'),
@@ -111,7 +111,7 @@ class GradleRepositoryTest(unittest.TestCase):
                 '3.2', '7fadf57620c8b8abdf7519533e5527367cb51f09',
                 'objenesis-3.2.jar'),
         ]
-        actual_classpath_pathnames = self._repo.find_classpath_pathnames()
+        actual_classpath_pathnames = self._proj.find_classpath_pathnames()
         self.assertCountEqual(
             expected_classpath_pathnames, actual_classpath_pathnames)
 
@@ -119,24 +119,24 @@ class GradleRepositoryTest(unittest.TestCase):
         expected_focal_classpath = os.path.join(os.getcwd(),
             'integration_tests', 'resources', 'repositories', 'gradle',
             'guess-the-number', 'app', 'build', 'classes', 'java', 'main', '')
-        actual_focal_classpath = self._repo.find_focal_classpath()
+        actual_focal_classpath = self._proj.find_focal_classpath()
         self.assertEqual(expected_focal_classpath, actual_focal_classpath)
 
 
-class RepositoriesTest(unittest.TestCase):
-    def test_create_repository__maven_repository__creates_correctly(self):
-        repo_dir_pathname = os.path.join('integration_tests',
+class ProjectsTest(unittest.TestCase):
+    def test_create_project__maven_project__creates_correctly(self):
+        proj_dir_pathname = os.path.join('integration_tests',
             'resources', 'repositories', 'maven', 'guess-the-number')
-        repo = repositories.create_repository(repo_dir_pathname)
-        self.assertIsInstance(repo, repositories.MavenRepository)
+        proj = projects.create_project(proj_dir_pathname)
+        self.assertIsInstance(proj, projects.MavenProject)
 
-    def test_create_repository__gradle_repository__creates_correctly(self):
-        repo_dir_pathname = os.path.join('integration_tests',
+    def test_create_project__gradle_project__creates_correctly(self):
+        proj_dir_pathname = os.path.join('integration_tests',
             'resources', 'repositories', 'gradle', 'guess-the-number')
-        repo = repositories.create_repository(repo_dir_pathname)
-        self.assertIsInstance(repo, repositories.GradleRepository)
+        proj = projects.create_project(proj_dir_pathname)
+        self.assertIsInstance(proj, projects.GradleProject)
 
-    def test_create_repository__unsupported_repo_type__creates_correctly(self):
+    def test_create_project__unsupported_project_type__creates_correctly(self):
         with (tempfile.TemporaryDirectory() as dir,
             self.assertRaises(ValueError)):
-            repositories.create_repository(dir)
+            projects.create_project(dir)
