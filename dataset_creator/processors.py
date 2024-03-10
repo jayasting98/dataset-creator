@@ -1,5 +1,6 @@
 import abc
 import copy
+import logging
 import tempfile
 from typing import Any
 from typing import Generic
@@ -89,30 +90,40 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
     def process(self: Self) -> None:
         repository_samples = self._loader.load()
         def create_generator():
-            for repository_sample in repository_samples:
+            for i, repository_sample in enumerate(repository_samples):
                 repository_url = repository_sample['repository_url']
+                logging.info(f'repository {i} URL: {repository_url}')
                 with tempfile.TemporaryDirectory() as temp_dir_pathname:
+                    logging.info(f'repository {i} Dir: {temp_dir_pathname}')
                     repo = (
                         git.Repo.clone_from(repository_url, temp_dir_pathname))
                     try:
                         project = projects.create_project(temp_dir_pathname)
+                        logging.info(f'repository {i}: compiling')
                         project.compile()
+                        logging.info(f'repository {i}: finding classpath')
                         classpath_pathnames = project.find_classpath_pathnames()
+                        logging.info(f'repository {i}: finding focal classpath')
                         focal_classpath = project.find_focal_classpath()
                     except Exception:
                         continue
+                    (logging
+                        .info(f'repository {i}: finding focal method samples'))
                     focal_method_samples = (find_map_test_cases
                         .find_focal_method_samples(
                             temp_dir_pathname, self._parser))
+                    logging.info(f'repository {i}: adding coverage data')
                     with_coverage_focal_method_samples = (
                         self._add_coverage_data(focal_method_samples,
                         classpath_pathnames, focal_classpath))
+                    logging.info(f'repository {i}: generating samples')
                     for with_coverage_focal_method_sample in (
                         with_coverage_focal_method_samples):
                         samples = self._generate_samples(repository_url,
                             repo.head.commit.hexsha,
                             with_coverage_focal_method_sample)
                         for sample in samples:
+                            logging.debug(f'repository {i}: {sample}')
                             yield sample
         iterator = utilities.GeneratorFunctionIterator(create_generator)
         self._saver.save(iterator)

@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 
 import dotenv
 
@@ -9,6 +10,7 @@ from dataset_creator import creator_factories
 
 def main(args: argparse.Namespace) -> None:
     dotenv.load_dotenv()
+    logging.basicConfig(level=args.loglevel.upper())
     config_file_pathname: str = args.config_path
     with open(config_file_pathname) as config_file:
         config = json.load(config_file)
