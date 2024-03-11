@@ -85,6 +85,18 @@ class FindMapTestCasesTest(unittest.TestCase):
         self.assertEqual(
             expected_test_to_focal_files, actual_test_to_focal_files)
 
+    def test_map_test_to_focal_files__tests_in_pathname__finds_correctly(self):
+        expected_test_to_focal_files = {
+            'src/test/com/example/ThisIsAClassTests.java':
+                'src/main/com/example/ThisIsAClass.java',
+        }
+        focal_files = ['src/main/com/example/ThisIsAClass.java']
+        test_files = ['src/test/com/example/ThisIsAClassTests.java']
+        actual_test_to_focal_files = (find_map_test_cases
+            .map_test_to_focal_files(focal_files, test_files))
+        self.assertEqual(
+            expected_test_to_focal_files, actual_test_to_focal_files)
+
     def test_find_focal_file_method_samples__typical_case__finds_correctly(
         self,
     ):

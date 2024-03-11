@@ -76,18 +76,24 @@ def find_focal_files(java_files: list[str], test_files: list[str]) -> list[str]:
 	return focal_files
 
 
+def normalize_file_pathname(file_pathname: str) -> str:
+	main_equivalent_pathname = file_pathname.replace('src/test/', 'src/main/')
+	exclude_tests_pathname = main_equivalent_pathname.replace('Tests', '')
+	exclude_test_pathname = exclude_tests_pathname.replace('Test', '')
+	return exclude_test_pathname
+
+
 def map_test_to_focal_files(
 	focal_files: list[str],
 	test_files: list[str],
 ) -> dict[str, str]:
-	norm_focal_files = [f.lower() for f in focal_files]
+	norm_focal_files = [normalize_file_pathname(f) for f in focal_files]
 	test_to_focal_files = dict()
 	for test_file in test_files:
-		norm_test_files = test_file.lower().replace('src/test/', 'src/main/')
-		norm_test_files = norm_test_files.replace('test', '')
-		if norm_test_files not in norm_focal_files:
+		norm_test_file = normalize_file_pathname(test_file)
+		if norm_test_file not in norm_focal_files:
 			continue
-		index = norm_focal_files.index(norm_test_files)
+		index = norm_focal_files.index(norm_test_file)
 		focal_file = focal_files[index]
 		test_to_focal_files[test_file] = focal_file
 	return test_to_focal_files
