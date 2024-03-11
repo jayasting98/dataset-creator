@@ -64,3 +64,13 @@ def space_out_snake_case(x: str) -> str:
     single_underscore_str = _CONSECUTIVE_UNDERSCORES_RE.sub(str(), x)
     spaced_out_str = _SNAKE_CASE_RE.sub(' ', single_underscore_str)
     return spaced_out_str
+
+
+_STANDARD_CAMEL_CASE_RE = re.compile(r'([a-z\d])([A-Z])')
+_ACRONYM_CAMEL_CASE_RE = re.compile(r'(\w)([A-Z][a-z]+)')
+
+
+def space_out_camel_case(x: str) -> str:
+    exclude_acronym_str = _STANDARD_CAMEL_CASE_RE.sub(r'\1 \2', x)
+    spaced_out_str = _ACRONYM_CAMEL_CASE_RE.sub(r'\1 \2', exclude_acronym_str)
+    return spaced_out_str

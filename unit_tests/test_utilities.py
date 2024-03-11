@@ -48,3 +48,21 @@ class UtilitiesTest(unittest.TestCase):
         expected_spaced_out_str = 'test space out snake case'
         actual_spaced_out_str = utilities.space_out_snake_case(x)
         self.assertEqual(expected_spaced_out_str, actual_spaced_out_str)
+
+    def test_space_out_camel_case__non_camel_case_input__leaves_unchanged(self):
+        x = 'test_space_out_camel_case'
+        expected_spaced_out_str = 'test_space_out_camel_case'
+        actual_spaced_out_str = utilities.space_out_camel_case(x)
+        self.assertEqual(expected_spaced_out_str, actual_spaced_out_str)
+
+    def test_space_out_camel_case__camel_case_input__spaces_out(self):
+        x = 'testSpaceOutCamelCase'
+        expected_spaced_out_str = 'test Space Out Camel Case'
+        actual_spaced_out_str = utilities.space_out_camel_case(x)
+        self.assertEqual(expected_spaced_out_str, actual_spaced_out_str)
+
+    def test_space_out_camel_case__acronym_camel_case_input__spaces_out(self):
+        x = 'testSOCamelCase'
+        expected_spaced_out_str = 'test SO Camel Case'
+        actual_spaced_out_str = utilities.space_out_camel_case(x)
+        self.assertEqual(expected_spaced_out_str, actual_spaced_out_str)
