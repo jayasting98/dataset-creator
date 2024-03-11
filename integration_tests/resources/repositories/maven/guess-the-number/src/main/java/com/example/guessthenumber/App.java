@@ -18,7 +18,8 @@ public class App {
 
     private static UserInterface constructUserInterface() {
         Random random = new Random();
-        Logic logic = new StandardLogic(random);
+        int numberToGuess = random.nextInt(StandardLogic.UPPER_BOUND) + 1;
+        Logic logic = new StandardLogic(numberToGuess);
         BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
         PrintStream outputWriter = System.out;
         UserInterface ui = new CommandLineUi(inputReader, outputWriter, logic);
