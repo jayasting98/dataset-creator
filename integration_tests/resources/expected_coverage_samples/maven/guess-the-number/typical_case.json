@@ -4,6 +4,700 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogic"
+        },
+        "focal_method": {
+            "identifier": "isAbleToGuess",
+            "line_start": 17,
+            "col_start": 4,
+            "line_end": 24,
+            "col_end": 5,
+            "body": "@Override\n    public boolean isAbleToGuess() {\n        if (state == GameState.CORRECT) {\n            return false;\n        }\n        boolean hasGuessesLeft = numGuessesTaken < MAX_NUM_GUESSES;\n        return hasGuessesLeft;\n    }"
+        },
+        "focal_line_indices": [
+            23
+        ],
+        "focal_lines": [
+            "        return hasGuessesLeft;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/logic/StandardLogicTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogicTest"
+        },
+        "test_input_method": {
+            "identifier": "testIsAbleToGuess_correctGuess_returnsFalse",
+            "line_start": 9,
+            "col_start": 4,
+            "line_end": 14,
+            "col_end": 5,
+            "body": "@Test\n    public void testIsAbleToGuess_correctGuess_returnsFalse() {\n        StandardLogic logic = new StandardLogic(42);\n        logic.process(42);\n        assertEquals(false, logic.isAbleToGuess());\n    }",
+            "covered_line_indices": [
+                20
+            ],
+            "covered_lines": [
+                "            return false;"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testIsAbleToGuess_notCorrectYetAndHasGuessesLeft_returnsTrue",
+            "line_start": 16,
+            "col_start": 4,
+            "line_end": 21,
+            "col_end": 5,
+            "body": "@Test\n    public void testIsAbleToGuess_notCorrectYetAndHasGuessesLeft_returnsTrue() {\n        StandardLogic logic = new StandardLogic(42);\n        logic.process(41);\n        assertEquals(true, logic.isAbleToGuess());\n    }",
+            "covered_line_indices": [
+                23
+            ],
+            "covered_lines": [
+                "        return hasGuessesLeft;"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogic"
+        },
+        "focal_method": {
+            "identifier": "isAbleToGuess",
+            "line_start": 17,
+            "col_start": 4,
+            "line_end": 24,
+            "col_end": 5,
+            "body": "@Override\n    public boolean isAbleToGuess() {\n        if (state == GameState.CORRECT) {\n            return false;\n        }\n        boolean hasGuessesLeft = numGuessesTaken < MAX_NUM_GUESSES;\n        return hasGuessesLeft;\n    }"
+        },
+        "focal_line_indices": [
+            22,
+            23
+        ],
+        "focal_lines": [
+            "        boolean hasGuessesLeft = numGuessesTaken < MAX_NUM_GUESSES;",
+            "        return hasGuessesLeft;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/logic/StandardLogicTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogicTest"
+        },
+        "test_input_method": {
+            "identifier": "testIsAbleToGuess_correctGuess_returnsFalse",
+            "line_start": 9,
+            "col_start": 4,
+            "line_end": 14,
+            "col_end": 5,
+            "body": "@Test\n    public void testIsAbleToGuess_correctGuess_returnsFalse() {\n        StandardLogic logic = new StandardLogic(42);\n        logic.process(42);\n        assertEquals(false, logic.isAbleToGuess());\n    }",
+            "covered_line_indices": [
+                20
+            ],
+            "covered_lines": [
+                "            return false;"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testIsAbleToGuess_notCorrectYetAndHasNoGuessesLeft_returnsFalse",
+            "line_start": 23,
+            "col_start": 4,
+            "line_end": 34,
+            "col_end": 5,
+            "body": "@Test\n    public void testIsAbleToGuess_notCorrectYetAndHasNoGuessesLeft_returnsFalse() {\n        StandardLogic logic = new StandardLogic(42);\n        logic.process(41);\n        logic.process(41);\n        logic.process(41);\n        logic.process(41);\n        logic.process(41);\n        assertEquals(true, logic.isAbleToGuess());\n        logic.process(41);\n        assertEquals(false, logic.isAbleToGuess());\n    }",
+            "covered_line_indices": [
+                22,
+                23
+            ],
+            "covered_lines": [
+                "        boolean hasGuessesLeft = numGuessesTaken < MAX_NUM_GUESSES;",
+                "        return hasGuessesLeft;"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogic"
+        },
+        "focal_method": {
+            "identifier": "isAbleToGuess",
+            "line_start": 17,
+            "col_start": 4,
+            "line_end": 24,
+            "col_end": 5,
+            "body": "@Override\n    public boolean isAbleToGuess() {\n        if (state == GameState.CORRECT) {\n            return false;\n        }\n        boolean hasGuessesLeft = numGuessesTaken < MAX_NUM_GUESSES;\n        return hasGuessesLeft;\n    }"
+        },
+        "focal_line_indices": [
+            20
+        ],
+        "focal_lines": [
+            "            return false;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/logic/StandardLogicTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogicTest"
+        },
+        "test_input_method": {
+            "identifier": "testIsAbleToGuess_notCorrectYetAndHasGuessesLeft_returnsTrue",
+            "line_start": 16,
+            "col_start": 4,
+            "line_end": 21,
+            "col_end": 5,
+            "body": "@Test\n    public void testIsAbleToGuess_notCorrectYetAndHasGuessesLeft_returnsTrue() {\n        StandardLogic logic = new StandardLogic(42);\n        logic.process(41);\n        assertEquals(true, logic.isAbleToGuess());\n    }",
+            "covered_line_indices": [
+                23
+            ],
+            "covered_lines": [
+                "        return hasGuessesLeft;"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testIsAbleToGuess_correctGuess_returnsFalse",
+            "line_start": 9,
+            "col_start": 4,
+            "line_end": 14,
+            "col_end": 5,
+            "body": "@Test\n    public void testIsAbleToGuess_correctGuess_returnsFalse() {\n        StandardLogic logic = new StandardLogic(42);\n        logic.process(42);\n        assertEquals(false, logic.isAbleToGuess());\n    }",
+            "covered_line_indices": [
+                20
+            ],
+            "covered_lines": [
+                "            return false;"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogic"
+        },
+        "focal_method": {
+            "identifier": "isAbleToGuess",
+            "line_start": 17,
+            "col_start": 4,
+            "line_end": 24,
+            "col_end": 5,
+            "body": "@Override\n    public boolean isAbleToGuess() {\n        if (state == GameState.CORRECT) {\n            return false;\n        }\n        boolean hasGuessesLeft = numGuessesTaken < MAX_NUM_GUESSES;\n        return hasGuessesLeft;\n    }"
+        },
+        "focal_line_indices": [
+            22
+        ],
+        "focal_lines": [
+            "        boolean hasGuessesLeft = numGuessesTaken < MAX_NUM_GUESSES;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/logic/StandardLogicTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogicTest"
+        },
+        "test_input_method": {
+            "identifier": "testIsAbleToGuess_notCorrectYetAndHasGuessesLeft_returnsTrue",
+            "line_start": 16,
+            "col_start": 4,
+            "line_end": 21,
+            "col_end": 5,
+            "body": "@Test\n    public void testIsAbleToGuess_notCorrectYetAndHasGuessesLeft_returnsTrue() {\n        StandardLogic logic = new StandardLogic(42);\n        logic.process(41);\n        assertEquals(true, logic.isAbleToGuess());\n    }",
+            "covered_line_indices": [
+                23
+            ],
+            "covered_lines": [
+                "        return hasGuessesLeft;"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testIsAbleToGuess_notCorrectYetAndHasNoGuessesLeft_returnsFalse",
+            "line_start": 23,
+            "col_start": 4,
+            "line_end": 34,
+            "col_end": 5,
+            "body": "@Test\n    public void testIsAbleToGuess_notCorrectYetAndHasNoGuessesLeft_returnsFalse() {\n        StandardLogic logic = new StandardLogic(42);\n        logic.process(41);\n        logic.process(41);\n        logic.process(41);\n        logic.process(41);\n        logic.process(41);\n        assertEquals(true, logic.isAbleToGuess());\n        logic.process(41);\n        assertEquals(false, logic.isAbleToGuess());\n    }",
+            "covered_line_indices": [
+                22,
+                23
+            ],
+            "covered_lines": [
+                "        boolean hasGuessesLeft = numGuessesTaken < MAX_NUM_GUESSES;",
+                "        return hasGuessesLeft;"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogic"
+        },
+        "focal_method": {
+            "identifier": "isAbleToGuess",
+            "line_start": 17,
+            "col_start": 4,
+            "line_end": 24,
+            "col_end": 5,
+            "body": "@Override\n    public boolean isAbleToGuess() {\n        if (state == GameState.CORRECT) {\n            return false;\n        }\n        boolean hasGuessesLeft = numGuessesTaken < MAX_NUM_GUESSES;\n        return hasGuessesLeft;\n    }"
+        },
+        "focal_line_indices": [
+            20
+        ],
+        "focal_lines": [
+            "            return false;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/logic/StandardLogicTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogicTest"
+        },
+        "test_input_method": {
+            "identifier": "testIsAbleToGuess_notCorrectYetAndHasNoGuessesLeft_returnsFalse",
+            "line_start": 23,
+            "col_start": 4,
+            "line_end": 34,
+            "col_end": 5,
+            "body": "@Test\n    public void testIsAbleToGuess_notCorrectYetAndHasNoGuessesLeft_returnsFalse() {\n        StandardLogic logic = new StandardLogic(42);\n        logic.process(41);\n        logic.process(41);\n        logic.process(41);\n        logic.process(41);\n        logic.process(41);\n        assertEquals(true, logic.isAbleToGuess());\n        logic.process(41);\n        assertEquals(false, logic.isAbleToGuess());\n    }",
+            "covered_line_indices": [
+                22,
+                23
+            ],
+            "covered_lines": [
+                "        boolean hasGuessesLeft = numGuessesTaken < MAX_NUM_GUESSES;",
+                "        return hasGuessesLeft;"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testIsAbleToGuess_correctGuess_returnsFalse",
+            "line_start": 9,
+            "col_start": 4,
+            "line_end": 14,
+            "col_end": 5,
+            "body": "@Test\n    public void testIsAbleToGuess_correctGuess_returnsFalse() {\n        StandardLogic logic = new StandardLogic(42);\n        logic.process(42);\n        assertEquals(false, logic.isAbleToGuess());\n    }",
+            "covered_line_indices": [
+                20
+            ],
+            "covered_lines": [
+                "            return false;"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogic"
+        },
+        "focal_method": {
+            "identifier": "process",
+            "line_start": 26,
+            "col_start": 4,
+            "line_end": 36,
+            "col_end": 5,
+            "body": "@Override\n    public void process(int guessedNumber) {\n        numGuessesTaken++;\n        if (guessedNumber > numberToGuess) {\n            state = GameState.OVERESTIMATE;\n        } else if (guessedNumber < numberToGuess) {\n            state = GameState.UNDERESTIMATE;\n        } else {\n            state = GameState.CORRECT;\n        }\n    }"
+        },
+        "focal_line_indices": [
+            32
+        ],
+        "focal_lines": [
+            "            state = GameState.UNDERESTIMATE;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/logic/StandardLogicTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogicTest"
+        },
+        "test_input_method": {
+            "identifier": "testProcess_overestimate_incrementsNumGuessesTakenAndTransitionsToOverestimateState",
+            "line_start": 36,
+            "col_start": 4,
+            "line_end": 43,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_overestimate_incrementsNumGuessesTakenAndTransitionsToOverestimateState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(43);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.OVERESTIMATE, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                30,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.OVERESTIMATE;",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testProcess_underestimate_incrementsNumGuessesTakenAndTransitionsToUnderestimateState",
+            "line_start": 45,
+            "col_start": 4,
+            "line_end": 52,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_underestimate_incrementsNumGuessesTakenAndTransitionsToUnderestimateState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(41);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.UNDERESTIMATE, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                32,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.UNDERESTIMATE;",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogic"
+        },
+        "focal_method": {
+            "identifier": "process",
+            "line_start": 26,
+            "col_start": 4,
+            "line_end": 36,
+            "col_end": 5,
+            "body": "@Override\n    public void process(int guessedNumber) {\n        numGuessesTaken++;\n        if (guessedNumber > numberToGuess) {\n            state = GameState.OVERESTIMATE;\n        } else if (guessedNumber < numberToGuess) {\n            state = GameState.UNDERESTIMATE;\n        } else {\n            state = GameState.CORRECT;\n        }\n    }"
+        },
+        "focal_line_indices": [
+            34
+        ],
+        "focal_lines": [
+            "            state = GameState.CORRECT;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/logic/StandardLogicTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogicTest"
+        },
+        "test_input_method": {
+            "identifier": "testProcess_overestimate_incrementsNumGuessesTakenAndTransitionsToOverestimateState",
+            "line_start": 36,
+            "col_start": 4,
+            "line_end": 43,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_overestimate_incrementsNumGuessesTakenAndTransitionsToOverestimateState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(43);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.OVERESTIMATE, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                30,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.OVERESTIMATE;",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testProcess_correctGuess_incrementsNumGuessesTakenAndTransitionsToCorrectState",
+            "line_start": 54,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_correctGuess_incrementsNumGuessesTakenAndTransitionsToCorrectState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(42);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.CORRECT, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                34,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.CORRECT;",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogic"
+        },
+        "focal_method": {
+            "identifier": "process",
+            "line_start": 26,
+            "col_start": 4,
+            "line_end": 36,
+            "col_end": 5,
+            "body": "@Override\n    public void process(int guessedNumber) {\n        numGuessesTaken++;\n        if (guessedNumber > numberToGuess) {\n            state = GameState.OVERESTIMATE;\n        } else if (guessedNumber < numberToGuess) {\n            state = GameState.UNDERESTIMATE;\n        } else {\n            state = GameState.CORRECT;\n        }\n    }"
+        },
+        "focal_line_indices": [
+            30
+        ],
+        "focal_lines": [
+            "            state = GameState.OVERESTIMATE;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/logic/StandardLogicTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogicTest"
+        },
+        "test_input_method": {
+            "identifier": "testProcess_underestimate_incrementsNumGuessesTakenAndTransitionsToUnderestimateState",
+            "line_start": 45,
+            "col_start": 4,
+            "line_end": 52,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_underestimate_incrementsNumGuessesTakenAndTransitionsToUnderestimateState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(41);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.UNDERESTIMATE, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                32,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.UNDERESTIMATE;",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testProcess_overestimate_incrementsNumGuessesTakenAndTransitionsToOverestimateState",
+            "line_start": 36,
+            "col_start": 4,
+            "line_end": 43,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_overestimate_incrementsNumGuessesTakenAndTransitionsToOverestimateState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(43);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.OVERESTIMATE, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                30,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.OVERESTIMATE;",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogic"
+        },
+        "focal_method": {
+            "identifier": "process",
+            "line_start": 26,
+            "col_start": 4,
+            "line_end": 36,
+            "col_end": 5,
+            "body": "@Override\n    public void process(int guessedNumber) {\n        numGuessesTaken++;\n        if (guessedNumber > numberToGuess) {\n            state = GameState.OVERESTIMATE;\n        } else if (guessedNumber < numberToGuess) {\n            state = GameState.UNDERESTIMATE;\n        } else {\n            state = GameState.CORRECT;\n        }\n    }"
+        },
+        "focal_line_indices": [
+            34
+        ],
+        "focal_lines": [
+            "            state = GameState.CORRECT;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/logic/StandardLogicTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogicTest"
+        },
+        "test_input_method": {
+            "identifier": "testProcess_underestimate_incrementsNumGuessesTakenAndTransitionsToUnderestimateState",
+            "line_start": 45,
+            "col_start": 4,
+            "line_end": 52,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_underestimate_incrementsNumGuessesTakenAndTransitionsToUnderestimateState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(41);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.UNDERESTIMATE, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                32,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.UNDERESTIMATE;",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testProcess_correctGuess_incrementsNumGuessesTakenAndTransitionsToCorrectState",
+            "line_start": 54,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_correctGuess_incrementsNumGuessesTakenAndTransitionsToCorrectState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(42);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.CORRECT, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                34,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.CORRECT;",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogic"
+        },
+        "focal_method": {
+            "identifier": "process",
+            "line_start": 26,
+            "col_start": 4,
+            "line_end": 36,
+            "col_end": 5,
+            "body": "@Override\n    public void process(int guessedNumber) {\n        numGuessesTaken++;\n        if (guessedNumber > numberToGuess) {\n            state = GameState.OVERESTIMATE;\n        } else if (guessedNumber < numberToGuess) {\n            state = GameState.UNDERESTIMATE;\n        } else {\n            state = GameState.CORRECT;\n        }\n    }"
+        },
+        "focal_line_indices": [
+            30
+        ],
+        "focal_lines": [
+            "            state = GameState.OVERESTIMATE;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/logic/StandardLogicTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogicTest"
+        },
+        "test_input_method": {
+            "identifier": "testProcess_correctGuess_incrementsNumGuessesTakenAndTransitionsToCorrectState",
+            "line_start": 54,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_correctGuess_incrementsNumGuessesTakenAndTransitionsToCorrectState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(42);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.CORRECT, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                34,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.CORRECT;",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testProcess_overestimate_incrementsNumGuessesTakenAndTransitionsToOverestimateState",
+            "line_start": 36,
+            "col_start": 4,
+            "line_end": 43,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_overestimate_incrementsNumGuessesTakenAndTransitionsToOverestimateState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(43);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.OVERESTIMATE, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                30,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.OVERESTIMATE;",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
+        "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
+        "focal_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogic"
+        },
+        "focal_method": {
+            "identifier": "process",
+            "line_start": 26,
+            "col_start": 4,
+            "line_end": 36,
+            "col_end": 5,
+            "body": "@Override\n    public void process(int guessedNumber) {\n        numGuessesTaken++;\n        if (guessedNumber > numberToGuess) {\n            state = GameState.OVERESTIMATE;\n        } else if (guessedNumber < numberToGuess) {\n            state = GameState.UNDERESTIMATE;\n        } else {\n            state = GameState.CORRECT;\n        }\n    }"
+        },
+        "focal_line_indices": [
+            32
+        ],
+        "focal_lines": [
+            "            state = GameState.UNDERESTIMATE;"
+        ],
+        "test_file": "src/test/java/com/example/guessthenumber/logic/StandardLogicTest.java",
+        "test_class": {
+            "package": "com.example.guessthenumber.logic",
+            "identifier": "StandardLogicTest"
+        },
+        "test_input_method": {
+            "identifier": "testProcess_correctGuess_incrementsNumGuessesTakenAndTransitionsToCorrectState",
+            "line_start": 54,
+            "col_start": 4,
+            "line_end": 61,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_correctGuess_incrementsNumGuessesTakenAndTransitionsToCorrectState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(42);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.CORRECT, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                34,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.CORRECT;",
+                "    }"
+            ]
+        },
+        "test_target_method": {
+            "identifier": "testProcess_underestimate_incrementsNumGuessesTakenAndTransitionsToUnderestimateState",
+            "line_start": 45,
+            "col_start": 4,
+            "line_end": 52,
+            "col_end": 5,
+            "body": "@Test\n    public void testProcess_underestimate_incrementsNumGuessesTakenAndTransitionsToUnderestimateState() {\n        StandardLogic logic = new StandardLogic(42);\n        assertEquals(0, logic.getNumGuessesTaken());\n        logic.process(41);\n        assertEquals(1, logic.getNumGuessesTaken());\n        assertEquals(GameState.UNDERESTIMATE, logic.getState());\n    }",
+            "covered_line_indices": [
+                28,
+                32,
+                36
+            ],
+            "covered_lines": [
+                "        numGuessesTaken++;",
+                "            state = GameState.UNDERESTIMATE;",
+                "    }"
+            ]
+        }
+    },
+    {
+        "repository": {
+            "repository_url": "https://github.com/username/guess-the-number",
+            "repository_hexsha": "hexsha"
+        },
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",

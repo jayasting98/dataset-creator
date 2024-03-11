@@ -110,22 +110,23 @@ def normalize_method_id(method_id: str) -> str:
 def find_focal_file_method_samples(focal_methods, test_methods) -> list:
 	focal_index_test_methods: dict[int, list] = dict()
 	focal_class_method_samples = list()
-	norm_focal_method_ids = [f['identifier'].lower() for f in focal_methods]
+	focal_method_ids = [f['identifier'] for f in focal_methods]
+	norm_focal_method_ids = [normalize_method_id(f) for f in focal_method_ids]
 	for test_method in test_methods:
-		norm_test_method_id = (
-			test_method['identifier'].lower().replace('test', ''))
+		norm_test_method_id = normalize_method_id(test_method['identifier'])
 		focal_method_index = None
-		if norm_test_method_id in norm_focal_method_ids:
-			focal_method_index = (
-				norm_focal_method_ids.index(norm_test_method_id))
-		else:
-			norm_invocations = [i.lower() for i in test_method['invocations']]
+		for i, norm_focal_method_id in enumerate(norm_focal_method_ids):
+			if norm_focal_method_id in norm_test_method_id:
+				focal_method_index = i
+				break
+		if focal_method_index is None:
+			test_invocations = test_method['invocations']
 			overlapping_invocations = list(
-				set(norm_invocations).intersection(set(norm_focal_method_ids)))
+				set(test_invocations).intersection(set(focal_method_ids)))
 			if len(overlapping_invocations) != 1:
 				continue
 			focal_method_index = (
-				norm_focal_method_ids.index(overlapping_invocations[0]))
+				focal_method_ids.index(overlapping_invocations[0]))
 		if focal_method_index is None:
 			continue
 		if focal_method_index not in focal_index_test_methods:

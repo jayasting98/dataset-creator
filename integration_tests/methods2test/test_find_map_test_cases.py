@@ -150,6 +150,13 @@ class FindMapTestCasesTest(unittest.TestCase):
                     'doSomething1',
                 ],
             },
+            {
+                'identifier': 'testDoSomething1_someCase_behavesSomeWay',
+                'invocations': [
+                    'doSomething0',
+                    'doSomething1',
+                ],
+            },
         ]
         expected_focal_file_method_samples = [
             {
@@ -180,6 +187,21 @@ class FindMapTestCasesTest(unittest.TestCase):
                     {
                         'identifier': 'shouldDoSomething1',
                         'invocations': [
+                            'doSomething0',
+                            'doSomething1',
+                        ],
+                    },
+                    {
+                        'identifier': 'shouldDoSomething1',
+                        'invocations': [
+                            'doSomething1',
+                        ],
+                    },
+                    {
+                        'identifier':
+                            'testDoSomething1_someCase_behavesSomeWay',
+                        'invocations': [
+                            'doSomething0',
                             'doSomething1',
                         ],
                     },
