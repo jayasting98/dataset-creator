@@ -42,9 +42,12 @@ class MainTest(unittest.TestCase):
             mock_load_dataset.return_value = dataset
             main.main(args)
         expected_lines = [
-            "{'repository_name': 'user1/repo1'}\n",
-            "{'repository_name': 'user1/repo2'}\n",
-            "{'repository_name': 'user2/repo1'}\n",
+            ("{'repository_name': 'user1/repo1', "
+                + "'repository_url': 'https://github.com/user1/repo1'}\n"),
+            ("{'repository_name': 'user1/repo2', "
+                + "'repository_url': 'https://github.com/user1/repo2'}\n"),
+            ("{'repository_name': 'user2/repo1', "
+                + "'repository_url': 'https://github.com/user2/repo1'}\n"),
         ]
         with open(save_file_pathname) as file:
             actual_lines = file.readlines()
@@ -74,8 +77,10 @@ class MainTest(unittest.TestCase):
             mock_load_dataset.return_value = dataset
             main.main(args)
         expected_lines = [
-            "{'repository_name': 'user1/repo1'}\n",
-            "{'repository_name': 'user1/repo2'}\n",
+            ("{'repository_name': 'user1/repo1', "
+                + "'repository_url': 'https://github.com/user1/repo1'}\n"),
+            ("{'repository_name': 'user1/repo2', "
+                + "'repository_url': 'https://github.com/user1/repo2'}\n"),
         ]
         with open(save_file_pathname) as file:
             actual_lines = file.readlines()
