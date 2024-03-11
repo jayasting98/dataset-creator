@@ -120,14 +120,16 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                     with_coverage_focal_method_samples = (
                         self._add_coverage_data(focal_method_samples,
                         classpath_pathnames, focal_classpath))
+                    logging.debug(
+                        f'repository {i}: {with_coverage_focal_method_samples}')
                     logging.info(f'repository {i}: generating samples')
                     for with_coverage_focal_method_sample in (
                         with_coverage_focal_method_samples):
                         samples = self._generate_samples(repository_url,
                             repo.head.commit.hexsha,
                             with_coverage_focal_method_sample)
+                        logging.debug(f'repository {i}: {samples}')
                         for sample in samples:
-                            logging.debug(f'repository {i}: {sample}')
                             yield sample
         iterator = utilities.GeneratorFunctionIterator(create_generator)
         self._saver.save(iterator)
