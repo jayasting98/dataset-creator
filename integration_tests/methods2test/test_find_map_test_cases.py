@@ -97,6 +97,21 @@ class FindMapTestCasesTest(unittest.TestCase):
         self.assertEqual(
             expected_test_to_focal_files, actual_test_to_focal_files)
 
+    def test_normalize_method_id__camel_case_only__normalizes_correctly(self):
+        method_id = 'doSomethingInCamelCase'
+        expected_norm_method_id = 'do something in camel case'
+        actual_norm_method_id = (
+            find_map_test_cases.normalize_method_id(method_id))
+        self.assertEqual(expected_norm_method_id, actual_norm_method_id)
+
+    def test_normalize_method_id__underscore_camel__normalizes_correctly(self):
+        method_id = 'testDoSomethingInCamelCase_typicalCase_worksFine'
+        expected_norm_method_id = (
+            'test do something in camel case typical case works fine')
+        actual_norm_method_id = (
+            find_map_test_cases.normalize_method_id(method_id))
+        self.assertEqual(expected_norm_method_id, actual_norm_method_id)
+
     def test_find_focal_file_method_samples__typical_case__finds_correctly(
         self,
     ):

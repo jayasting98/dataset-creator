@@ -99,6 +99,14 @@ def map_test_to_focal_files(
 	return test_to_focal_files
 
 
+def normalize_method_id(method_id: str) -> str:
+	spaced_out_snake_case = utilities.space_out_snake_case(method_id)
+	spaced_out_camel_case = (
+		utilities.space_out_camel_case(spaced_out_snake_case))
+	lowercase_spaced_out_id = spaced_out_camel_case.lower()
+	return lowercase_spaced_out_id
+
+
 def find_focal_file_method_samples(focal_methods, test_methods) -> list:
 	focal_index_test_methods: dict[int, list] = dict()
 	focal_class_method_samples = list()
