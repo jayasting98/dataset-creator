@@ -28,3 +28,23 @@ class WorkingDirectoryTest(unittest.TestCase):
         with utilities.WorkingDirectory('/tmp'):
             self.assertEqual('/tmp', os.getcwd())
         self.assertEqual(current_working_directory, os.getcwd())
+
+
+class UtilitiesTest(unittest.TestCase):
+    def test_space_out_snake_case__non_snake_case_input__leaves_unchanged(self):
+        x = 'testSpaceOutSnakeCase'
+        expected_spaced_out_str = 'testSpaceOutSnakeCase'
+        actual_spaced_out_str = utilities.space_out_snake_case(x)
+        self.assertEqual(expected_spaced_out_str, actual_spaced_out_str)
+
+    def test_space_out_snake_case__snake_case_input__spaces_out(self):
+        x = 'test_space_out_snake_case'
+        expected_spaced_out_str = 'test space out snake case'
+        actual_spaced_out_str = utilities.space_out_snake_case(x)
+        self.assertEqual(expected_spaced_out_str, actual_spaced_out_str)
+
+    def test_space_out_snake_case__consecutive_underscore__one_space(self):
+        x = 'test__space__out__snake__case'
+        expected_spaced_out_str = 'test space out snake case'
+        actual_spaced_out_str = utilities.space_out_snake_case(x)
+        self.assertEqual(expected_spaced_out_str, actual_spaced_out_str)

@@ -2,6 +2,7 @@ from collections.abc import Callable
 from collections.abc import Generator
 from collections.abc import Iterator
 import os
+import re
 from types import TracebackType
 from typing import Self
 from typing import TypeVar
@@ -53,3 +54,13 @@ class WorkingDirectory:
     ) -> bool:
         os.chdir(self._original_working_dir_pathname)
         return False
+
+
+_CONSECUTIVE_UNDERSCORES_RE = re.compile(r'(?<=_)_')
+_SNAKE_CASE_RE = re.compile(r'(?<=\w)_')
+
+
+def space_out_snake_case(x: str) -> str:
+    single_underscore_str = _CONSECUTIVE_UNDERSCORES_RE.sub(str(), x)
+    spaced_out_str = _SNAKE_CASE_RE.sub(' ', single_underscore_str)
+    return spaced_out_str
