@@ -98,8 +98,8 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                     logging.info(f'repository {i} Dir: {temp_dir_pathname}')
                     repo = (
                         git.Repo.clone_from(repository_url, temp_dir_pathname))
-                    project = projects.create_project(temp_dir_pathname)
                     try:
+                        project = projects.create_project(temp_dir_pathname)
                         subproject_pathnames = (
                             project.find_subproject_pathnames())
                     except Exception as exception:
@@ -129,6 +129,7 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
         repository_hexsha: str,
         project: projects.Project,
     ) -> list[dict[str, Any]]:
+        logging.info(f'project dir: {project.root_dir_pathname}')
         logging.info('compiling')
         project.compile()
         logging.info('finding classpath')

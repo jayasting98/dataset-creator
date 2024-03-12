@@ -1,5 +1,6 @@
 import abc
 import glob
+import logging
 import os
 import subprocess
 from typing import Self
@@ -42,6 +43,7 @@ class MavenProject(Project):
         while i < len(pathnames):
             pathname = pathnames[i]
             i += 1
+            logging.info(f'finding subprojects: {pathname}')
             args = ['mvn', 'help:evaluate', '-Dexpression=project.modules',
                 '-q', '-DforceStdout']
             with utilities.WorkingDirectory(pathname):
@@ -150,6 +152,7 @@ class GradleProject(Project):
             pathname = pathnames[i]
             path = paths[i]
             i += 1
+            logging.info(f'finding subprojects: {pathname}')
             subproject_pathnames.append(pathname)
             init_script_rel_pathname = (os.path
                 .relpath(_gradle_init_script_pathname, pathname))
