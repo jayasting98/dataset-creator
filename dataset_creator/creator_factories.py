@@ -134,6 +134,7 @@ class CoverageLocalDataFactory(
         self._base_url = config['base_url']
         self._grammar_file = config['grammar_file']
         self._language = config['language']
+        self._timeout = config.get('timeout')
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
         loader = loaders.HuggingFaceLoader(self._loader_config)
@@ -151,7 +152,8 @@ class CoverageLocalDataFactory(
         saver: savers.Saver[dict[str, Any]],
     ) -> processors.Processor[dict[str, Any], dict[str, Any]]:
         session = requests.Session()
-        code_cov_api = coverages.CodeCovApi(session, self._base_url)
+        code_cov_api = (coverages
+            .CodeCovApi(session, self._base_url, timeout=self._timeout))
         parser = code_parsers.CodeParser(self._grammar_file, self._language)
         processor = (processors
             .CoverageSamplesProcessor(loader, saver, code_cov_api, parser))
@@ -168,6 +170,7 @@ class CoverageHuggingFaceGoogleCloudStorageFactory(
         self._base_url = config['base_url']
         self._grammar_file = config['grammar_file']
         self._language = config['language']
+        self._timeout = config.get('timeout')
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
         loader = loaders.HuggingFaceLoader(self._loader_config)
@@ -188,7 +191,8 @@ class CoverageHuggingFaceGoogleCloudStorageFactory(
         saver: savers.Saver[dict[str, Any]],
     ) -> processors.Processor[dict[str, Any], dict[str, Any]]:
         session = requests.Session()
-        code_cov_api = coverages.CodeCovApi(session, self._base_url)
+        code_cov_api = (coverages
+            .CodeCovApi(session, self._base_url, timeout=self._timeout))
         parser = code_parsers.CodeParser(self._grammar_file, self._language)
         processor = (processors
             .CoverageSamplesProcessor(loader, saver, code_cov_api, parser))

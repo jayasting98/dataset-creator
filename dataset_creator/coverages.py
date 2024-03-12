@@ -22,14 +22,17 @@ class CodeCovApi:
         self: Self,
         session: requests.Session,
         base_url: str,
+        timeout: int | None = None,
     ) -> None:
         self._session = session
         self._base_url = base_url
+        self._timeout = timeout
 
     def create_coverage(
         self: Self,
         request_data: CreateCoverageRequestData,
     ) -> requests.Response:
         url = os.path.join(self._base_url, 'coverages')
-        response = self._session.post(url, json=request_data)
+        response = (
+            self._session.post(url, json=request_data, timeout=self._timeout))
         return response
