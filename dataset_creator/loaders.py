@@ -20,13 +20,22 @@ class Loader(abc.ABC, Generic[_T]):
 
 
 class HuggingFaceLoader(Loader[dict[str, Any]]):
-    def __init__(self: Self, config: dict[str, Any]) -> None:
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        skip: int | None = None,
+    ) -> None:
         self._config = dict(streaming=True, **config)
+        self._skip = skip
 
     def load(self: Self) -> Iterator[dict[str, Any]]:
         dataset = datasets.load_dataset(**self._config)
+        ds_iterator = iter(dataset)
+        if self._skip is not None:
+            for _ in range(self._skip):
+                next(ds_iterator, None)
         def create_generator():
-            for sample in dataset:
+            for sample in ds_iterator:
                 yield sample
         iterator = utilities.GeneratorFunctionIterator(create_generator)
         return iterator

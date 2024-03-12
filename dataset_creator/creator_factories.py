@@ -45,11 +45,12 @@ class TheStackRepositoryLocalDataFactory(
     CreatorFactory[dict[str, Any], dict[str, str]],
 ):
     def __init__(self: Self, config: dict[str, Any]) -> None:
-        self._loader_config = config['loader']
+        self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
-        loader = loaders.HuggingFaceLoader(self._loader_config)
+        skip: int | None = self._loader_config.pop('skip', None)
+        loader = loaders.HuggingFaceLoader(self._loader_config, skip=skip)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
@@ -72,11 +73,12 @@ class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
     CreatorFactory[dict[str, Any], dict[str, str]],
 ):
     def __init__(self: Self, config: dict[str, Any]) -> None:
-        self._loader_config = config['loader']
+        self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
-        loader = loaders.HuggingFaceLoader(self._loader_config)
+        skip: int | None = self._loader_config.pop('skip', None)
+        loader = loaders.HuggingFaceLoader(self._loader_config, skip=skip)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
@@ -102,11 +104,12 @@ class HuggingFaceGoogleCloudStorageToLocalDataFactory(
     CreatorFactory[dict[str, Any], dict[str, Any]],
 ):
     def __init__(self: Self, config: dict[str, Any]) -> None:
-        self._loader_config = config['loader']
+        self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
-        loader = loaders.HuggingFaceLoader(self._loader_config)
+        skip: int | None = self._loader_config.pop('skip', None)
+        loader = loaders.HuggingFaceLoader(self._loader_config, skip=skip)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
@@ -129,7 +132,7 @@ class CoverageLocalDataFactory(
     CreatorFactory[dict[str, Any], dict[str, Any]],
 ):
     def __init__(self: Self, config: dict[str, Any]) -> None:
-        self._loader_config = config['loader']
+        self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
         self._base_url = config['base_url']
         self._grammar_file = config['grammar_file']
@@ -137,7 +140,8 @@ class CoverageLocalDataFactory(
         self._timeout = config.get('timeout')
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
-        loader = loaders.HuggingFaceLoader(self._loader_config)
+        skip: int | None = self._loader_config.pop('skip', None)
+        loader = loaders.HuggingFaceLoader(self._loader_config, skip=skip)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, Any]]:
@@ -165,7 +169,7 @@ class CoverageHuggingFaceGoogleCloudStorageFactory(
     CreatorFactory[dict[str, Any], dict[str, Any]],
 ):
     def __init__(self: Self, config: dict[str, Any]) -> None:
-        self._loader_config = config['loader']
+        self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
         self._base_url = config['base_url']
         self._grammar_file = config['grammar_file']
@@ -173,7 +177,8 @@ class CoverageHuggingFaceGoogleCloudStorageFactory(
         self._timeout = config.get('timeout')
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
-        loader = loaders.HuggingFaceLoader(self._loader_config)
+        skip: int | None = self._loader_config.pop('skip', None)
+        loader = loaders.HuggingFaceLoader(self._loader_config, skip=skip)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, Any]]:
