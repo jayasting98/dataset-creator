@@ -14,6 +14,25 @@ class MavenProjectTest(unittest.TestCase):
         self._proj = projects.MavenProject(self._proj_dir_pathname)
         self._home_dir_pathname = str(pathlib.Path.home())
 
+    def test_find_subproject_pathnames__has_subprojects__finds_correctly(self):
+        parent_proj_dir_pathname = os.path.join(os.getcwd(),
+            'integration_tests', 'resources', 'repositories', 'maven',
+            'parent-project')
+        parent_proj = projects.MavenProject(parent_proj_dir_pathname)
+        expected_subproject_pathnames = [
+            os.path.join(parent_proj_dir_pathname, 'subproject1'),
+            os.path.join(parent_proj_dir_pathname, 'project', 'subproject0'),
+        ]
+        actual_subproject_pathnames = parent_proj.find_subproject_pathnames()
+        self.assertEqual(
+            expected_subproject_pathnames, actual_subproject_pathnames)
+
+    def test_find_subproject_pathnames__no_subprojects__finds_correctly(self):
+        expected_subproject_pathnames = [self._proj_dir_pathname]
+        actual_subproject_pathnames = self._proj.find_subproject_pathnames()
+        self.assertEqual(
+            expected_subproject_pathnames, actual_subproject_pathnames)
+
     def test_compile__typical_case__compiles(self):
         self._proj.compile()
         build_dir = os.path.join(self._proj_dir_pathname, 'target')

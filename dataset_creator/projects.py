@@ -3,6 +3,7 @@ import glob
 import os
 import subprocess
 from typing import Self
+from xml.etree import ElementTree
 
 from dataset_creator import utilities
 
@@ -30,7 +31,30 @@ class MavenProject(Project):
         self._root_dir_pathname = root_dir_pathname
 
     def find_subproject_pathnames(self: Self) -> list[str]:
-        return super().find_subproject_pathnames()
+        pathnames = [self._root_dir_pathname]
+        subproject_pathnames = list()
+        i = 0
+        while i < len(pathnames):
+            pathname = pathnames[i]
+            i += 1
+            args = ['mvn', 'help:evaluate', '-Dexpression=project.modules',
+                '-q', '-DforceStdout']
+            with utilities.WorkingDirectory(pathname):
+                completed_process = (
+                    subprocess.run(args, capture_output=True, text=True))
+            completed_process.check_returncode()
+            modules_xml_str = completed_process.stdout
+            modules_element = ElementTree.fromstring(modules_xml_str)
+            module_elements = modules_element.findall('string')
+            if len(module_elements) < 1:
+                subproject_pathnames.append(pathname)
+                continue
+            module_names = [
+                module_element.text for module_element in module_elements]
+            child_pathnames = [os.path.join(pathname, module_name)
+                for module_name in module_names]
+            pathnames.extend(child_pathnames)
+        return subproject_pathnames
 
     def compile(self: Self) -> None:
         args = ['mvn', 'clean', 'test-compile']
