@@ -98,41 +98,58 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                     logging.info(f'repository {i} Dir: {temp_dir_pathname}')
                     repo = (
                         git.Repo.clone_from(repository_url, temp_dir_pathname))
+                    project = projects.create_project(temp_dir_pathname)
                     try:
-                        project = projects.create_project(temp_dir_pathname)
-                        logging.info(f'repository {i}: compiling')
-                        project.compile()
-                        logging.info(f'repository {i}: finding classpath')
-                        classpath_pathnames = project.find_classpath_pathnames()
-                        logging.info(f'repository {i}: finding focal classpath')
-                        focal_classpath = project.find_focal_classpath()
+                        subproject_pathnames = (
+                            project.find_subproject_pathnames())
                     except Exception as exception:
-                        logging.warn(f'repository {i}: {exception}')
-                        (logging
-                            .debug(f'repository {i}: {traceback.format_exc()}'))
+                        logging.warn(f'{exception}')
+                        logging.debug(f'{traceback.format_exc()}')
                         continue
-                    (logging
-                        .info(f'repository {i}: finding focal method samples'))
-                    focal_method_samples = (find_map_test_cases
-                        .find_focal_method_samples(
-                            temp_dir_pathname, self._parser))
-                    logging.info(f'repository {i}: adding coverage data')
-                    with_coverage_focal_method_samples = (
-                        self._add_coverage_data(focal_method_samples,
-                        classpath_pathnames, focal_classpath))
-                    logging.debug(
-                        f'repository {i}: {with_coverage_focal_method_samples}')
-                    logging.info(f'repository {i}: generating samples')
-                    for with_coverage_focal_method_sample in (
-                        with_coverage_focal_method_samples):
-                        samples = self._generate_samples(repository_url,
-                            repo.head.commit.hexsha,
-                            with_coverage_focal_method_sample)
-                        logging.debug(f'repository {i}: {samples}')
-                        for sample in samples:
-                            yield sample
+                    for subproject_pathname in subproject_pathnames:
+                        subproject = (
+                            projects.create_project(subproject_pathname))
+                        try:
+                            samples = self._generate_project_samples(
+                                repository_url, repo.head.commit.hexsha,
+                                subproject)
+                        except Exception as exception:
+                            logging.warn(f'{exception}')
+                            logging.debug(f'{traceback.format_exc()}')
+                            continue
+                        logging.debug(f'{samples}')
+                        for samples in samples:
+                            yield samples
         iterator = utilities.GeneratorFunctionIterator(create_generator)
         self._saver.save(iterator)
+
+    def _generate_project_samples(
+        self: Self,
+        repository_url: str,
+        repository_hexsha: str,
+        project: projects.Project,
+    ) -> list[dict[str, Any]]:
+        logging.info('compiling')
+        project.compile()
+        logging.info('finding classpath')
+        classpath_pathnames = project.find_classpath_pathnames()
+        logging.info('finding focal classpath')
+        focal_classpath = project.find_focal_classpath()
+        logging.info('finding focal method samples')
+        focal_method_samples = (find_map_test_cases
+            .find_focal_method_samples(project.root_dir_pathname, self._parser))
+        logging.info('adding coverage data')
+        with_coverage_focal_method_samples = self._add_coverage_data(
+            focal_method_samples, classpath_pathnames, focal_classpath)
+        logging.debug(f'{with_coverage_focal_method_samples}')
+        logging.info('generating samples')
+        project_samples = list()
+        for with_coverage_focal_method_sample in (
+            with_coverage_focal_method_samples):
+            samples = self._generate_samples(repository_url, repository_hexsha,
+                with_coverage_focal_method_sample)
+            project_samples.extend(samples)
+        return project_samples
 
     def _add_coverage_data(
         self: Self,

@@ -25,6 +25,11 @@ class Project(abc.ABC):
     def find_focal_classpath(self: Self) -> str:
         raise NotImplementedError()
 
+    @property
+    @abc.abstractmethod
+    def root_dir_pathname(self: Self) -> str:
+        raise NotImplementedError()
+
 
 class MavenProject(Project):
     def __init__(self: Self, root_dir_pathname: str) -> None:
@@ -86,6 +91,10 @@ class MavenProject(Project):
         completed_process.check_returncode()
         focal_classpath = completed_process.stdout + os.path.sep
         return focal_classpath
+
+    @property
+    def root_dir_pathname(self: Self) -> str:
+        return self._root_dir_pathname
 
     def _find_test_classpath(self: Self) -> str:
         args = ['mvn', 'help:evaluate',
@@ -203,6 +212,10 @@ class GradleProject(Project):
             if 'main' in pathname and 'classes' in pathname]
         focal_classpath = candidates[0] + os.path.sep
         return focal_classpath
+
+    @property
+    def root_dir_pathname(self: Self) -> str:
+        return self._root_dir_pathname
 
     def _find_project_name(self: Self) -> str:
         try:
