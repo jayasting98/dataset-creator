@@ -9,6 +9,7 @@ from typing import Self
 from typing import TypeVar
 
 import git
+import requests
 
 from dataset_creator import coverages
 from dataset_creator import loaders
@@ -185,7 +186,12 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                     testClassName=test_class_name,
                     testMethodName=test_method_name,
                 )
-                response = self._code_cov_api.create_coverage(request_data)
+                try:
+                    response = self._code_cov_api.create_coverage(request_data)
+                except requests.ReadTimeout as exception:
+                    logging.warn(f'{exception}')
+                    logging.debug(f'{traceback.format_exc()}')
+                    continue
                 if not 200 <= response.status_code <= 299:
                     continue
                 coverage: coverages.Coverage = response.json()
