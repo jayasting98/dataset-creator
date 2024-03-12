@@ -9,6 +9,10 @@ from dataset_creator import utilities
 
 class Project(abc.ABC):
     @abc.abstractmethod
+    def find_subproject_pathnames(self: Self) -> list[str]:
+        raise NotImplementedError()
+
+    @abc.abstractmethod
     def compile(self: Self) -> None:
         raise NotImplementedError()
 
@@ -24,6 +28,9 @@ class Project(abc.ABC):
 class MavenProject(Project):
     def __init__(self: Self, root_dir_pathname: str) -> None:
         self._root_dir_pathname = root_dir_pathname
+
+    def find_subproject_pathnames(self: Self) -> list[str]:
+        return super().find_subproject_pathnames()
 
     def compile(self: Self) -> None:
         args = ['mvn', 'clean', 'test-compile']
@@ -99,6 +106,9 @@ class GradleProject(Project):
         self._root_dir_pathname = root_dir_pathname
         self._init_script_rel_pathname = (os.path
             .relpath(_gradle_init_script_pathname, self._root_dir_pathname))
+
+    def find_subproject_pathnames(self: Self) -> list[str]:
+        return super().find_subproject_pathnames()
 
     def compile(self: Self) -> None:
         args = ['gradle', 'clean', 'testClasses']
