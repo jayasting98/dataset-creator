@@ -1,7 +1,10 @@
 allprojects {
-    tasks.register("listSubprojects") {
-        for (subproject in rootProject.subprojects) {
-            println(subproject.name)
+    tasks.register("findProjectDir") {
+        println(projectDir)
+    }
+    tasks.register("listSubprojectPaths") {
+        for (subproject in project.subprojects) {
+            println(subproject.path)
         }
     }
     tasks.register("buildMainRuntimeClasspath") {

@@ -132,10 +132,41 @@ class GradleProject(Project):
             .relpath(_gradle_init_script_pathname, self._root_dir_pathname))
 
     def find_subproject_pathnames(self: Self) -> list[str]:
-        return super().find_subproject_pathnames()
+        pathnames = [self._root_dir_pathname]
+        paths = ['']
+        unique_paths = {''}
+        subproject_pathnames = list()
+        i = 0
+        while i < len(pathnames):
+            pathname = pathnames[i]
+            path = paths[i]
+            i += 1
+            subproject_pathnames.append(pathname)
+            init_script_rel_pathname = (os.path
+                .relpath(_gradle_init_script_pathname, pathname))
+            args = ['gradle', '-q', '--init-script', init_script_rel_pathname,
+                f'{path}:listSubprojectPaths']
+            with utilities.WorkingDirectory(pathname):
+                completed_process = (
+                    subprocess.run(args, capture_output=True, text=True))
+            completed_process.check_returncode()
+            project_paths_str = completed_process.stdout
+            child_paths = project_paths_str.strip().split(os.linesep)
+            for child_path in child_paths:
+                if child_path in unique_paths:
+                    continue
+                unique_paths.add(child_path)
+                child_rel_path = child_path[1:]
+                child_rel_pathname = child_rel_path.replace(':', os.path.sep)
+                child_pathname = (
+                    os.path.join(self._root_dir_pathname, child_rel_pathname))
+                pathnames.append(child_pathname)
+                paths.append(child_path)
+        return subproject_pathnames
 
     def compile(self: Self) -> None:
-        args = ['gradle', 'clean', 'testClasses']
+        project_name = self._find_project_name()
+        args = ['gradle', 'clean', f'{project_name}:testClasses']
         with utilities.WorkingDirectory(self._root_dir_pathname):
             completed_process = subprocess.run(
                 args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -179,14 +210,20 @@ class GradleProject(Project):
         except AttributeError:
             args = ['gradle', '-q',
                 '--init-script', self._init_script_rel_pathname,
-                ':listSubprojects']
+                ':findProjectDir']
             with utilities.WorkingDirectory(self._root_dir_pathname):
                 completed_process = (
                     subprocess.run(args, capture_output=True, text=True))
             completed_process.check_returncode()
             output = completed_process.stdout
-            project_names = output.split(os.linesep)
-            self._project_name = project_names[0]
+            root_project_pathname = output.strip()
+            if root_project_pathname == self._root_dir_pathname:
+                self._project_name = str()
+                return self._project_name
+            project_rel_pathname = (
+                os.path.relpath(self._root_dir_pathname, root_project_pathname))
+            project_name = ':' + project_rel_pathname.replace(os.path.sep, ':')
+            self._project_name = project_name
             return self._project_name
 
 def create_project(root_dir_pathname: str) -> Project:

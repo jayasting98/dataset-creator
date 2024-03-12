@@ -84,13 +84,40 @@ class MavenProjectTest(unittest.TestCase):
 class GradleProjectTest(unittest.TestCase):
     def setUp(self) -> None:
         self._proj_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
-            'resources', 'repositories', 'gradle', 'guess-the-number')
+            'resources', 'repositories', 'gradle', 'guess-the-number', 'app')
         self._proj = projects.GradleProject(self._proj_dir_pathname)
         self._home_dir_pathname = str(pathlib.Path.home())
 
+    def test_find_subproject_pathnames__has_subprojects__finds_correctly(self):
+        parent_proj_dir_pathname = os.path.join(os.getcwd(),
+            'integration_tests', 'resources', 'repositories', 'gradle',
+            'parent-project')
+        parent_proj = projects.GradleProject(parent_proj_dir_pathname)
+        expected_subproject_pathnames = [
+            os.path.join(parent_proj_dir_pathname),
+            os.path.join(parent_proj_dir_pathname, 'app'),
+            os.path.join(parent_proj_dir_pathname, 'list'),
+            os.path.join(parent_proj_dir_pathname, 'project'),
+            os.path.join(parent_proj_dir_pathname, 'utilities'),
+            os.path.join(parent_proj_dir_pathname, 'project', 'subproject'),
+        ]
+        actual_subproject_pathnames = parent_proj.find_subproject_pathnames()
+        self.assertEqual(
+            expected_subproject_pathnames, actual_subproject_pathnames)
+
+    def test_find_subproject_pathnames__no_subprojects__finds_correctly(self):
+        parent_proj_dir_pathname = os.path.join(os.getcwd(),
+            'integration_tests', 'resources', 'repositories', 'gradle',
+            'simple-project')
+        parent_proj = projects.GradleProject(parent_proj_dir_pathname)
+        expected_subproject_pathnames = [parent_proj_dir_pathname]
+        actual_subproject_pathnames = parent_proj.find_subproject_pathnames()
+        self.assertEqual(
+            expected_subproject_pathnames, actual_subproject_pathnames)
+
     def test_compile__typical_case__compiles(self):
         self._proj.compile()
-        build_dir = os.path.join(self._proj_dir_pathname, 'app', 'build')
+        build_dir = os.path.join(self._proj_dir_pathname, 'build')
         self.assertTrue(os.path.isdir(build_dir))
 
     def test_compile__fails__raises_error(self):
@@ -103,13 +130,13 @@ class GradleProjectTest(unittest.TestCase):
         gradle_dir_pathname = os.path.join(self._home_dir_pathname, '.gradle',
             'caches', 'modules-2', 'files-2.1')
         expected_classpath_pathnames = [
-            os.path.join(self._proj_dir_pathname, 'app', 'build', 'classes',
+            os.path.join(self._proj_dir_pathname, 'build', 'classes',
                 'java', 'main') + os.path.sep,
-            os.path.join(self._proj_dir_pathname, 'app', 'build', 'classes',
+            os.path.join(self._proj_dir_pathname, 'build', 'classes',
                 'java', 'test') + os.path.sep,
-            os.path.join(self._proj_dir_pathname, 'app', 'build', 'resources',
+            os.path.join(self._proj_dir_pathname, 'build', 'resources',
                 'main') + os.path.sep,
-            os.path.join(self._proj_dir_pathname, 'app', 'build', 'resources',
+            os.path.join(self._proj_dir_pathname, 'build', 'resources',
                 'test') + os.path.sep,
             os.path.join(gradle_dir_pathname, 'junit', 'junit', '4.11',
                 '4e031bb61df09069aeb2bffb4019e7a5034a4ee0', 'junit-4.11.jar'),
