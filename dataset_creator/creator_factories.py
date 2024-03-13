@@ -158,9 +158,10 @@ class CoverageLocalDataFactory(
         session = requests.Session()
         code_cov_api = (coverages
             .CodeCovApi(session, self._base_url, timeout=self._timeout))
-        parser = code_parsers.CodeParser(self._grammar_file, self._language)
-        processor = (processors
-            .CoverageSamplesProcessor(loader, saver, code_cov_api, parser))
+        parser_type = code_parsers.CodeParser
+        parser_args = (self._grammar_file, self._language)
+        processor = processors.CoverageSamplesProcessor(loader, saver,
+            code_cov_api, parser_type, parser_args)
         return processor
 
 
@@ -198,7 +199,8 @@ class CoverageHuggingFaceGoogleCloudStorageFactory(
         session = requests.Session()
         code_cov_api = (coverages
             .CodeCovApi(session, self._base_url, timeout=self._timeout))
-        parser = code_parsers.CodeParser(self._grammar_file, self._language)
-        processor = (processors
-            .CoverageSamplesProcessor(loader, saver, code_cov_api, parser))
+        parser_type = code_parsers.CodeParser
+        parser_args = (self._grammar_file, self._language)
+        processor = processors.CoverageSamplesProcessor(loader, saver,
+            code_cov_api, parser_type, parser_args)
         return processor

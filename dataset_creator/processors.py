@@ -83,12 +83,15 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
         loader: loaders.Loader[dict[str, Any]],
         saver: savers.Saver[dict[str, Any]],
         code_cov_api: coverages.CodeCovApi,
-        parser: code_parsers.CodeParser,
+        parser_type: type[code_parsers.CodeParser],
+        parser_args: tuple[str, str],
     ) -> None:
         self._loader = loader
         self._saver = saver
         self._code_cov_api = code_cov_api
-        self._parser = parser
+        # Lazy instantiation allows it to pickle the parser (then the iterator).
+        self._parser_type = parser_type
+        self._parser_args = parser_args
 
     def process(self: Self) -> None:
         repository_samples = self._loader.load()
@@ -97,6 +100,14 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                 yield sample
         iterator = utilities.GeneratorFunctionIterator(create_generator)
         self._saver.save(iterator)
+
+    @property
+    def parser(self: Self) -> code_parsers.CodeParser:
+        try:
+            return self._parser
+        except AttributeError:
+            self._parser = self._parser_type(*self._parser_args)
+            return self._parser
 
     def _create_sample_generator(
         self: Self,
@@ -155,7 +166,7 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                 logging.info('finding focal method samples')
                 focal_method_samples = (find_map_test_cases
                     .find_focal_method_samples(
-                        project.root_dir_pathname, self._parser))
+                        project.root_dir_pathname, self.parser))
             except Exception as exception:
                 logging.warn(f'{exception}')
                 logging.debug(f'{traceback.format_exc()}')

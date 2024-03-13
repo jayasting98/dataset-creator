@@ -86,9 +86,10 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
         session = requests.Session()
         base_url = 'http://localhost:8080'
         self._code_cov_api = coverages.CodeCovApi(session, base_url)
-        self._parser = code_parsers.CodeParser('java-grammar.so', 'java')
+        self._parser_type = code_parsers.CodeParser
+        self._parser_args = ('java-grammar.so', 'java')
 
-    def test_process__typical_case__processes_correctly(self):
+    def test_process__memory_to_memory__processes_correctly(self):
         repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
             'resources', 'repositories', 'maven', 'guess-the-number')
         samples_file_pathname = os.path.join('integration_tests', 'resources',
@@ -100,8 +101,8 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
             {'repository_url': 'https://github.com/username/guess-the-number'}]
         loader = _MemoryLoader(samples)
         saver = _MemorySaver()
-        processor = processors.CoverageSamplesProcessor(
-            loader, saver, self._code_cov_api, self._parser)
+        processor = processors.CoverageSamplesProcessor(loader, saver,
+            self._code_cov_api, self._parser_type, self._parser_args)
         with open(samples_file_pathname) as samples_file:
             expected_samples = json.load(samples_file)
         with (mock.patch('tempfile.TemporaryDirectory') as mock_temp_dir,
@@ -112,3 +113,38 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
             processor.process()
         actual_samples = saver.samples
         self.assertEqual(expected_samples, actual_samples)
+
+    def test_process__hugging_face_to_google_cloud_storage__loads_then_saves(
+        self,
+    ):
+        repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
+            'resources', 'repositories', 'maven', 'guess-the-number')
+        mock_repo = mock.MagicMock()
+        mock_repo.head.commit.hexsha = 'hexsha'
+        samples = [
+            {'repository_url': 'https://github.com/username/guess-the-number'}]
+        def generator():
+            for sample in samples:
+                yield sample
+        loader = loaders.HuggingFaceLoader(dict())
+        saver = savers.HuggingFaceGoogleCloudStorageSaver(
+            'project_id', 'bucket_name', 'path/name')
+        processor = processors.CoverageSamplesProcessor(loader, saver,
+            self._code_cov_api, self._parser_type, self._parser_args)
+        with (
+            mock.patch('datasets.load_dataset') as mock_load_dataset,
+            mock.patch('tempfile.TemporaryDirectory') as mock_temp_dir,
+            mock.patch('git.Repo.clone_from') as mock_clone_from,
+            mock.patch('datasets.Dataset.save_to_disk') as mock_save_to_disk,
+        ):
+            mock_load_dataset.return_value = (
+                datasets.Dataset.from_generator(generator))
+            mock_temp_dir.return_value = (
+                StubTemporaryDirectory(repo_dir_pathname))
+            mock_clone_from.return_value = mock_repo
+            processor.process()
+        mock_load_dataset.assert_called_once_with(streaming=True)
+        mock_save_to_disk.assert_called_once_with(
+            'gs://bucket_name/path/name',
+            storage_options={'project': 'project_id'},
+        )
