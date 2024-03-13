@@ -4,7 +4,10 @@ from collections.abc import Iterator
 import os
 import re
 from types import TracebackType
-from typing import Self
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 from typing import TypeVar
 
 

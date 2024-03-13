@@ -3,7 +3,10 @@ import glob
 import logging
 import os
 import subprocess
-from typing import Self
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 from xml.etree import ElementTree
 
 from dataset_creator import utilities

@@ -1,0 +1,2 @@
+-r base.txt
+typing-extensions==4.10.0

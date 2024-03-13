@@ -3,7 +3,10 @@ import os
 from types import TracebackType
 from typing import Any
 from typing import Iterator
-from typing import Self
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 import unittest
 from unittest import mock
 

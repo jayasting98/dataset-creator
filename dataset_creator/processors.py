@@ -7,7 +7,10 @@ from typing import Any
 from typing import Generator
 from typing import Generic
 from typing import Iterator
-from typing import Self
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 from typing import TypeVar
 
 import git

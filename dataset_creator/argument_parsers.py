@@ -1,7 +1,10 @@
 import argparse
 from typing import Any
 from typing import Callable
-from typing import Self
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 from typing import Sequence
 from typing import TypedDict
 
