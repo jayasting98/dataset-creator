@@ -19,7 +19,7 @@ def main(args: argparse.Namespace) -> None:
     with open(config_file_pathname) as config_file:
         config = json.load(config_file)
     creator_factory_cls: type[creator_factories.CreatorFactory] = args.creator
-    creator_factory = creator_factory_cls(config)
+    creator_factory = creator_factory_cls(config, args)
     loader = creator_factory.create_loader()
     saver = creator_factory.create_saver()
     processor = creator_factory.create_processor(loader, saver)

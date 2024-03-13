@@ -1,4 +1,5 @@
 import abc
+import argparse
 from typing import Any
 from typing import Generic
 try:
@@ -23,7 +24,11 @@ _U = TypeVar('_U')
 
 class CreatorFactory(abc.ABC, Generic[_T, _U]):
     @abc.abstractmethod
-    def __init__(self: Self, config: dict[str, Any]) -> None:
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        args: argparse.Namespace,
+    ) -> None:
         raise NotImplementedError()
 
     @abc.abstractmethod
@@ -47,7 +52,11 @@ class CreatorFactory(abc.ABC, Generic[_T, _U]):
 class TheStackRepositoryLocalDataFactory(
     CreatorFactory[dict[str, Any], dict[str, str]],
 ):
-    def __init__(self: Self, config: dict[str, Any]) -> None:
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        args: argparse.Namespace,
+    ) -> None:
         self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
 
@@ -75,7 +84,12 @@ class TheStackRepositoryLocalDataFactory(
 class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
     CreatorFactory[dict[str, Any], dict[str, str]],
 ):
-    def __init__(self: Self, config: dict[str, Any]) -> None:
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        args: argparse.Namespace,
+    ) -> None:
+        self._token = args.token
         self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
 
@@ -90,7 +104,7 @@ class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
         pathname = self._saver_config['pathname']
         limit = self._saver_config.get('limit')
         saver = savers.HuggingFaceGoogleCloudStorageSaver(
-            project_id, bucket_name, pathname, limit=limit)
+            project_id, bucket_name, pathname, token=self._token, limit=limit)
         return saver
 
     def create_processor(
@@ -106,7 +120,11 @@ class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
 class HuggingFaceGoogleCloudStorageToLocalDataFactory(
     CreatorFactory[dict[str, Any], dict[str, Any]],
 ):
-    def __init__(self: Self, config: dict[str, Any]) -> None:
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        args: argparse.Namespace,
+    ) -> None:
         self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
 
@@ -134,7 +152,11 @@ class HuggingFaceGoogleCloudStorageToLocalDataFactory(
 class CoverageLocalDataFactory(
     CreatorFactory[dict[str, Any], dict[str, Any]],
 ):
-    def __init__(self: Self, config: dict[str, Any]) -> None:
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        args: argparse.Namespace,
+    ) -> None:
         self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
         self._base_url = config['base_url']
@@ -172,7 +194,12 @@ class CoverageLocalDataFactory(
 class CoverageHuggingFaceGoogleCloudStorageFactory(
     CreatorFactory[dict[str, Any], dict[str, Any]],
 ):
-    def __init__(self: Self, config: dict[str, Any]) -> None:
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        args: argparse.Namespace,
+    ) -> None:
+        self._token = args.token
         self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
         self._base_url = config['base_url']
@@ -191,7 +218,7 @@ class CoverageHuggingFaceGoogleCloudStorageFactory(
         pathname = self._saver_config['pathname']
         limit = self._saver_config.get('limit')
         saver = savers.HuggingFaceGoogleCloudStorageSaver(
-            project_id, bucket_name, pathname, limit=limit)
+            project_id, bucket_name, pathname, token=self._token, limit=limit)
         return saver
 
     def create_processor(

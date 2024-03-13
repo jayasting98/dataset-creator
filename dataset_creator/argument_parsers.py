@@ -1,4 +1,5 @@
 import argparse
+import json
 from typing import Any
 from typing import Callable
 try:
@@ -38,6 +39,7 @@ class _ConvertChoiceAction(argparse.Action):
 class _ArgumentInfo(TypedDict, total=False):
     choices: dict[str, Any]
     default: Any
+    type: Any
 
 
 class _ParserInfo(TypedDict):
@@ -48,6 +50,8 @@ class _ParserInfo(TypedDict):
 _parser_info: _ParserInfo = _ParserInfo(subparsers=dict(), arguments=dict())
 _parser_info['arguments']['--config_path'] = _ArgumentInfo()
 _parser_info['arguments']['--loglevel'] = _ArgumentInfo(default='warning')
+_parser_info['arguments']['--token'] = (
+    _ArgumentInfo(default=None, type=json.loads))
 
 
 def parser_argument_choice(

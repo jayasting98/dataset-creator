@@ -54,9 +54,10 @@ class HuggingFaceGoogleCloudStorageSaver(Saver[dict[str, str]]):
         project_id: str,
         bucket_name: str,
         pathname: str,
+        token: dict[str, str] | str | None = None,
         limit: int | None = None,
     ) -> None:
-        self._storage_options = {'project': project_id}
+        self._storage_options = {'project': project_id, 'token': token}
         self._file_system = gcsfs.GCSFileSystem(**self._storage_options)
         self._bucket_name = bucket_name
         self._pathname = pathname
