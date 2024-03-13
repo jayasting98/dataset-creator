@@ -10,7 +10,11 @@ from dataset_creator import creator_factories
 
 def main(args: argparse.Namespace) -> None:
     dotenv.load_dotenv()
-    logging.basicConfig(level=args.loglevel.upper())
+    logging.basicConfig(
+        format='%(asctime)s.%(msecs)03d %(levelname)-8s %(message)s',
+        level=args.loglevel.upper(),
+        datefmt='%Y-%m-%d %H:%M:%S',
+    )
     config_file_pathname: str = args.config_path
     with open(config_file_pathname) as config_file:
         config = json.load(config_file)
