@@ -117,13 +117,15 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
         for with_coverage_focal_method_data in (
             self._create_with_coverage_focal_method_data_generator(
                 repository_samples)):
+            repository_index: int = (
+                with_coverage_focal_method_data['repository_index'])
             with_coverage_focal_method_sample = (
                 with_coverage_focal_method_data[
                     'with_coverage_focal_method_sample'])
             repository_url = with_coverage_focal_method_data['repository_url']
             repository_hexsha = (
                 with_coverage_focal_method_data['repository_hexsha'])
-            logging.info('generating samples')
+            logging.info(f'repository {repository_index}: generating samples')
             for sample in self._generate_samples(repository_url,
                 repository_hexsha, with_coverage_focal_method_sample):
                 yield sample
@@ -134,13 +136,15 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
     ) -> Generator[dict[str, Any], None, None]:
         for focal_method_data in (
             self._create_focal_method_data_generator(repository_samples)):
+            repository_index: int = focal_method_data['repository_index']
             focal_method_sample = focal_method_data['focal_method_sample']
             classpath_pathnames = focal_method_data['classpath_pathnames']
             focal_classpath = focal_method_data['focal_classpath']
-            logging.info('adding coverage data')
+            logging.info(f'repository {repository_index}: adding coverage data')
             with_coverage_focal_method_sample = self._add_coverage_data(
                 focal_method_sample, classpath_pathnames, focal_classpath)
             with_coverage_focal_method_data = {
+                'repository_index': repository_index,
                 'repository_url': focal_method_data['repository_url'],
                 'repository_hexsha': focal_method_data['repository_hexsha'],
                 'with_coverage_focal_method_sample':
@@ -154,26 +158,32 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
     ) -> Generator[dict[str, Any], None, None]:
         for project_data in (
             self._create_project_data_generator(repository_samples)):
+            repository_index: int = project_data['repository_index']
             project_pathname: str = project_data['project_pathname']
             logging.info(f'project dir: {project_pathname}')
             try:
                 project = projects.create_project(project_pathname)
-                logging.info('compiling')
+                logging.info(f'repository {repository_index}: compiling')
                 project.compile()
-                logging.info('finding classpath')
+                logging.info(
+                    f'repository {repository_index}: finding classpath')
                 classpath_pathnames = project.find_classpath_pathnames()
-                logging.info('finding focal classpath')
+                logging.info(
+                    f'repository {repository_index}: finding focal classpath')
                 focal_classpath = project.find_focal_classpath()
-                logging.info('finding focal method samples')
+                logging.info(
+                    f'repository {repository_index}: '
+                    + 'finding focal method samples')
                 focal_method_samples = (find_map_test_cases
                     .find_focal_method_samples(
                         project.root_dir_pathname, self.parser))
             except Exception as exception:
-                logging.warn(f'{exception}')
+                logging.warn(f'repository {repository_index}: {exception}')
                 logging.debug(f'{traceback.format_exc()}')
                 continue
             for focal_method_sample in focal_method_samples:
                 focal_method_data = {
+                    'repository_index': repository_index,
                     'repository_url': project_data['repository_url'],
                     'repository_hexsha': project_data['repository_hexsha'],
                     'classpath_pathnames': classpath_pathnames,
@@ -198,11 +208,12 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                     subproject_pathnames = (
                         project.find_subproject_pathnames())
                 except Exception as exception:
-                    logging.warn(f'{exception}')
+                    logging.warn(f'repository {i}: {exception}')
                     logging.debug(f'{traceback.format_exc()}')
                     continue
                 for subproject_pathname in subproject_pathnames:
                     project_data = {
+                        'repository_index': i,
                         'repository_url': repository_url,
                         'repository_hexsha': repo.head.commit.hexsha,
                         'project_pathname': subproject_pathname,
