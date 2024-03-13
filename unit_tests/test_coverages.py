@@ -8,7 +8,7 @@ class CodeCovApiTest(unittest.TestCase):
     def test_create_coverage__typical_case__creates_coverage(self):
         session = mock.MagicMock()
         expected_response = mock.MagicMock()
-        def do_side_effect(path, json=None):
+        def do_side_effect(path, json=None, timeout=None):
             if path != 'http://localhost:8080/coverages':
                 self.fail()
             if json is None:
