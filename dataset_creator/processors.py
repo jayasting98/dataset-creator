@@ -44,7 +44,8 @@ class TheStackRepositoryProcessor(Processor[dict[str, Any], dict[str, str]]):
     def process(self: Self) -> None:
         samples = self._loader.load()
         def create_generator():
-            for sample in samples:
+            for i, sample in enumerate(samples):
+                logging.info(f'sample {i}')
                 repository_name = sample['max_stars_repo_name']
                 if not self._is_unique(repository_name):
                     continue
