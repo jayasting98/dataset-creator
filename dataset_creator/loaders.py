@@ -30,11 +30,11 @@ class HuggingFaceLoader(Loader[dict[str, Any]]):
 
     def load(self: Self) -> Iterator[dict[str, Any]]:
         dataset = datasets.load_dataset(**self._config)
-        ds_iterator = iter(dataset)
-        if self._skip is not None:
-            for _ in range(self._skip):
-                next(ds_iterator, None)
         def create_generator():
+            ds_iterator = iter(dataset)
+            if self._skip is not None:
+                for _ in range(self._skip):
+                    next(ds_iterator, None)
             for sample in ds_iterator:
                 yield sample
         iterator = utilities.GeneratorFunctionIterator(create_generator)
