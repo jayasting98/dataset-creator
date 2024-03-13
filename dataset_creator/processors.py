@@ -4,12 +4,13 @@ import logging
 import tempfile
 import traceback
 from typing import Any
+from typing import Generator
 from typing import Generic
+from typing import Iterator
 from typing import Self
 from typing import TypeVar
 
 import git
-import requests
 
 from dataset_creator import coverages
 from dataset_creator import loaders
@@ -92,138 +93,177 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
     def process(self: Self) -> None:
         repository_samples = self._loader.load()
         def create_generator():
-            for i, repository_sample in enumerate(repository_samples):
-                repository_url = repository_sample['repository_url']
-                logging.info(f'repository {i} URL: {repository_url}')
-                with tempfile.TemporaryDirectory() as temp_dir_pathname:
-                    logging.info(f'repository {i} Dir: {temp_dir_pathname}')
-                    repo = (
-                        git.Repo.clone_from(repository_url, temp_dir_pathname))
-                    try:
-                        project = projects.create_project(temp_dir_pathname)
-                        subproject_pathnames = (
-                            project.find_subproject_pathnames())
-                    except Exception as exception:
-                        logging.warn(f'{exception}')
-                        logging.debug(f'{traceback.format_exc()}')
-                        continue
-                    for subproject_pathname in subproject_pathnames:
-                        subproject = (
-                            projects.create_project(subproject_pathname))
-                        try:
-                            samples = self._generate_project_samples(
-                                repository_url, repo.head.commit.hexsha,
-                                subproject)
-                        except Exception as exception:
-                            logging.warn(f'{exception}')
-                            logging.debug(f'{traceback.format_exc()}')
-                            continue
-                        logging.debug(f'{samples}')
-                        for samples in samples:
-                            yield samples
+            for sample in self._create_sample_generator(repository_samples):
+                yield sample
         iterator = utilities.GeneratorFunctionIterator(create_generator)
         self._saver.save(iterator)
 
-    def _generate_project_samples(
+    def _create_sample_generator(
         self: Self,
-        repository_url: str,
-        repository_hexsha: str,
-        project: projects.Project,
-    ) -> list[dict[str, Any]]:
-        logging.info(f'project dir: {project.root_dir_pathname}')
-        logging.info('compiling')
-        project.compile()
-        logging.info('finding classpath')
-        classpath_pathnames = project.find_classpath_pathnames()
-        logging.info('finding focal classpath')
-        focal_classpath = project.find_focal_classpath()
-        logging.info('finding focal method samples')
-        focal_method_samples = (find_map_test_cases
-            .find_focal_method_samples(project.root_dir_pathname, self._parser))
-        logging.info('adding coverage data')
-        with_coverage_focal_method_samples = self._add_coverage_data(
-            focal_method_samples, classpath_pathnames, focal_classpath)
-        logging.debug(f'{with_coverage_focal_method_samples}')
-        logging.info('generating samples')
-        project_samples = list()
-        for with_coverage_focal_method_sample in (
-            with_coverage_focal_method_samples):
-            samples = self._generate_samples(repository_url, repository_hexsha,
-                with_coverage_focal_method_sample)
-            project_samples.extend(samples)
-        return project_samples
+        repository_samples: Iterator[dict[str, Any]],
+    ) -> Generator[dict[str, Any], None, None]:
+        for with_coverage_focal_method_data in (
+            self._create_with_coverage_focal_method_data_generator(
+                repository_samples)):
+            with_coverage_focal_method_sample = (
+                with_coverage_focal_method_data[
+                    'with_coverage_focal_method_sample'])
+            repository_url = with_coverage_focal_method_data['repository_url']
+            repository_hexsha = (
+                with_coverage_focal_method_data['repository_hexsha'])
+            logging.info('generating samples')
+            for sample in self._generate_samples(repository_url,
+                repository_hexsha, with_coverage_focal_method_sample):
+                yield sample
 
-    def _add_coverage_data(
+    def _create_with_coverage_focal_method_data_generator(
         self: Self,
-        focal_method_samples: list[dict[str, Any]],
-        classpath_pathnames: list[str],
-        focal_classpath: str,
-    ) -> list[dict[str, Any]]:
-        with_coverage_focal_method_samples = list()
-        for focal_method_sample in focal_method_samples:
-            focal_method: dict[str, Any] = focal_method_sample['focal_method']
-            focal_method_line_start: int = focal_method['line_start']
-            focal_method_line_end: int = focal_method['line_end']
-            focal_method_body: str = focal_method['body']
-            focal_method_lines: list[str] = focal_method_body.split('\n')
-            focal_class: dict[str, Any] = focal_method['class']
-            focal_package: str = focal_class['package']
-            focal_class_identifier: str = focal_class['identifier']
-            focal_class_name = f'{focal_package}.{focal_class_identifier}'
-            test_methods: list[dict[str, Any]] = (
-                focal_method_sample['test_methods'])
-            with_coverage_test_methods = list()
-            for test_method in test_methods:
-                test_class: dict[str, Any] = test_method['class']
-                test_package: str = test_class['package']
-                test_class_identifier: str = test_class['identifier']
-                test_class_name = f'{test_package}.{test_class_identifier}'
-                test_method_name: str = test_method['identifier']
-                request_data = coverages.CreateCoverageRequestData(
-                    classpathPathnames=classpath_pathnames,
-                    focalClasspath=focal_classpath,
-                    focalClassName=focal_class_name,
-                    testClassName=test_class_name,
-                    testMethodName=test_method_name,
-                )
+        repository_samples: Iterator[dict[str, Any]],
+    ) -> Generator[dict[str, Any], None, None]:
+        for focal_method_data in (
+            self._create_focal_method_data_generator(repository_samples)):
+            focal_method_sample = focal_method_data['focal_method_sample']
+            classpath_pathnames = focal_method_data['classpath_pathnames']
+            focal_classpath = focal_method_data['focal_classpath']
+            logging.info('adding coverage data')
+            with_coverage_focal_method_sample = self._add_coverage_data(
+                focal_method_sample, classpath_pathnames, focal_classpath)
+            with_coverage_focal_method_data = {
+                'repository_url': focal_method_data['repository_url'],
+                'repository_hexsha': focal_method_data['repository_hexsha'],
+                'with_coverage_focal_method_sample':
+                    with_coverage_focal_method_sample,
+            }
+            yield with_coverage_focal_method_data
+
+    def _create_focal_method_data_generator(
+        self: Self,
+        repository_samples: Iterator[dict[str, Any]],
+    ) -> Generator[dict[str, Any], None, None]:
+        for project_data in (
+            self._create_project_data_generator(repository_samples)):
+            project_pathname: str = project_data['project_pathname']
+            logging.info(f'project dir: {project_pathname}')
+            try:
+                project = projects.create_project(project_pathname)
+                logging.info('compiling')
+                project.compile()
+                logging.info('finding classpath')
+                classpath_pathnames = project.find_classpath_pathnames()
+                logging.info('finding focal classpath')
+                focal_classpath = project.find_focal_classpath()
+                logging.info('finding focal method samples')
+                focal_method_samples = (find_map_test_cases
+                    .find_focal_method_samples(
+                        project.root_dir_pathname, self._parser))
+            except Exception as exception:
+                logging.warn(f'{exception}')
+                logging.debug(f'{traceback.format_exc()}')
+                continue
+            for focal_method_sample in focal_method_samples:
+                focal_method_data = {
+                    'repository_url': project_data['repository_url'],
+                    'repository_hexsha': project_data['repository_hexsha'],
+                    'classpath_pathnames': classpath_pathnames,
+                    'focal_classpath': focal_classpath,
+                    'focal_method_sample': focal_method_sample,
+                }
+                yield focal_method_data
+
+    def _create_project_data_generator(
+        self: Self,
+        repository_samples: Iterator[dict[str, Any]],
+    ) -> Generator[dict[str, Any], None, None]:
+        for i, repository_sample in enumerate(repository_samples):
+            repository_url = repository_sample['repository_url']
+            logging.info(f'repository {i} url: {repository_url}')
+            with tempfile.TemporaryDirectory() as temp_dir_pathname:
+                logging.info(f'repository {i} dir: {temp_dir_pathname}')
+                repo = (
+                    git.Repo.clone_from(repository_url, temp_dir_pathname))
                 try:
-                    response = self._code_cov_api.create_coverage(request_data)
-                except requests.ReadTimeout as exception:
+                    project = projects.create_project(temp_dir_pathname)
+                    subproject_pathnames = (
+                        project.find_subproject_pathnames())
+                except Exception as exception:
                     logging.warn(f'{exception}')
                     logging.debug(f'{traceback.format_exc()}')
                     continue
-                if not 200 <= response.status_code <= 299:
+                for subproject_pathname in subproject_pathnames:
+                    project_data = {
+                        'repository_url': repository_url,
+                        'repository_hexsha': repo.head.commit.hexsha,
+                        'project_pathname': subproject_pathname,
+                    }
+                    yield project_data
+
+    def _add_coverage_data(
+        self: Self,
+        focal_method_sample: dict[str, Any],
+        classpath_pathnames: list[str],
+        focal_classpath: str,
+    ) -> dict[str, Any]:
+        focal_method: dict[str, Any] = focal_method_sample['focal_method']
+        focal_method_line_start: int = focal_method['line_start']
+        focal_method_line_end: int = focal_method['line_end']
+        focal_method_body: str = focal_method['body']
+        focal_method_lines: list[str] = focal_method_body.split('\n')
+        focal_class: dict[str, Any] = focal_method['class']
+        focal_package: str = focal_class['package']
+        focal_class_identifier: str = focal_class['identifier']
+        focal_class_name = f'{focal_package}.{focal_class_identifier}'
+        test_methods: list[dict[str, Any]] = (
+            focal_method_sample['test_methods'])
+        with_coverage_test_methods = list()
+        for test_method in test_methods:
+            test_class: dict[str, Any] = test_method['class']
+            test_package: str = test_class['package']
+            test_class_identifier: str = test_class['identifier']
+            test_class_name = f'{test_package}.{test_class_identifier}'
+            test_method_name: str = test_method['identifier']
+            request_data = coverages.CreateCoverageRequestData(
+                classpathPathnames=classpath_pathnames,
+                focalClasspath=focal_classpath,
+                focalClassName=focal_class_name,
+                testClassName=test_class_name,
+                testMethodName=test_method_name,
+            )
+            try:
+                response = self._code_cov_api.create_coverage(request_data)
+            except Exception as exception:
+                logging.warn(f'{exception}')
+                logging.debug(f'{traceback.format_exc()}')
+                continue
+            if not 200 <= response.status_code <= 299:
+                continue
+            coverage: coverages.Coverage = response.json()
+            covered_line_indices: list[int] = list()
+            covered_lines: list[str] = list()
+            for covered_line_number in coverage['coveredLineNumbers']:
+                covered_line_index = covered_line_number - 1
+                if (covered_line_index < focal_method_line_start
+                    or covered_line_index > focal_method_line_end):
                     continue
-                coverage: coverages.Coverage = response.json()
-                covered_line_indices: list[int] = list()
-                covered_lines: list[str] = list()
-                for covered_line_number in coverage['coveredLineNumbers']:
-                    covered_line_index = covered_line_number - 1
-                    if (covered_line_index < focal_method_line_start
-                        or covered_line_index > focal_method_line_end):
-                        continue
-                    i = covered_line_index - focal_method_line_start
-                    covered_line_indices.append(covered_line_index)
-                    covered_lines.append(focal_method_lines[i])
-                with_coverage_test_method = copy.deepcopy(test_method)
-                with_coverage_test_method['focal_covered_line_indices'] = (
-                    covered_line_indices)
-                with_coverage_test_method['focal_covered_lines'] = covered_lines
-                with_coverage_test_methods.append(with_coverage_test_method)
-            with_coverage_focal_method_sample = (
-                copy.deepcopy(focal_method_sample))
-            with_coverage_focal_method_sample['test_methods'] = (
-                with_coverage_test_methods)
-            (with_coverage_focal_method_samples
-                .append(with_coverage_focal_method_sample))
-        return with_coverage_focal_method_samples
+                i = covered_line_index - focal_method_line_start
+                covered_line_indices.append(covered_line_index)
+                covered_lines.append(focal_method_lines[i])
+            with_coverage_test_method = copy.deepcopy(test_method)
+            with_coverage_test_method['focal_covered_line_indices'] = (
+                covered_line_indices)
+            with_coverage_test_method['focal_covered_lines'] = covered_lines
+            with_coverage_test_methods.append(with_coverage_test_method)
+        with_coverage_focal_method_sample = (
+            copy.deepcopy(focal_method_sample))
+        with_coverage_focal_method_sample['test_methods'] = (
+            with_coverage_test_methods)
+        return with_coverage_focal_method_sample
 
     def _generate_samples(
         self: Self,
         repository_url: str,
         repository_hexsha: str,
         focal_method_sample: dict[str, Any],
-    ) -> list[dict[str, str]]:
+    ) -> Generator[dict[str, str], None, None]:
         focal_method: dict[str, Any] = focal_method_sample['focal_method']
         focal_method_identifier: str = focal_method['identifier']
         focal_method_line_start: int = focal_method['line_start']
@@ -237,7 +277,6 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
         focal_class_identifier: str = focal_class['identifier']
         focal_file: str = focal_class['file']
         test_methods: list[dict[str, Any]] = focal_method_sample['test_methods']
-        samples: list[dict[str, Any]] = list()
         for i, test_method_i in enumerate(test_methods):
             test_method_i_identifier: str = test_method_i['identifier']
             test_method_i_line_start: int = test_method_i['line_start']
@@ -325,5 +364,4 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                     test_input_method=sample_test_input_method,
                     test_target_method=sample_test_target_method,
                 )
-                samples.append(sample)
-        return samples
+                yield sample
