@@ -49,6 +49,12 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
+tasks.named<JavaExec>("bootRun") {
+    if (project.hasProperty("jvmArgs")) {
+        jvmArgs((project.property("jvmArgs") as String).split(Regex("\\s+")))
+    }
+}
+
 sourceSets {
     test {
         java {
