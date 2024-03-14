@@ -9,7 +9,7 @@ from dataset_creator import creator_factories
 
 
 def main(args: argparse.Namespace) -> None:
-    dotenv.load_dotenv()
+    dotenv.load_dotenv(override=True)
     logging.basicConfig(
         format='%(asctime)s.%(msecs)03d %(levelname)-8s %(message)s',
         level=args.loglevel.upper(),
