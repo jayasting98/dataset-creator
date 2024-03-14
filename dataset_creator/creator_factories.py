@@ -57,12 +57,18 @@ class TheStackRepositoryLocalDataFactory(
         config: dict[str, Any],
         args: argparse.Namespace,
     ) -> None:
+        self._token = args.token
         self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
-        skip: int | None = self._loader_config.pop('skip', None)
-        loader = loaders.HuggingFaceLoader(self._loader_config, skip=skip)
+        config = self._loader_config['config']
+        try:
+            config['storage_options']['token'] = self._token
+        except KeyError:
+            pass
+        skip: int | None = self._loader_config.get('skip')
+        loader = loaders.HuggingFaceLoader(config, skip=skip)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
@@ -94,8 +100,13 @@ class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
         self._saver_config: dict[str, Any] = config['saver']
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
-        skip: int | None = self._loader_config.pop('skip', None)
-        loader = loaders.HuggingFaceLoader(self._loader_config, skip=skip)
+        config = self._loader_config['config']
+        try:
+            config['storage_options']['token'] = self._token
+        except KeyError:
+            pass
+        skip: int | None = self._loader_config.get('skip')
+        loader = loaders.HuggingFaceLoader(config, skip=skip)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
@@ -125,12 +136,18 @@ class HuggingFaceGoogleCloudStorageToLocalDataFactory(
         config: dict[str, Any],
         args: argparse.Namespace,
     ) -> None:
+        self._token = args.token
         self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
-        skip: int | None = self._loader_config.pop('skip', None)
-        loader = loaders.HuggingFaceLoader(self._loader_config, skip=skip)
+        config = self._loader_config['config']
+        try:
+            config['storage_options']['token'] = self._token
+        except KeyError:
+            pass
+        skip: int | None = self._loader_config.get('skip')
+        loader = loaders.HuggingFaceLoader(config, skip=skip)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
@@ -157,6 +174,7 @@ class CoverageLocalDataFactory(
         config: dict[str, Any],
         args: argparse.Namespace,
     ) -> None:
+        self._token = args.token
         self._loader_config: dict[str, Any] = config['loader']
         self._saver_config: dict[str, Any] = config['saver']
         self._base_url = config['base_url']
@@ -165,8 +183,13 @@ class CoverageLocalDataFactory(
         self._timeout = config.get('timeout')
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
-        skip: int | None = self._loader_config.pop('skip', None)
-        loader = loaders.HuggingFaceLoader(self._loader_config, skip=skip)
+        config = self._loader_config['config']
+        try:
+            config['storage_options']['token'] = self._token
+        except KeyError:
+            pass
+        skip: int | None = self._loader_config.get('skip')
+        loader = loaders.HuggingFaceLoader(config, skip=skip)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, Any]]:
@@ -208,8 +231,13 @@ class CoverageHuggingFaceGoogleCloudStorageFactory(
         self._timeout = config.get('timeout')
 
     def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
-        skip: int | None = self._loader_config.pop('skip', None)
-        loader = loaders.HuggingFaceLoader(self._loader_config, skip=skip)
+        config = self._loader_config['config']
+        try:
+            config['storage_options']['token'] = self._token
+        except KeyError:
+            pass
+        skip: int | None = self._loader_config.get('skip')
+        loader = loaders.HuggingFaceLoader(config, skip=skip)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, Any]]:
