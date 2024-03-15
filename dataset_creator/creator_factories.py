@@ -68,7 +68,8 @@ class TheStackRepositoryLocalDataFactory(
         except KeyError:
             pass
         skip: int | None = self._loader_config.get('skip')
-        loader = loaders.HuggingFaceLoader(config, skip=skip)
+        limit: int | None = self._loader_config.get('limit')
+        loader = loaders.HuggingFaceLoader(config, skip=skip, limit=limit)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
@@ -106,7 +107,8 @@ class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
         except KeyError:
             pass
         skip: int | None = self._loader_config.get('skip')
-        loader = loaders.HuggingFaceLoader(config, skip=skip)
+        limit: int | None = self._loader_config.get('limit')
+        loader = loaders.HuggingFaceLoader(config, skip=skip, limit=limit)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
@@ -147,7 +149,8 @@ class HuggingFaceGoogleCloudStorageToLocalDataFactory(
         except KeyError:
             pass
         skip: int | None = self._loader_config.get('skip')
-        loader = loaders.HuggingFaceLoader(config, skip=skip)
+        limit: int | None = self._loader_config.get('limit')
+        loader = loaders.HuggingFaceLoader(config, skip=skip, limit=limit)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
@@ -189,7 +192,8 @@ class CoverageLocalDataFactory(
         except KeyError:
             pass
         skip: int | None = self._loader_config.get('skip')
-        loader = loaders.HuggingFaceLoader(config, skip=skip)
+        limit: int | None = self._loader_config.get('limit')
+        loader = loaders.HuggingFaceLoader(config, skip=skip, limit=limit)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, Any]]:
@@ -237,7 +241,8 @@ class CoverageHuggingFaceGoogleCloudStorageFactory(
         except KeyError:
             pass
         skip: int | None = self._loader_config.get('skip')
-        loader = loaders.HuggingFaceLoader(config, skip=skip)
+        limit: int | None = self._loader_config.get('limit')
+        loader = loaders.HuggingFaceLoader(config, skip=skip, limit=limit)
         return loader
 
     def create_saver(self: Self) -> savers.Saver[dict[str, Any]]:

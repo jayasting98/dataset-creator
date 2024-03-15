@@ -27,9 +27,11 @@ class HuggingFaceLoader(Loader[dict[str, Any]]):
         self: Self,
         config: dict[str, Any],
         skip: int | None = None,
+        limit: int | None = None,
     ) -> None:
         self._config = dict(streaming=True, **config)
         self._skip = skip
+        self._limit = limit
 
     def load(self: Self) -> Iterator[dict[str, Any]]:
         dataset = datasets.load_dataset(**self._config)
@@ -38,7 +40,13 @@ class HuggingFaceLoader(Loader[dict[str, Any]]):
             if self._skip is not None:
                 for _ in range(self._skip):
                     next(ds_iterator, None)
+            i = 0
             for sample in ds_iterator:
                 yield sample
+                if self._limit is None:
+                    continue
+                i += 1
+                if i >= self._limit:
+                    break
         iterator = utilities.GeneratorFunctionIterator(create_generator)
         return iterator
