@@ -52,7 +52,10 @@ class MavenProject(Project):
             with utilities.WorkingDirectory(pathname):
                 completed_process = (
                     subprocess.run(args, capture_output=True, text=True))
-            completed_process.check_returncode()
+            if completed_process.returncode != 0:
+                logging.warn(f'could not find subprojects: {pathname}')
+                subproject_pathnames.append(pathname)
+                continue
             modules_xml_str = completed_process.stdout
             modules_element = ElementTree.fromstring(modules_xml_str)
             module_elements = modules_element.findall('string')
@@ -164,7 +167,9 @@ class GradleProject(Project):
             with utilities.WorkingDirectory(pathname):
                 completed_process = (
                     subprocess.run(args, capture_output=True, text=True))
-            completed_process.check_returncode()
+            if completed_process.returncode != 0:
+                logging.warn(f'could not find subprojects: {pathname}')
+                continue
             project_paths_str = completed_process.stdout
             child_paths = project_paths_str.strip().split(os.linesep)
             for child_path in child_paths:
