@@ -21,7 +21,7 @@ public class CoverageControllerAdvice {
         logger.error(UNEXPECTED_ERROR_MESSAGE, e);
         Throwable t = e.getCause();
         while (t != null) {
-            logger.error("Cause of " + e.toString(), t);
+            logger.debug("Cause of " + e.toString(), t);
             t = t.getCause();
         }
         return UNEXPECTED_ERROR_MESSAGE;
