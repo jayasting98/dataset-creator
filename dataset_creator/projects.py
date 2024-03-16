@@ -47,6 +47,7 @@ class MavenProject(Project):
             pathname = pathnames[i]
             i += 1
             logging.info(f'finding subprojects: {pathname}')
+            subproject_pathnames.append(pathname)
             args = ['mvn', 'help:evaluate', '-Dexpression=project.modules',
                 '-q', '-DforceStdout']
             with utilities.WorkingDirectory(pathname):
@@ -54,13 +55,11 @@ class MavenProject(Project):
                     subprocess.run(args, capture_output=True, text=True))
             if completed_process.returncode != 0:
                 logging.warn(f'could not find subprojects: {pathname}')
-                subproject_pathnames.append(pathname)
                 continue
             modules_xml_str = completed_process.stdout
             modules_element = ElementTree.fromstring(modules_xml_str)
             module_elements = modules_element.findall('string')
             if len(module_elements) < 1:
-                subproject_pathnames.append(pathname)
                 continue
             module_names = [
                 module_element.text for module_element in module_elements]

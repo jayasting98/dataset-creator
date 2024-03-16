@@ -20,6 +20,8 @@ class MavenProjectTest(unittest.TestCase):
             'parent-project')
         parent_proj = projects.MavenProject(parent_proj_dir_pathname)
         expected_subproject_pathnames = [
+            os.path.join(parent_proj_dir_pathname),
+            os.path.join(parent_proj_dir_pathname, 'project'),
             os.path.join(parent_proj_dir_pathname, 'subproject1'),
             os.path.join(parent_proj_dir_pathname, 'project', 'subproject0'),
         ]
