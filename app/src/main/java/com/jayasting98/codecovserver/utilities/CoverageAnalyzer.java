@@ -36,6 +36,8 @@ public class CoverageAnalyzer {
     private String focalClassName;
     private String testClassName;
     private String testMethodName;
+    private SecurityManager originalSm;
+    private SecurityManager blockedExitSm;
 
     public CoverageAnalyzer(Collection<String> classpathPathnames, String focalClasspath,
         String focalClassName, String testClassName, String testMethodName) {
@@ -44,6 +46,8 @@ public class CoverageAnalyzer {
         this.focalClassName = focalClassName;
         this.testClassName = testClassName;
         this.testMethodName = testMethodName;
+        originalSm = System.getSecurityManager();
+        blockedExitSm = new BlockedExitSecurityManager(originalSm);
     }
 
     public List<Integer> findCoveredLineNumbers() throws Exception {
@@ -62,9 +66,11 @@ public class CoverageAnalyzer {
             classLoader.put(focalClassName, instrumentedDefinition);
             testClass = classLoader.loadClass(testClassName);
             Constructor<?> testConstructor = testClass.getConstructor();
+            System.setSecurityManager(blockedExitSm);
             Object testObject = testConstructor.newInstance();
             Method testMethod = testClass.getMethod(testMethodName);
             testMethod.invoke(testObject);
+            System.setSecurityManager(originalSm);
         }
         ExecutionDataStore executionDataStore = new ExecutionDataStore();
         SessionInfoStore sessionInfoStore = new SessionInfoStore();
