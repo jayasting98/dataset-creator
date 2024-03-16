@@ -1,3 +1,4 @@
+import logging
 import os
 try:
     from typing import Self
@@ -36,6 +37,10 @@ class CodeCovApi:
         request_data: CreateCoverageRequestData,
     ) -> requests.Response:
         url = os.path.join(self._base_url, 'coverages')
+        logging.debug('{url} POST ({fcn}, {tcn}, {tmn})'.format(url=url,
+            fcn=request_data['focalClassName'],
+            tcn=request_data['testClassName'],
+            tmn=request_data['testMethodName']))
         response = (
             self._session.post(url, json=request_data, timeout=self._timeout))
         return response
