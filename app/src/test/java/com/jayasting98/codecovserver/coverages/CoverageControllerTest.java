@@ -66,4 +66,33 @@ public class CoverageControllerTest {
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.content().json(expectedResponseDataJsonString));
     }
+
+    @Test
+    public void testCreateCoverage_stackOverflowError_doesNotCrash() throws Exception {
+        String repositoryDirPathname = Paths.get("").toAbsolutePath().getParent().toString();
+        String testClasspath = new StringBuilder().append(repositoryDirPathname)
+            .append(File.separator).append("app").append(File.separator).append("build")
+            .append(File.separator).append("classes").append(File.separator).append("java")
+            .append(File.separator).append("test").toString();
+        String focalClasspath = testClasspath;
+        List<String> classpathPathnames = Arrays.asList(focalClasspath, testClasspath);
+        String testClassName = "com.jayasting98.codecovserver.coverages.CoverageControllerTest";
+        String testMethodName = "recurseAsMuchAsPossible";
+        String focalClassName = testClassName;
+        CreateCoverageRequestData requestData = new CreateCoverageRequestData(classpathPathnames,
+            focalClasspath, focalClassName, testClassName, testMethodName);
+        ObjectMapper mapper = new ObjectMapper();
+        String requestDataJsonString = mapper.writeValueAsString(requestData);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/coverages")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestDataJsonString);
+        mockMvc.perform(requestBuilder)
+            .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+            .andExpect(MockMvcResultMatchers
+                .content().string(CoverageControllerAdvice.UNEXPECTED_ERROR_MESSAGE));
+    }
+
+    public void recurseAsMuchAsPossible() {
+        recurseAsMuchAsPossible();
+    }
 }

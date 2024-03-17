@@ -15,9 +15,9 @@ public class CoverageControllerAdvice {
     final Logger logger = LoggerFactory.getLogger(getClass());
 
     @ResponseBody
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    String handleException(Exception e) {
+    String handleException(Throwable e) {
         logger.error(UNEXPECTED_ERROR_MESSAGE, e);
         Throwable t = e.getCause();
         while (t != null) {
