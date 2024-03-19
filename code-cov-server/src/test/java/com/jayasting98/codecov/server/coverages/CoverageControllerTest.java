@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayasting98.codecov.data.coverages.Coverage;
+import com.jayasting98.codecov.data.coverages.CreateCoverageRequestData;
 
 @SpringBootTest
 @AutoConfigureMockMvc

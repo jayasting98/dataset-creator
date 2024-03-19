@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.jayasting98.codecov.data.coverages.Coverage;
+
 @SpringBootTest
 public class JacocoCoverageServiceTest {
     @Autowired

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.jayasting98.codecov.data.coverages.Coverage;
 import com.jayasting98.codecov.utilities.CoverageAnalyzer;
 
 @Service

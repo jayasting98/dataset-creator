@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jayasting98.codecov.data.coverages.Coverage;
+import com.jayasting98.codecov.data.coverages.CreateCoverageRequestData;
+
 @RestController
 class CoverageController {
     @Autowired

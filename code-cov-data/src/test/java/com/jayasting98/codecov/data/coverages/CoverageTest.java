@@ -1,4 +1,4 @@
-package com.jayasting98.codecov.server.coverages;
+package com.jayasting98.codecov.data.coverages;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
