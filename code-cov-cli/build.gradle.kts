@@ -11,6 +11,10 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.11.0")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
+    implementation(project(":code-cov-data"))
+    implementation(project(":code-cov-utilities"))
 }
 
 java {
