@@ -1,4 +1,4 @@
-package com.jayasting98.codecov.server.utilities;
+package com.jayasting98.codecov.utilities;
 
 import java.security.Permission;
 

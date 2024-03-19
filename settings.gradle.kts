@@ -12,3 +12,4 @@ plugins {
 
 rootProject.name = "code-cov"
 include("code-cov-server")
+include("code-cov-utilities")
