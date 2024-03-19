@@ -1,4 +1,4 @@
-package com.jayasting98.codecovserver.coverages;
+package com.jayasting98.codecov.server.coverages;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

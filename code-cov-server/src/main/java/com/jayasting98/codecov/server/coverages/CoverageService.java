@@ -1,4 +1,4 @@
-package com.jayasting98.codecovserver.coverages;
+package com.jayasting98.codecov.server.coverages;
 
 import java.util.Collection;
 

@@ -1,4 +1,4 @@
-package com.jayasting98.codecovserver.utilities;
+package com.jayasting98.codecov.server.utilities;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

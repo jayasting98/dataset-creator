@@ -1,4 +1,4 @@
-package com.jayasting98.codecovserver.utilities;
+package com.jayasting98.codecov.server.utilities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,13 +44,13 @@ public class CoverageAnalyzerTest {
     public void testFindCoveredLineNumbers_systemExit_doesNotExit() throws Exception {
         String repositoryDirPathname = Paths.get("").toAbsolutePath().getParent().toString();
         String focalClasspath = new StringBuilder().append(repositoryDirPathname)
-            .append(File.separator).append("app").append(File.separator).append("build")
+            .append(File.separator).append("code-cov-server").append(File.separator).append("build")
             .append(File.separator).append("classes").append(File.separator).append("java")
             .append(File.separator).append("test").toString();
         String testClasspath = focalClasspath;
         Collection<String> classpathPathnames = Arrays.asList(focalClasspath, testClasspath);
-        String focalClassName = "com.jayasting98.codecovserver.utilities.CoverageAnalyzerTest";
-        String testClassName = "com.jayasting98.codecovserver.utilities.CoverageAnalyzerTest";
+        String focalClassName = "com.jayasting98.codecov.server.utilities.CoverageAnalyzerTest";
+        String testClassName = "com.jayasting98.codecov.server.utilities.CoverageAnalyzerTest";
         String testMethodName = "doSystemExit";
         CoverageAnalyzer analyzer = new CoverageAnalyzer(classpathPathnames, focalClasspath,
             focalClassName, testClassName, testMethodName);

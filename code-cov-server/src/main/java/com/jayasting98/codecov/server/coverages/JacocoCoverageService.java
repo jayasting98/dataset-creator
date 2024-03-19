@@ -1,11 +1,11 @@
-package com.jayasting98.codecovserver.coverages;
+package com.jayasting98.codecov.server.coverages;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.jayasting98.codecovserver.utilities.CoverageAnalyzer;
+import com.jayasting98.codecov.server.utilities.CoverageAnalyzer;
 
 @Service
 class JacocoCoverageService implements CoverageService {

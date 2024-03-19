@@ -41,7 +41,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "com.jayasting98.codecovserver.App"
+    mainClass = "com.jayasting98.codecov.server.App"
 }
 
 tasks.named<Test>("test") {
