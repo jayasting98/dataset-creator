@@ -140,12 +140,14 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
         for focal_method_data in (
             self._create_focal_method_data_generator(repository_samples)):
             repository_index: int = focal_method_data['repository_index']
+            project_pathname: str = focal_method_data['project_pathname']
             focal_method_sample = focal_method_data['focal_method_sample']
             classpath_pathnames = focal_method_data['classpath_pathnames']
             focal_classpath = focal_method_data['focal_classpath']
             logging.info(f'repository {repository_index}: adding coverage data')
             with_coverage_focal_method_sample = self._add_coverage_data(
-                focal_method_sample, classpath_pathnames, focal_classpath)
+                focal_method_sample, classpath_pathnames, focal_classpath,
+                project_pathname)
             with_coverage_focal_method_data = {
                 'repository_index': repository_index,
                 'repository_url': focal_method_data['repository_url'],
@@ -189,6 +191,7 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                     'repository_index': repository_index,
                     'repository_url': project_data['repository_url'],
                     'repository_hexsha': project_data['repository_hexsha'],
+                    'project_pathname': project_pathname,
                     'classpath_pathnames': classpath_pathnames,
                     'focal_classpath': focal_classpath,
                     'focal_method_sample': focal_method_sample,
@@ -228,6 +231,7 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
         focal_method_sample: dict[str, Any],
         classpath_pathnames: list[str],
         focal_classpath: str,
+        project_pathname: str,
     ) -> dict[str, Any]:
         focal_method: dict[str, Any] = focal_method_sample['focal_method']
         focal_method_line_start: int = focal_method['line_start']
@@ -255,7 +259,8 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                 testMethodName=test_method_name,
             )
             try:
-                coverage = self._code_cov.create_coverage(request_data)
+                with utilities.WorkingDirectory(project_pathname):
+                    coverage = self._code_cov.create_coverage(request_data)
             except Exception as exception:
                 logging.warn(f'{exception}')
                 logging.debug(f'{traceback.format_exc()}')
