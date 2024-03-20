@@ -35,7 +35,7 @@ class CodeCovApi:
     def create_coverage(
         self: Self,
         request_data: CreateCoverageRequestData,
-    ) -> requests.Response:
+    ) -> Coverage:
         url = os.path.join(self._base_url, 'coverages')
         logging.debug('{url} POST ({fcn}, {tcn}, {tmn})'.format(url=url,
             fcn=request_data['focalClassName'],
@@ -43,4 +43,7 @@ class CodeCovApi:
             tmn=request_data['testMethodName']))
         response = (
             self._session.post(url, json=request_data, timeout=self._timeout))
-        return response
+        if not 200 <= response.status_code <= 299:
+            raise RuntimeError(f'coverage not found: {request_data}')
+        coverage: Coverage = response.json()
+        return coverage

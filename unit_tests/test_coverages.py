@@ -1,15 +1,68 @@
+import os
+import pathlib
+from typing import Any
+from typing import Protocol
+from typing import Self
 import unittest
 from unittest import mock
 
 from dataset_creator import coverages
 
 
+class _SessionPost(Protocol):
+    def __call__(
+        self: Self,
+        url: str,
+        json: Any | None = None,
+        timeout: int | None = None,
+    ) -> mock.Mock:
+        pass
+
+
 class CodeCovApiTest(unittest.TestCase):
-    def test_create_coverage__typical_case__creates_coverage(self):
-        session = mock.MagicMock()
-        expected_response = mock.MagicMock()
-        def do_side_effect(path, json=None, timeout=None):
-            if path != 'http://localhost:8080/coverages':
+    def setUp(self) -> None:
+        self._base_url = 'http://localhost:8080'
+        repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
+            'resources', 'repositories', 'maven', 'guess-the-number')
+        focal_classpath = (
+            os.path.join(repo_dir_pathname, 'target', 'classes', ''))
+        test_classpath = (
+            os.path.join(repo_dir_pathname, 'target', 'test-classes', ''))
+        home_dir_pathname = str(pathlib.Path.home())
+        maven_dir_pathname = (
+            os.path.join(home_dir_pathname, '.m2', 'repository'))
+        classpath_pathnames = [
+            focal_classpath,
+            test_classpath,
+            os.path.join(maven_dir_pathname, 'junit', 'junit', '4.11',
+                'junit-4.11.jar'),
+            os.path.join(maven_dir_pathname, 'org', 'mockito', 'mockito-core',
+                '3.12.4', 'mockito-core-3.12.4.jar'),
+            os.path.join(maven_dir_pathname, 'org', 'hamcrest', 'hamcrest-core',
+                '1.3', 'hamcrest-core-1.3.jar'),
+            os.path.join(maven_dir_pathname, 'net', 'bytebuddy', 'byte-buddy',
+                '1.11.13', 'byte-buddy-1.11.13.jar'),
+            os.path.join(maven_dir_pathname, 'net', 'bytebuddy',
+                'byte-buddy-agent', '1.11.13', 'byte-buddy-agent-1.11.13.jar'),
+            os.path.join(maven_dir_pathname, 'org', 'objenesis', 'objenesis',
+                '3.2', 'objenesis-3.2.jar'),
+        ]
+        focal_class_name = 'com.example.guessthenumber.ui.CommandLineUi'
+        test_class_name = (
+            'com.example.guessthenumber.ui.CommandLineUiTest')
+        test_method_name = 'testRun_ioExceptionThrown_exitsGracefully'
+        self._request_data = coverages.CreateCoverageRequestData(
+            classpathPathnames=classpath_pathnames,
+            focalClasspath=focal_classpath,
+            focalClassName=focal_class_name,
+            testClassName=test_class_name,
+            testMethodName=test_method_name,
+        )
+
+    def _create_side_effect(self, mock_response: mock.Mock) -> _SessionPost:
+        def do_side_effect(
+            url: str, json: Any | None = None, timeout: int | None = None):
+            if url != 'http://localhost:8080/coverages':
                 self.fail()
             if json is None:
                 self.fail()
@@ -26,34 +79,25 @@ class CodeCovApiTest(unittest.TestCase):
                 self.fail()
             if 'testMethodName' not in json or json['testMethodName'] is None:
                 self.fail()
-            return expected_response
-        session.post.side_effect = do_side_effect
-        base_url = 'http://localhost:8080'
-        code_cov_api = coverages.CodeCovApi(session, base_url)
-        focal_classpath = ('integration_tests/resources/repositories/maven/'
-            + 'guess-the-number/target/classes/')
-        test_classpath = ('integration_tests/resources/repositories/maven/'
-            + 'guess-the-number/target/test-classes/')
-        classpath_pathnames = [
-            focal_classpath,
-            test_classpath,
-            '~/.m2/repository/junit/junit/4.11/junit-4.11.jar',
-            '~/.m2/repository/org/mockito/mockito-core/3.12.4/'
-                + 'mockito-core-3.12.4.jar',
-            '~/.m2/repository/org/hamcrest/hamcrest-core/1.3/'
-                + 'hamcrest-core-1.3.jar',
-            '~/.m2/repository/net/bytebuddy/byte-buddy/1.11.13/'
-                + 'byte-buddy-1.11.13.jar',
-            '~/.m2/repository/net/bytebuddy/byte-buddy-agent/1.11.13/'
-                + 'byte-buddy-agent-1.11.13.jar',
-            '~/.m2/repository/org/objenesis/objenesis/3.2/objenesis-3.2.jar',
-        ]
-        focal_class_name = 'com.example.guessthenumber.ui.CommandLineUi'
-        test_class_name = 'com.example.guessthenumber.ui.CommandLineUiTest'
-        test_method_name = 'testRun_ioExceptionThrown_exitsGracefully'
-        request_data = coverages.CreateCoverageRequestData(
-            classpathPathnames=classpath_pathnames,
-            focalClasspath=focal_classpath, focalClassName=focal_class_name,
-            testClassName=test_class_name, testMethodName=test_method_name)
-        actual_response = code_cov_api.create_coverage(request_data)
-        self.assertIs(expected_response, actual_response)
+            return mock_response
+        return do_side_effect
+
+    def test_create_coverage__typical_case__creates_coverage(self):
+        mock_session = mock.MagicMock()
+        mock_response = mock.MagicMock()
+        expected_coverage = mock.MagicMock()
+        mock_response.status_code = 201
+        mock_response.json.return_value = expected_coverage
+        mock_session.post.side_effect = self._create_side_effect(mock_response)
+        code_cov_api = coverages.CodeCovApi(mock_session, self._base_url)
+        actual_coverage = code_cov_api.create_coverage(self._request_data)
+        self.assertIs(expected_coverage, actual_coverage)
+
+    def test_create_coverage__internal_server_error__raises_runtime_error(self):
+        mock_session = mock.MagicMock()
+        mock_response = mock.MagicMock()
+        mock_response.status_code = 500
+        mock_session.post.side_effect = self._create_side_effect(mock_response)
+        code_cov_api = coverages.CodeCovApi(mock_session, self._base_url)
+        with self.assertRaises(RuntimeError):
+            code_cov_api.create_coverage(self._request_data)
