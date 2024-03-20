@@ -76,7 +76,13 @@ class CodeCovCli(CodeCov):
     ) -> Coverage:
         input_json_arg = json.dumps(request_data)
         args = [self._script_file_pathname, input_json_arg]
-        logging.debug(f'{os.getcwd()} : {args}')
+        logging.debug('{cwd} [{l}] : ({fcn}, {tcn}, {tmn})'.format(
+            l=len(input_json_arg),
+            cwd=os.getcwd(),
+            fcn=request_data['focalClassName'],
+            tcn=request_data['testClassName'],
+            tmn=request_data['testMethodName'],
+        ))
         completed_process = (subprocess
             .run(args, timeout=self._timeout, check=True, capture_output=True))
         output = completed_process.stdout
