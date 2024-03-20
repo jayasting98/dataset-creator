@@ -86,13 +86,13 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
         self: Self,
         loader: loaders.Loader[dict[str, Any]],
         saver: savers.Saver[dict[str, Any]],
-        code_cov_api: coverages.CodeCovApi,
+        code_cov: coverages.CodeCov,
         parser_type: type[code_parsers.CodeParser],
         parser_args: tuple[str, str],
     ) -> None:
         self._loader = loader
         self._saver = saver
-        self._code_cov_api = code_cov_api
+        self._code_cov = code_cov
         # Lazy instantiation allows it to pickle the parser (then the iterator).
         self._parser_type = parser_type
         self._parser_args = parser_args
@@ -255,7 +255,7 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                 testMethodName=test_method_name,
             )
             try:
-                coverage = self._code_cov_api.create_coverage(request_data)
+                coverage = self._code_cov.create_coverage(request_data)
             except Exception as exception:
                 logging.warn(f'{exception}')
                 logging.debug(f'{traceback.format_exc()}')

@@ -1,3 +1,4 @@
+import abc
 import logging
 import os
 try:
@@ -21,7 +22,16 @@ class Coverage(TypedDict):
     coveredLineNumbers: list[int]
 
 
-class CodeCovApi:
+class CodeCov(abc.ABC):
+    @abc.abstractmethod
+    def create_coverage(
+        self: Self,
+        request_data: CreateCoverageRequestData,
+    ) -> Coverage:
+        raise NotImplementedError()
+
+
+class CodeCovApi(CodeCov):
     def __init__(
         self: Self,
         session: requests.Session,
