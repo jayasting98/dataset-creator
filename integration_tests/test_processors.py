@@ -89,6 +89,10 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
         session = requests.Session()
         base_url = 'http://localhost:8080'
         self._code_cov_api = coverages.CodeCovApi(session, base_url)
+        script_file_pathname = (
+            os.path.join(os.getcwd(), 'code-cov-cli', 'bin', 'code-cov-cli'))
+        self._code_cov_cli = (
+            coverages.CodeCovCli(script_file_pathname, timeout=10))
         self._parser_type = code_parsers.CodeParser
         self._parser_args = ('java-grammar.so', 'java')
 
@@ -158,3 +162,11 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
     def test_process__code_cov_api_hf_to_gcs__loads_then_saves(self):
         self._test_process__memory_to_memory__processes_correctly(
             self._code_cov_api)
+
+    def test_process__code_cov_cli_memory_to_memory__processes_correctly(self):
+        self._test_process__memory_to_memory__processes_correctly(
+            self._code_cov_cli)
+
+    def test_process__code_cov_cli_hf_to_gcs__loads_then_saves(self):
+        self._test_process__memory_to_memory__processes_correctly(
+            self._code_cov_cli)
