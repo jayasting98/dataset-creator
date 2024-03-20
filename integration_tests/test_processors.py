@@ -92,7 +92,7 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
         self._parser_type = code_parsers.CodeParser
         self._parser_args = ('java-grammar.so', 'java')
 
-    def test_process__memory_to_memory__processes_correctly(self):
+    def _test_process__memory_to_memory__processes_correctly(self, code_cov):
         repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
             'resources', 'repositories', 'maven', 'guess-the-number')
         samples_file_pathname = os.path.join('integration_tests', 'resources',
@@ -104,8 +104,8 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
             {'repository_url': 'https://github.com/username/guess-the-number'}]
         loader = _MemoryLoader(samples)
         saver = _MemorySaver()
-        processor = processors.CoverageSamplesProcessor(loader, saver,
-            self._code_cov_api, self._parser_type, self._parser_args)
+        processor = processors.CoverageSamplesProcessor(loader, saver, code_cov,
+            self._parser_type, self._parser_args)
         with open(samples_file_pathname) as samples_file:
             expected_samples = json.load(samples_file)
         with (mock.patch('tempfile.TemporaryDirectory') as mock_temp_dir,
@@ -117,9 +117,8 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
         actual_samples = saver.samples
         self.assertEqual(expected_samples, actual_samples)
 
-    def test_process__hugging_face_to_google_cloud_storage__loads_then_saves(
-        self,
-    ):
+    def _test_process__hugging_face_to_google_cloud_storage__loads_then_saves(
+        self, code_cov):
         repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
             'resources', 'repositories', 'maven', 'guess-the-number')
         mock_repo = mock.MagicMock()
@@ -132,8 +131,8 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
         loader = loaders.HuggingFaceLoader(dict())
         saver = savers.HuggingFaceGoogleCloudStorageSaver(
             'project_id', 'bucket_name', 'path/name')
-        processor = processors.CoverageSamplesProcessor(loader, saver,
-            self._code_cov_api, self._parser_type, self._parser_args)
+        processor = processors.CoverageSamplesProcessor(loader, saver, code_cov,
+            self._parser_type, self._parser_args)
         with (
             mock.patch('datasets.load_dataset') as mock_load_dataset,
             mock.patch('tempfile.TemporaryDirectory') as mock_temp_dir,
@@ -151,3 +150,11 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
             'gs://bucket_name/path/name',
             storage_options={'project': 'project_id', 'token': None},
         )
+
+    def test_process__code_cov_api_memory_to_memory__processes_correctly(self):
+        self._test_process__memory_to_memory__processes_correctly(
+            self._code_cov_api)
+
+    def test_process__code_cov_api_hf_to_gcs__loads_then_saves(self):
+        self._test_process__memory_to_memory__processes_correctly(
+            self._code_cov_api)
