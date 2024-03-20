@@ -11,29 +11,19 @@ from unittest import mock
 from dataset_creator import coverages
 
 
-class _SessionPost(Protocol):
-    def __call__(
-        self: Self,
-        url: str,
-        json: Any | None = None,
-        timeout: int | None = None,
-    ) -> mock.Mock:
-        pass
-
-
 class CodeCovTest(unittest.TestCase):
     def setUp(self) -> None:
         repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
             'resources', 'repositories', 'maven', 'guess-the-number')
-        focal_classpath = (
+        self._focal_classpath = (
             os.path.join(repo_dir_pathname, 'target', 'classes', ''))
         test_classpath = (
             os.path.join(repo_dir_pathname, 'target', 'test-classes', ''))
         home_dir_pathname = str(pathlib.Path.home())
         maven_dir_pathname = (
             os.path.join(home_dir_pathname, '.m2', 'repository'))
-        classpath_pathnames = [
-            focal_classpath,
+        self._classpath_pathnames = [
+            self._focal_classpath,
             test_classpath,
             os.path.join(maven_dir_pathname, 'junit', 'junit', '4.11',
                 'junit-4.11.jar'),
@@ -48,16 +38,16 @@ class CodeCovTest(unittest.TestCase):
             os.path.join(maven_dir_pathname, 'org', 'objenesis', 'objenesis',
                 '3.2', 'objenesis-3.2.jar'),
         ]
-        focal_class_name = 'com.example.guessthenumber.ui.CommandLineUi'
-        test_class_name = (
+        self._focal_class_name = 'com.example.guessthenumber.ui.CommandLineUi'
+        self._test_class_name = (
             'com.example.guessthenumber.ui.CommandLineUiTest')
-        test_method_name = 'testRun_ioExceptionThrown_exitsGracefully'
+        self._test_method_name = 'testRun_ioExceptionThrown_exitsGracefully'
         self._request_data = coverages.CreateCoverageRequestData(
-            classpathPathnames=classpath_pathnames,
-            focalClasspath=focal_classpath,
-            focalClassName=focal_class_name,
-            testClassName=test_class_name,
-            testMethodName=test_method_name,
+            classpathPathnames=self._classpath_pathnames,
+            focalClasspath=self._focal_classpath,
+            focalClassName=self._focal_class_name,
+            testClassName=self._test_class_name,
+            testMethodName=self._test_method_name,
         )
 
 
@@ -66,59 +56,49 @@ class CodeCovApiTest(CodeCovTest):
         super().setUp()
         self._base_url = 'http://localhost:8080'
 
-    def _create_side_effect(self, mock_response: mock.Mock) -> _SessionPost:
-        def do_side_effect(
-            url: str, json: Any | None = None, timeout: int | None = None):
-            if url != 'http://localhost:8080/coverages':
-                self.fail()
-            if json is None:
-                self.fail()
-            if not isinstance(json, dict):
-                self.fail()
-            if ('classpathPathnames' not in json
-                or json['classpathPathnames'] is None):
-                self.fail()
-            if 'focalClasspath' not in json or json['focalClasspath'] is None:
-                self.fail()
-            if 'focalClassName' not in json or json['focalClassName'] is None:
-                self.fail()
-            if 'testClassName' not in json or json['testClassName'] is None:
-                self.fail()
-            if 'testMethodName' not in json or json['testMethodName'] is None:
-                self.fail()
-            return mock_response
-        return do_side_effect
-
     def test_create_coverage__typical_case__creates_coverage(self):
         mock_session = mock.MagicMock()
         mock_response = mock.MagicMock()
         expected_coverage = mock.MagicMock()
         mock_response.status_code = 201
         mock_response.json.return_value = expected_coverage
-        mock_session.post.side_effect = self._create_side_effect(mock_response)
-        code_cov_api = coverages.CodeCovApi(mock_session, self._base_url)
+        mock_session.post.return_value = mock_response
+        code_cov_api = (
+            coverages.CodeCovApi(mock_session, self._base_url, timeout=10))
         actual_coverage = code_cov_api.create_coverage(self._request_data)
         self.assertIs(expected_coverage, actual_coverage)
+        mock_session.post.assert_called_once_with(
+            'http://localhost:8080/coverages',
+            json=dict(
+                classpathPathnames=self._classpath_pathnames,
+                focalClasspath=self._focal_classpath,
+                focalClassName=self._focal_class_name,
+                testClassName=self._test_class_name,
+                testMethodName=self._test_method_name,
+            ),
+            timeout=10,
+        )
 
     def test_create_coverage__internal_server_error__raises_runtime_error(self):
         mock_session = mock.MagicMock()
         mock_response = mock.MagicMock()
         mock_response.status_code = 500
-        mock_session.post.side_effect = self._create_side_effect(mock_response)
-        code_cov_api = coverages.CodeCovApi(mock_session, self._base_url)
+        mock_session.post.return_value = mock_response
+        code_cov_api = (
+            coverages.CodeCovApi(mock_session, self._base_url, timeout=10))
         with self.assertRaises(RuntimeError):
             code_cov_api.create_coverage(self._request_data)
-
-
-class _SubprocessRun(Protocol):
-    def __call__(
-        self: Self,
-        args: list[str],
-        timeout: int | None = None,
-        check: bool = False,
-        capture_output: bool = False,
-    ) -> mock.Mock:
-        pass
+        mock_session.post.assert_called_once_with(
+            'http://localhost:8080/coverages',
+            json=dict(
+                classpathPathnames=self._classpath_pathnames,
+                focalClasspath=self._focal_classpath,
+                focalClassName=self._focal_class_name,
+                testClassName=self._test_class_name,
+                testMethodName=self._test_method_name,
+            ),
+            timeout=10,
+        )
 
 
 class CodeCovCliTest(CodeCovTest):
@@ -126,17 +106,6 @@ class CodeCovCliTest(CodeCovTest):
         super().setUp()
         self._script_file_pathname = (
             os.path.join(os.getcwd(), 'code-cov-cli', 'bin', 'code-cov-cli'))
-
-    def _create_side_effect(
-        self, mock_completed_process: mock.Mock) -> _SubprocessRun:
-        def do_side_effect(
-            args: list[str],
-            timeout: int | None = None,
-            check: bool = False,
-            capture_output: bool = False,
-        ) -> mock.Mock:
-            return mock_completed_process
-        return do_side_effect
 
     def test_create_coverage__typical_case__creates_coverage(self):
         mock_completed_process = mock.MagicMock()
@@ -146,8 +115,7 @@ class CodeCovCliTest(CodeCovTest):
         code_cov_cli = (
             coverages.CodeCovCli(self._script_file_pathname, timeout=10))
         with mock.patch('subprocess.run') as mock_run:
-            mock_run.side_effect = (
-                self._create_side_effect(mock_completed_process))
+            mock_run.return_value = mock_completed_process
             actual_coverage = code_cov_cli.create_coverage(self._request_data)
         mock_run.assert_called_once_with(
             [self._script_file_pathname, input_json_arg],
@@ -173,8 +141,7 @@ class CodeCovCliTest(CodeCovTest):
         code_cov_cli = (
             coverages.CodeCovCli(self._script_file_pathname, timeout=10))
         with mock.patch('subprocess.run') as mock_run:
-            mock_run.side_effect = (
-                self._create_side_effect(mock_completed_process))
+            mock_run.return_value = mock_completed_process
             actual_coverage = code_cov_cli.create_coverage(request_data)
         mock_run.assert_called_once_with(
             [self._script_file_pathname, input_json_arg],
@@ -188,15 +155,8 @@ class CodeCovCliTest(CodeCovTest):
         input_json_arg = json.dumps(self._request_data)
         code_cov_cli = (
             coverages.CodeCovCli(self._script_file_pathname, timeout=10))
-        def do_side_effect(
-            args: list[str],
-            timeout: int | None = None,
-            check: bool = False,
-            capture_output: bool = False,
-        ):
-            raise subprocess.CalledProcessError(2, '')
         with mock.patch('subprocess.run') as mock_run:
-            mock_run.side_effect = do_side_effect
+            mock_run.side_effect = subprocess.CalledProcessError(2, '')
             with self.assertRaises(subprocess.CalledProcessError):
                 code_cov_cli.create_coverage(self._request_data)
         mock_run.assert_called_once_with(
