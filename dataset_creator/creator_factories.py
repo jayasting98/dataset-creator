@@ -168,8 +168,8 @@ class HuggingFaceGoogleCloudStorageToLocalDataFactory(
         return processor
 
 
-@argument_parsers.parser_argument_choice('--creator', 'cov_local')
-class CoverageLocalDataFactory(
+@argument_parsers.parser_argument_choice('--creator', 'cov_api_local')
+class CoverageApiLocalDataFactory(
     CreatorFactory[dict[str, Any], dict[str, Any]],
 ):
     def __init__(
@@ -217,8 +217,8 @@ class CoverageLocalDataFactory(
         return processor
 
 
-@argument_parsers.parser_argument_choice('--creator', 'cov_gcs')
-class CoverageHuggingFaceGoogleCloudStorageFactory(
+@argument_parsers.parser_argument_choice('--creator', 'cov_api_gcs')
+class CoverageApiHuggingFaceGoogleCloudStorageFactory(
     CreatorFactory[dict[str, Any], dict[str, Any]],
 ):
     def __init__(
@@ -262,6 +262,105 @@ class CoverageHuggingFaceGoogleCloudStorageFactory(
         session = requests.Session()
         code_cov = (coverages
             .CodeCovApi(session, self._base_url, timeout=self._timeout))
+        parser_type = code_parsers.CodeParser
+        parser_args = (self._grammar_file, self._language)
+        processor = processors.CoverageSamplesProcessor(loader, saver, code_cov,
+            parser_type, parser_args)
+        return processor
+
+
+@argument_parsers.parser_argument_choice('--creator', 'cov_cli_local')
+class CoverageCliLocalDataFactory(
+    CreatorFactory[dict[str, Any], dict[str, Any]],
+):
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        args: argparse.Namespace,
+    ) -> None:
+        self._token = args.token
+        self._loader_config: dict[str, Any] = config['loader']
+        self._saver_config: dict[str, Any] = config['saver']
+        self._script_file_pathname = config['script_file_pathname']
+        self._grammar_file = config['grammar_file']
+        self._language = config['language']
+        self._timeout = config.get('timeout')
+
+    def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
+        config = self._loader_config['config']
+        try:
+            config['storage_options']['token'] = self._token
+        except KeyError:
+            pass
+        skip: int | None = self._loader_config.get('skip')
+        limit: int | None = self._loader_config.get('limit')
+        loader = loaders.HuggingFaceLoader(config, skip=skip, limit=limit)
+        return loader
+
+    def create_saver(self: Self) -> savers.Saver[dict[str, Any]]:
+        file_pathname = self._saver_config['file_pathname']
+        limit = self._saver_config.get('limit')
+        saver = savers.LocalFileSaver(file_pathname, limit=limit)
+        return saver
+
+    def create_processor(
+        self: Self,
+        loader: loaders.Loader[dict[str, Any]],
+        saver: savers.Saver[dict[str, Any]],
+    ) -> processors.Processor[dict[str, Any], dict[str, Any]]:
+        code_cov = (coverages
+            .CodeCovCli(self._script_file_pathname, timeout=self._timeout))
+        parser_type = code_parsers.CodeParser
+        parser_args = (self._grammar_file, self._language)
+        processor = processors.CoverageSamplesProcessor(loader, saver, code_cov,
+            parser_type, parser_args)
+        return processor
+
+
+@argument_parsers.parser_argument_choice('--creator', 'cov_cli_gcs')
+class CoverageCliHuggingFaceGoogleCloudStorageFactory(
+    CreatorFactory[dict[str, Any], dict[str, Any]],
+):
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        args: argparse.Namespace,
+    ) -> None:
+        self._token = args.token
+        self._loader_config: dict[str, Any] = config['loader']
+        self._saver_config: dict[str, Any] = config['saver']
+        self._script_file_pathname = config['script_file_pathname']
+        self._grammar_file = config['grammar_file']
+        self._language = config['language']
+        self._timeout = config.get('timeout')
+
+    def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
+        config = self._loader_config['config']
+        try:
+            config['storage_options']['token'] = self._token
+        except KeyError:
+            pass
+        skip: int | None = self._loader_config.get('skip')
+        limit: int | None = self._loader_config.get('limit')
+        loader = loaders.HuggingFaceLoader(config, skip=skip, limit=limit)
+        return loader
+
+    def create_saver(self: Self) -> savers.Saver[dict[str, Any]]:
+        project_id = self._saver_config['project_id']
+        bucket_name = self._saver_config['bucket_name']
+        pathname = self._saver_config['pathname']
+        limit = self._saver_config.get('limit')
+        saver = savers.HuggingFaceGoogleCloudStorageSaver(
+            project_id, bucket_name, pathname, token=self._token, limit=limit)
+        return saver
+
+    def create_processor(
+        self: Self,
+        loader: loaders.Loader[dict[str, Any]],
+        saver: savers.Saver[dict[str, Any]],
+    ) -> processors.Processor[dict[str, Any], dict[str, Any]]:
+        code_cov = (coverages
+            .CodeCovCli(self._script_file_pathname, timeout=self._timeout))
         parser_type = code_parsers.CodeParser
         parser_args = (self._grammar_file, self._language)
         processor = processors.CoverageSamplesProcessor(loader, saver, code_cov,
