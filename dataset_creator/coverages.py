@@ -1,6 +1,8 @@
 import abc
+import json
 import logging
 import os
+import subprocess
 try:
     from typing import Self
 except ImportError:
@@ -56,4 +58,26 @@ class CodeCovApi(CodeCov):
         if not 200 <= response.status_code <= 299:
             raise RuntimeError(f'coverage not found: {request_data}')
         coverage: Coverage = response.json()
+        return coverage
+
+
+class CodeCovCli(CodeCov):
+    def __init__(
+        self: Self,
+        script_file_pathname: str,
+        timeout: int | None = None,
+    ) -> None:
+        self._script_file_pathname = script_file_pathname
+        self._timeout = timeout
+
+    def create_coverage(
+        self: Self,
+        request_data: CreateCoverageRequestData,
+    ) -> Coverage:
+        input_json_arg = json.dumps(request_data)
+        args = [self._script_file_pathname, input_json_arg]
+        completed_process = (subprocess
+            .run(args, timeout=self._timeout, check=True, capture_output=True))
+        output = completed_process.stdout
+        coverage: Coverage = json.loads(output)
         return coverage
