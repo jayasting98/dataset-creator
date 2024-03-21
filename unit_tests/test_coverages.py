@@ -109,7 +109,7 @@ class CodeCovCliTest(CodeCovTest):
 
     def test_create_coverage__typical_case__creates_coverage(self):
         mock_completed_process = mock.MagicMock()
-        input_json_arg = json.dumps(self._request_data)
+        input_json_str = json.dumps(self._request_data)
         mock_completed_process.stdout = '{"coveredLineNumbers": [1, 2, 3, 5]}'
         expected_coverage = coverages.Coverage(coveredLineNumbers=[1, 2, 3, 5])
         code_cov_cli = (
@@ -118,10 +118,12 @@ class CodeCovCliTest(CodeCovTest):
             mock_run.return_value = mock_completed_process
             actual_coverage = code_cov_cli.create_coverage(self._request_data)
         mock_run.assert_called_once_with(
-            [self._script_file_pathname, input_json_arg],
+            [self._script_file_pathname],
             timeout=10,
             check=True,
             capture_output=True,
+            text=True,
+            input=input_json_str,
         )
         self.assertEqual(expected_coverage, actual_coverage)
 
@@ -137,7 +139,7 @@ class CodeCovCliTest(CodeCovTest):
             'testClassName': None,
             'testMethodName': None,
         }
-        input_json_arg = ('{"hello": "world", "it\'s": 1, '
+        input_json_str = ('{"hello": "world", "it\'s": 1, '
             + '"wonderful": {"day": "!"}, "focalClassName": null, '
             + '"testClassName": null, "testMethodName": null}')
         mock_completed_process.stdout = '{"coveredLineNumbers": [1, 2, 3, 5]}'
@@ -148,15 +150,17 @@ class CodeCovCliTest(CodeCovTest):
             mock_run.return_value = mock_completed_process
             actual_coverage = code_cov_cli.create_coverage(request_data)
         mock_run.assert_called_once_with(
-            [self._script_file_pathname, input_json_arg],
+            [self._script_file_pathname],
             timeout=10,
             check=True,
             capture_output=True,
+            text=True,
+            input=input_json_str,
         )
         self.assertEqual(expected_coverage, actual_coverage)
 
     def test_create_coverage__analyzer_error__raises_called_process_error(self):
-        input_json_arg = json.dumps(self._request_data)
+        input_json_str = json.dumps(self._request_data)
         code_cov_cli = (
             coverages.CodeCovCli(self._script_file_pathname, timeout=10))
         with mock.patch('subprocess.run') as mock_run:
@@ -164,8 +168,10 @@ class CodeCovCliTest(CodeCovTest):
             with self.assertRaises(subprocess.CalledProcessError):
                 code_cov_cli.create_coverage(self._request_data)
         mock_run.assert_called_once_with(
-            [self._script_file_pathname, input_json_arg],
+            [self._script_file_pathname],
             timeout=10,
             check=True,
             capture_output=True,
+            text=True,
+            input=input_json_str,
         )
