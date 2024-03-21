@@ -1,5 +1,6 @@
 import os
 import pathlib
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -36,8 +37,10 @@ class MavenProjectTest(unittest.TestCase):
             expected_subproject_pathnames, actual_subproject_pathnames)
 
     def test_compile__typical_case__compiles(self):
-        self._proj.compile()
         build_dir = os.path.join(self._proj_dir_pathname, 'target')
+        if os.path.exists(build_dir) and os.path.isdir(build_dir):
+            shutil.rmtree(build_dir)
+        self._proj.compile()
         self.assertTrue(os.path.isdir(build_dir))
 
     def test_compile__fails__raises_error(self):
@@ -118,8 +121,10 @@ class GradleProjectTest(unittest.TestCase):
             expected_subproject_pathnames, actual_subproject_pathnames)
 
     def test_compile__typical_case__compiles(self):
-        self._proj.compile()
         build_dir = os.path.join(self._proj_dir_pathname, 'build')
+        if os.path.exists(build_dir) and os.path.isdir(build_dir):
+            shutil.rmtree(build_dir)
+        self._proj.compile()
         self.assertTrue(os.path.isdir(build_dir))
 
     def test_compile__fails__raises_error(self):

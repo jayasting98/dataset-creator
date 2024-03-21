@@ -69,7 +69,7 @@ class MavenProject(Project):
         return subproject_pathnames
 
     def compile(self: Self) -> None:
-        args = ['mvn', 'clean', 'test-compile']
+        args = ['mvn', 'test-compile']
         with utilities.WorkingDirectory(self._root_dir_pathname):
             completed_process = subprocess.run(args, stdout=subprocess.DEVNULL)
         completed_process.check_returncode()
@@ -185,7 +185,7 @@ class GradleProject(Project):
 
     def compile(self: Self) -> None:
         project_name = self._find_project_name()
-        args = ['gradle', 'clean', f'{project_name}:testClasses']
+        args = ['gradle', f'{project_name}:testClasses']
         with utilities.WorkingDirectory(self._root_dir_pathname):
             completed_process = subprocess.run(
                 args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
