@@ -133,9 +133,13 @@ class CodeCovCliTest(CodeCovTest):
             "wonderful": {
                 "day": "!",
             },
+            'focalClassName': None,
+            'testClassName': None,
+            'testMethodName': None,
         }
-        input_json_arg = (
-            '{"hello": "world", "it\'s": 1, "wonderful": {"day": "!"}}')
+        input_json_arg = ('{"hello": "world", "it\'s": 1, '
+            + '"wonderful": {"day": "!"}, "focalClassName": null, '
+            + '"testClassName": null, "testMethodName": null}')
         mock_completed_process.stdout = '{"coveredLineNumbers": [1, 2, 3, 5]}'
         expected_coverage = coverages.Coverage(coveredLineNumbers=[1, 2, 3, 5])
         code_cov_cli = (
