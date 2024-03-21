@@ -260,6 +260,7 @@ def create_project(root_dir_pathname: str) -> Project:
     possible_build_gradle_pathnames.extend(glob.glob(
         '**/build.gradle.kts', recursive=True, root_dir=root_dir_pathname))
     for file_pathname in possible_build_gradle_pathnames:
-        if os.path.isfile(file_pathname):
+        file_full_pathname = os.path.join(root_dir_pathname, file_pathname)
+        if os.path.isfile(file_full_pathname):
             return GradleProject(root_dir_pathname)
     raise ValueError()
