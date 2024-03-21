@@ -1,10 +1,14 @@
 package com.jayasting98.codecov.cli.ui;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
@@ -20,36 +24,25 @@ import com.jayasting98.codecov.utilities.CoverageAnalyzer;
 
 public class CommandLineUiTest {
     @Test
-    private void testRun_noArguments_throwsIllegalArgumentException() {
-        UserInterface ui = new CommandLineUi<>(null, null, null, null);
-        String[] args = new String[] {};
-        assertThrows(IllegalArgumentException.class, () -> ui.run(args),
-            "There should be exactly one String argument.");
-    }
-
-    @Test
-    private void testRun_moreThanOneArgument_throwsIllegalArgumentException() {
-        UserInterface ui = new CommandLineUi<>(null, null, null, null);
-        String[] args = new String[] {"Hello", "World!"};
-        assertThrows(IllegalArgumentException.class, () -> ui.run(args),
-            "There should be exactly one String argument.");
-    }
-
-    @Test
-    private void testRun_typicalCase_runsSuccessfully() {
+    private void testRun_typicalCase_runsSuccessfully() throws IOException {
+        String inputString = "1";
+        InputStream stubIn = new ByteArrayInputStream(inputString.getBytes());
+        BufferedReader inputReader = new BufferedReader(new InputStreamReader(stubIn));
         Function<String, Integer> deserializer = Integer::parseInt;
         Function<Integer, Double> processor = x -> (double) x / 2;
         Function<Double, String> serializer = String::valueOf;
         PrintStream mockOutputWriter = mock(PrintStream.class);
         UserInterface ui =
-            new CommandLineUi<>(deserializer, processor, serializer, mockOutputWriter);
-        String[] args = new String[] {"1"};
-        ui.run(args);
+            new CommandLineUi<>(inputReader, deserializer, processor, serializer, mockOutputWriter);
+        ui.run();
         verify(mockOutputWriter).println("0.5");
     }
 
     @Test
-    private void testRun_jsonSerializationAndCoverageProcessing_runsSuccessfully() {
+    private void testRun_jsonSerializationAndCoverageProcessing_runsSuccessfully() throws IOException {
+        String inputString = "{\"Hello\": 0, \"World!\": 1}";
+        InputStream stubIn = new ByteArrayInputStream(inputString.getBytes());
+        BufferedReader inputReader = new BufferedReader(new InputStreamReader(stubIn));
         ObjectMapper objectMapper = new ObjectMapper();
         Function<String, CreateCoverageRequestData> deserializer = jsonString -> {
             CreateCoverageRequestData requestData;
@@ -86,9 +79,8 @@ public class CommandLineUiTest {
         };
         PrintStream mockOutputWriter = mock(PrintStream.class);
         UserInterface ui =
-            new CommandLineUi<>(deserializer, processor, serializer, mockOutputWriter);
-        String[] args = new String[] {"{\"Hello\": 0, \"World!\": 1}"};
-        ui.run(args);
+            new CommandLineUi<>(inputReader, deserializer, processor, serializer, mockOutputWriter);
+        ui.run();
         verify(mockOutputWriter).println("{\"coveredLineNumbers\": [1, 2, 3]}");
     }
 }

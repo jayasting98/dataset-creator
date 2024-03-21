@@ -3,11 +3,15 @@ package com.jayasting98.codecov.cli;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,6 +19,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayasting98.codecov.data.coverages.CreateCoverageRequestData;
 
 class AppTest {
+    private InputStream originalIn;
+    private PrintStream originalOut;
+
+    @BeforeEach
+    void setUp() {
+        originalIn = System.in;
+        originalOut = System.out;
+    }
+
+    @AfterEach
+    void tearDown() {
+        System.setIn(originalIn);
+        System.setOut(originalOut);
+    }
+
     @Test
     void testMain_typicalCase_printsCoverageJsonString() throws JsonProcessingException {
         String projectDirPathname = Paths.get("").toAbsolutePath().getParent().toString();
@@ -48,13 +67,13 @@ class AppTest {
             focalClasspath, focalClassName, testClassName, testMethodName);
         ObjectMapper mapper = new ObjectMapper();
         String requestDataJsonString = mapper.writeValueAsString(requestData);
-        String[] args = new String[] {requestDataJsonString};
-        PrintStream originalOut = System.out;
+        InputStream stubIn = new ByteArrayInputStream(requestDataJsonString.getBytes());
+        System.setIn(stubIn);
         PrintStream mockOut = mock(PrintStream.class);
         System.setOut(mockOut);
+        String[] args = new String[] {};
         App.main(args);
         verify(mockOut)
             .println("{\"coveredLineNumbers\":[24,25,26,27,28,67,68,69,70,71,72,73,88,89]}");
-        System.setOut(originalOut);
     }
 }

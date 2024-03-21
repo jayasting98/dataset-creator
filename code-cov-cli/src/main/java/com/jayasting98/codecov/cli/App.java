@@ -1,5 +1,8 @@
 package com.jayasting98.codecov.cli;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.function.Function;
@@ -14,6 +17,7 @@ import com.jayasting98.codecov.utilities.CoverageAnalyzer;
 
 public class App {
     public static void main(String[] args) {
+        BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
         ObjectMapper objectMapper = new ObjectMapper();
         Function<String, CreateCoverageRequestData> deserializer = jsonString -> {
             CreateCoverageRequestData requestData;
@@ -49,7 +53,12 @@ public class App {
             return jsonString;
         };
         PrintStream outputWriter = System.out;
-        UserInterface ui = new CommandLineUi<>(deserializer, processor, serializer, outputWriter);
-        ui.run(args);
+        UserInterface ui =
+            new CommandLineUi<>(inputReader, deserializer, processor, serializer, outputWriter);
+        try {
+            ui.run();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Input could not be read.", e);
+        }
     }
 }
