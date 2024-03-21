@@ -26,7 +26,10 @@ class MainTest(unittest.TestCase):
             os.path.join(self.__class__._test_directory, 'typical.json'))
         save_file_pathname = (
             os.path.join(self.__class__._test_directory, 'dir', 'typical.out'))
-        config = {'loader': {}, 'saver': {'file_pathname': save_file_pathname}}
+        config = {
+            'loader': {'config': {}},
+            'saver': {'file_pathname': save_file_pathname},
+        }
         with open(config_file_pathname, mode='w') as config_file:
             json.dump(config, config_file)
         def generator():
@@ -59,7 +62,7 @@ class MainTest(unittest.TestCase):
         save_file_pathname = (os.path
             .join(self.__class__._test_directory, 'dir', 'limit_typical.out'))
         config = {
-            'loader': {},
+            'loader': {'config': {}},
             'saver': {'file_pathname': save_file_pathname, 'limit': 2},
         }
         with open(config_file_pathname, mode='w') as config_file:

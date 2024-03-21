@@ -64,7 +64,7 @@ class TheStackRepositoryProcessorTest(unittest.TestCase):
         mock_load_dataset.assert_called_once_with(streaming=True)
         mock_save_to_disk.assert_called_once_with(
             'gs://bucket_name/path/name',
-            storage_options={'project': 'project_id'},
+            storage_options={'project': 'project_id', 'token': None},
         )
 
 

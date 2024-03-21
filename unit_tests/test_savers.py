@@ -9,7 +9,7 @@ class HuggingFaceGoogleCloudStorageSaver(unittest.TestCase):
         with mock.patch('gcsfs.GCSFileSystem') as mock_gcsfs:
             saver = savers.HuggingFaceGoogleCloudStorageSaver(
                 'project_id', 'bucket_name', 'path/name')
-        mock_gcsfs.assert_called_once_with(project='project_id')
+        mock_gcsfs.assert_called_once_with(project='project_id', token=None)
         samples = [{'data': 0}, {'data': 1}, {'data': 2}, {'data': 3}]
         mock_dataset = mock.MagicMock()
         with (mock
@@ -30,14 +30,14 @@ class HuggingFaceGoogleCloudStorageSaver(unittest.TestCase):
             next(iterator)
         mock_dataset.save_to_disk.assert_called_once_with(
             'gs://bucket_name/path/name',
-            storage_options={'project': 'project_id'},
+            storage_options={'project': 'project_id', 'token': None},
         )
 
     def test_save__with_limit__saves_up_to_limit(self):
         with mock.patch('gcsfs.GCSFileSystem') as mock_gcsfs:
             saver = savers.HuggingFaceGoogleCloudStorageSaver(
                 'project_id', 'bucket_name', 'path/name', limit=2)
-        mock_gcsfs.assert_called_once_with(project='project_id')
+        mock_gcsfs.assert_called_once_with(project='project_id', token=None)
         samples = [{'data': 0}, {'data': 1}, {'data': 2}, {'data': 3}]
         mock_dataset = mock.MagicMock()
         with (mock
@@ -56,5 +56,5 @@ class HuggingFaceGoogleCloudStorageSaver(unittest.TestCase):
             next(iterator)
         mock_dataset.save_to_disk.assert_called_once_with(
             'gs://bucket_name/path/name',
-            storage_options={'project': 'project_id'},
+            storage_options={'project': 'project_id', 'token': None},
         )
