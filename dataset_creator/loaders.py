@@ -64,7 +64,10 @@ class HuggingFaceMultiLoader(Loader[dict[str, Any]]):
         self._limit = limit
 
     def load(self: Self) -> Iterator[dict[str, Any]]:
-        dsets = [datasets.load_dataset(**config) for config in self._configs]
+        first_dataset = datasets.load_dataset(**self._configs[0])
+        dsets = [
+            datasets.load_dataset(**config, features=first_dataset.features)
+            for config in self._configs]
         dataset = datasets.concatenate_datasets(dsets)
         def create_generator():
             ds_iterator = iter(dataset)
