@@ -366,3 +366,86 @@ class CoverageCliHuggingFaceGoogleCloudStorageFactory(
         processor = processors.CoverageSamplesProcessor(loader, saver, code_cov,
             parser_type, parser_args)
         return processor
+
+
+@argument_parsers.parser_argument_choice('--creator', 'cov_cat_local')
+class CoverageConcatenatedHuggingFaceGoogleCloudStorageFactory(
+    CreatorFactory[dict[str, Any], dict[str, Any]],
+):
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        args: argparse.Namespace,
+    ) -> None:
+        self._token = args.token
+        self._loader_config: dict[str, Any] = config['loader']
+        self._saver_config: dict[str, Any] = config['saver']
+
+    def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
+        configs = self._loader_config['configs']
+        for config in configs:
+            try:
+                config['storage_options']['token'] = self._token
+            except KeyError:
+                continue
+        skip: int | None = self._loader_config.get('skip')
+        limit: int | None = self._loader_config.get('limit')
+        loader = loaders.HuggingFaceMultiLoader(configs, skip=skip, limit=limit)
+        return loader
+
+    def create_saver(self: Self) -> savers.Saver[dict[str, Any]]:
+        file_pathname = self._saver_config['file_pathname']
+        limit = self._saver_config.get('limit')
+        saver = savers.LocalFileSaver(file_pathname, limit=limit)
+        return saver
+
+    def create_processor(
+        self: Self,
+        loader: loaders.Loader[dict[str, Any]],
+        saver: savers.Saver[dict[str, Any]],
+    ) -> processors.Processor[dict[str, Any], dict[str, Any]]:
+        processor = processors.UniqueCoverageSamplesProcessor(loader, saver)
+        return processor
+
+
+@argument_parsers.parser_argument_choice('--creator', 'cov_cat_gcs')
+class CoverageConcatenatedHuggingFaceGoogleCloudStorageFactory(
+    CreatorFactory[dict[str, Any], dict[str, Any]],
+):
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        args: argparse.Namespace,
+    ) -> None:
+        self._token = args.token
+        self._loader_config: dict[str, Any] = config['loader']
+        self._saver_config: dict[str, Any] = config['saver']
+
+    def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
+        configs = self._loader_config['configs']
+        for config in configs:
+            try:
+                config['storage_options']['token'] = self._token
+            except KeyError:
+                continue
+        skip: int | None = self._loader_config.get('skip')
+        limit: int | None = self._loader_config.get('limit')
+        loader = loaders.HuggingFaceMultiLoader(configs, skip=skip, limit=limit)
+        return loader
+
+    def create_saver(self: Self) -> savers.Saver[dict[str, Any]]:
+        project_id = self._saver_config['project_id']
+        bucket_name = self._saver_config['bucket_name']
+        pathname = self._saver_config['pathname']
+        limit = self._saver_config.get('limit')
+        saver = savers.HuggingFaceGoogleCloudStorageSaver(
+            project_id, bucket_name, pathname, token=self._token, limit=limit)
+        return saver
+
+    def create_processor(
+        self: Self,
+        loader: loaders.Loader[dict[str, Any]],
+        saver: savers.Saver[dict[str, Any]],
+    ) -> processors.Processor[dict[str, Any], dict[str, Any]]:
+        processor = processors.UniqueCoverageSamplesProcessor(loader, saver)
+        return processor
