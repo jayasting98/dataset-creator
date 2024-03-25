@@ -81,15 +81,51 @@ class HuggingFaceMultiLoaderTest(unittest.TestCase):
             mock_load_dataset.side_effect = do_side_effect
             iterator = loader.load()
         calls = mock_load_dataset.call_args_list
-        self.assertEqual(4, len(calls))
+        self.assertEqual(1 + 4, len(calls))
+        # first_dataset
         self.assertEqual((), calls[0].args)
         self.assertEqual(dict(path='1', streaming=True), calls[0].kwargs)
+        # dsets
         self.assertEqual((), calls[1].args)
-        self.assertEqual(dict(path='0', streaming=True), calls[1].kwargs)
+        expected_kwargs_1 = dict(
+            path='1',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_1, calls[1].kwargs)
         self.assertEqual((), calls[2].args)
-        self.assertEqual(dict(path='3', streaming=True), calls[2].kwargs)
+        expected_kwargs_2 = dict(
+            path='0',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_2, calls[2].kwargs)
         self.assertEqual((), calls[3].args)
-        self.assertEqual(dict(path='2', streaming=True), calls[3].kwargs)
+        expected_kwargs_3 = dict(
+            path='3',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_3, calls[3].kwargs)
+        self.assertEqual((), calls[4].args)
+        expected_kwargs_4 = dict(
+            path='2',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_4, calls[4].kwargs)
         self.assertEqual({'even': 2, 'odd': 3}, next(iterator))
         self.assertEqual({'even': -2, 'odd': -3}, next(iterator))
         self.assertEqual({'even': 0, 'odd': 1}, next(iterator))
@@ -115,15 +151,51 @@ class HuggingFaceMultiLoaderTest(unittest.TestCase):
             mock_load_dataset.side_effect = do_side_effect
             iterator = loader.load()
         calls = mock_load_dataset.call_args_list
-        self.assertEqual(4, len(calls))
+        self.assertEqual(1 + 4, len(calls))
+        # first_dataset
         self.assertEqual((), calls[0].args)
         self.assertEqual(dict(path='1', streaming=True), calls[0].kwargs)
+        # dsets
         self.assertEqual((), calls[1].args)
-        self.assertEqual(dict(path='0', streaming=True), calls[1].kwargs)
+        expected_kwargs_1 = dict(
+            path='1',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_1, calls[1].kwargs)
         self.assertEqual((), calls[2].args)
-        self.assertEqual(dict(path='3', streaming=True), calls[2].kwargs)
+        expected_kwargs_2 = dict(
+            path='0',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_2, calls[2].kwargs)
         self.assertEqual((), calls[3].args)
-        self.assertEqual(dict(path='2', streaming=True), calls[3].kwargs)
+        expected_kwargs_3 = dict(
+            path='3',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_3, calls[3].kwargs)
+        self.assertEqual((), calls[4].args)
+        expected_kwargs_4 = dict(
+            path='2',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_4, calls[4].kwargs)
         self.assertEqual({'even': 0, 'odd': -1}, next(iterator))
         self.assertEqual({'even': 6, 'odd': 7}, next(iterator))
         self.assertEqual({'even': -6, 'odd': -7}, next(iterator))
@@ -146,15 +218,51 @@ class HuggingFaceMultiLoaderTest(unittest.TestCase):
             mock_load_dataset.side_effect = do_side_effect
             iterator = loader.load()
         calls = mock_load_dataset.call_args_list
-        self.assertEqual(4, len(calls))
+        self.assertEqual(1 + 4, len(calls))
+        # first_dataset
         self.assertEqual((), calls[0].args)
         self.assertEqual(dict(path='1', streaming=True), calls[0].kwargs)
+        # dsets
         self.assertEqual((), calls[1].args)
-        self.assertEqual(dict(path='0', streaming=True), calls[1].kwargs)
+        expected_kwargs_1 = dict(
+            path='1',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_1, calls[1].kwargs)
         self.assertEqual((), calls[2].args)
-        self.assertEqual(dict(path='3', streaming=True), calls[2].kwargs)
+        expected_kwargs_2 = dict(
+            path='0',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_2, calls[2].kwargs)
         self.assertEqual((), calls[3].args)
-        self.assertEqual(dict(path='2', streaming=True), calls[3].kwargs)
+        expected_kwargs_3 = dict(
+            path='3',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_3, calls[3].kwargs)
+        self.assertEqual((), calls[4].args)
+        expected_kwargs_4 = dict(
+            path='2',
+            streaming=True,
+            features=dict(
+                even=datasets.Value('int64'),
+                odd=datasets.Value('int64'),
+            ),
+        )
+        self.assertEqual(expected_kwargs_4, calls[4].kwargs)
         self.assertEqual({'even': 2, 'odd': 3}, next(iterator))
         self.assertEqual({'even': -2, 'odd': -3}, next(iterator))
         self.assertEqual({'even': 0, 'odd': 1}, next(iterator))
