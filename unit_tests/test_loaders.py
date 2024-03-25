@@ -64,3 +64,99 @@ class HuggingFaceLoaderTest(unittest.TestCase):
         self.assertEqual({'message': 'World!'}, next(iterator))
         with self.assertRaises(StopIteration):
             next(iterator)
+
+
+class HuggingFaceMultiLoaderTest(unittest.TestCase):
+    def test_load__streaming_not_configured__loads_via_stream(self):
+        configs = [{'path': '1'}, {'path': '0'}, {'path': '3'}, {'path': '2'}]
+        loader = loaders.HuggingFaceMultiLoader(configs)
+        def do_side_effect(path: str, *args, **kwargs) -> datasets.Dataset:
+            i = int(path)
+            def generator():
+                yield {'even': 2 * i, 'odd': 2 * i + 1}
+                yield {'even': - (2 * i), 'odd': - (2 * i + 1)}
+            dataset = datasets.Dataset.from_generator(generator)
+            return dataset
+        with mock.patch('datasets.load_dataset') as mock_load_dataset:
+            mock_load_dataset.side_effect = do_side_effect
+            iterator = loader.load()
+        calls = mock_load_dataset.call_args_list
+        self.assertEqual(4, len(calls))
+        self.assertEqual((), calls[0].args)
+        self.assertEqual(dict(path='1', streaming=True), calls[0].kwargs)
+        self.assertEqual((), calls[1].args)
+        self.assertEqual(dict(path='0', streaming=True), calls[1].kwargs)
+        self.assertEqual((), calls[2].args)
+        self.assertEqual(dict(path='3', streaming=True), calls[2].kwargs)
+        self.assertEqual((), calls[3].args)
+        self.assertEqual(dict(path='2', streaming=True), calls[3].kwargs)
+        self.assertEqual({'even': 2, 'odd': 3}, next(iterator))
+        self.assertEqual({'even': -2, 'odd': -3}, next(iterator))
+        self.assertEqual({'even': 0, 'odd': 1}, next(iterator))
+        self.assertEqual({'even': 0, 'odd': -1}, next(iterator))
+        self.assertEqual({'even': 6, 'odd': 7}, next(iterator))
+        self.assertEqual({'even': -6, 'odd': -7}, next(iterator))
+        self.assertEqual({'even': 4, 'odd': 5}, next(iterator))
+        self.assertEqual({'even': -4, 'odd': -5}, next(iterator))
+        with self.assertRaises(StopIteration):
+            next(iterator)
+
+    def test_load__skip_not_none__skips_before_loading(self):
+        configs = [{'path': '1'}, {'path': '0'}, {'path': '3'}, {'path': '2'}]
+        loader = loaders.HuggingFaceMultiLoader(configs, skip=3)
+        def do_side_effect(path: str, *args, **kwargs) -> datasets.Dataset:
+            i = int(path)
+            def generator():
+                yield {'even': 2 * i, 'odd': 2 * i + 1}
+                yield {'even': - (2 * i), 'odd': - (2 * i + 1)}
+            dataset = datasets.Dataset.from_generator(generator)
+            return dataset
+        with mock.patch('datasets.load_dataset') as mock_load_dataset:
+            mock_load_dataset.side_effect = do_side_effect
+            iterator = loader.load()
+        calls = mock_load_dataset.call_args_list
+        self.assertEqual(4, len(calls))
+        self.assertEqual((), calls[0].args)
+        self.assertEqual(dict(path='1', streaming=True), calls[0].kwargs)
+        self.assertEqual((), calls[1].args)
+        self.assertEqual(dict(path='0', streaming=True), calls[1].kwargs)
+        self.assertEqual((), calls[2].args)
+        self.assertEqual(dict(path='3', streaming=True), calls[2].kwargs)
+        self.assertEqual((), calls[3].args)
+        self.assertEqual(dict(path='2', streaming=True), calls[3].kwargs)
+        self.assertEqual({'even': 0, 'odd': -1}, next(iterator))
+        self.assertEqual({'even': 6, 'odd': 7}, next(iterator))
+        self.assertEqual({'even': -6, 'odd': -7}, next(iterator))
+        self.assertEqual({'even': 4, 'odd': 5}, next(iterator))
+        self.assertEqual({'even': -4, 'odd': -5}, next(iterator))
+        with self.assertRaises(StopIteration):
+            next(iterator)
+
+    def test_load__limit_not_none__loads_up_to_limit(self):
+        configs = [{'path': '1'}, {'path': '0'}, {'path': '3'}, {'path': '2'}]
+        loader = loaders.HuggingFaceMultiLoader(configs, limit=3)
+        def do_side_effect(path: str, *args, **kwargs) -> datasets.Dataset:
+            i = int(path)
+            def generator():
+                yield {'even': 2 * i, 'odd': 2 * i + 1}
+                yield {'even': - (2 * i), 'odd': - (2 * i + 1)}
+            dataset = datasets.Dataset.from_generator(generator)
+            return dataset
+        with mock.patch('datasets.load_dataset') as mock_load_dataset:
+            mock_load_dataset.side_effect = do_side_effect
+            iterator = loader.load()
+        calls = mock_load_dataset.call_args_list
+        self.assertEqual(4, len(calls))
+        self.assertEqual((), calls[0].args)
+        self.assertEqual(dict(path='1', streaming=True), calls[0].kwargs)
+        self.assertEqual((), calls[1].args)
+        self.assertEqual(dict(path='0', streaming=True), calls[1].kwargs)
+        self.assertEqual((), calls[2].args)
+        self.assertEqual(dict(path='3', streaming=True), calls[2].kwargs)
+        self.assertEqual((), calls[3].args)
+        self.assertEqual(dict(path='2', streaming=True), calls[3].kwargs)
+        self.assertEqual({'even': 2, 'odd': 3}, next(iterator))
+        self.assertEqual({'even': -2, 'odd': -3}, next(iterator))
+        self.assertEqual({'even': 0, 'odd': 1}, next(iterator))
+        with self.assertRaises(StopIteration):
+            next(iterator)
