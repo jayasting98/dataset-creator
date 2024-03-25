@@ -393,3 +393,36 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                     test_target_method=sample_test_target_method,
                 )
                 yield sample
+
+
+class UniqueCoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
+    def __init__(
+        self: Self,
+        loader: loaders.Loader[dict[str, Any]],
+        saver: savers.Saver[dict[str, Any]],
+    ) -> None:
+        self._loader = loader
+        self._saver = saver
+        self._unique_method_triplets = set()
+
+    def process(self: Self) -> None:
+        samples = self._loader.load()
+        def create_generator():
+            for i, sample in enumerate(samples):
+                logging.info(f'sample {i}')
+                if not self._is_unique(sample):
+                    continue
+                yield sample
+        iterator = utilities.GeneratorFunctionIterator(create_generator)
+        self._saver.save(iterator)
+
+    def _is_unique(self: Self, sample: dict[str, Any]) -> bool:
+        method_triplet = (
+            sample['focal_method']['body'],
+            sample['test_input_method']['body'],
+            sample['test_target_method']['body'],
+        )
+        if method_triplet in self._unique_method_triplets:
+            return False
+        self._unique_method_triplets.add(method_triplet)
+        return True

@@ -55,3 +55,102 @@ class IdentityProcessorTest(unittest.TestCase):
         self.assertEqual('World!', next(actual_iterator))
         with self.assertRaises(StopIteration):
             next(actual_iterator)
+
+
+class UniqueCoverageSamplesProcessorTest(unittest.TestCase):
+    def test_process__typical_data__takes_samples_and_deduplicates(self):
+        mock_loader = mock.MagicMock()
+        samples = [
+            dict(
+                focal_method=dict(
+                    body='doA()',
+                ),
+                test_input_method=dict(
+                    body='testDoA_givenAlpha()',
+                ),
+                test_target_method=dict(
+                    body='testDoA_givenBeta()',
+                ),
+            ),
+            dict(
+                focal_method=dict(
+                    body='doA()',
+                ),
+                test_input_method=dict(
+                    body='testDoA_givenAlpha()',
+                ),
+                test_target_method=dict(
+                    body='testDoA_givenGamma()',
+                ),
+            ),
+            dict(
+                focal_method=dict(
+                    body='doA()',
+                ),
+                test_input_method=dict(
+                    body='testDoA_givenAlpha()',
+                ),
+                test_target_method=dict(
+                    body='testDoA_givenBeta()',
+                ),
+            ),
+            dict(
+                focal_method=dict(
+                    body='doB()',
+                ),
+                test_input_method=dict(
+                    body='testDoB_givenBeta()',
+                ),
+                test_target_method=dict(
+                    body='testDoB_givenAlpha()',
+                ),
+            ),
+        ]
+        mock_loader.load.return_value = iter(samples)
+        mock_saver = mock.MagicMock()
+        processor = (processors
+            .UniqueCoverageSamplesProcessor(mock_loader, mock_saver))
+        processor.process()
+        mock_saver.save.assert_called_once()
+        save_call = mock_saver.save.call_args
+        save_args = save_call.args
+        self.assertEqual(1, len(save_args))
+        actual_iterator = save_args[0]
+        expected_repository_sample_0 = dict(
+            focal_method=dict(
+                body='doA()',
+            ),
+            test_input_method=dict(
+                body='testDoA_givenAlpha()',
+            ),
+            test_target_method=dict(
+                body='testDoA_givenBeta()',
+            ),
+        )
+        self.assertEqual(expected_repository_sample_0, next(actual_iterator))
+        expected_repository_sample_1 = dict(
+            focal_method=dict(
+                body='doA()',
+            ),
+            test_input_method=dict(
+                body='testDoA_givenAlpha()',
+            ),
+            test_target_method=dict(
+                body='testDoA_givenGamma()',
+            ),
+        )
+        self.assertEqual(expected_repository_sample_1, next(actual_iterator))
+        expected_repository_sample_2 = dict(
+            focal_method=dict(
+                body='doB()',
+            ),
+            test_input_method=dict(
+                body='testDoB_givenBeta()',
+            ),
+            test_target_method=dict(
+                body='testDoB_givenAlpha()',
+            ),
+        )
+        self.assertEqual(expected_repository_sample_2, next(actual_iterator))
+        with self.assertRaises(StopIteration):
+            next(actual_iterator)
