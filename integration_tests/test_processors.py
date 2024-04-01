@@ -122,7 +122,7 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
         actual_samples = saver.samples
         self.assertEqual(expected_samples, actual_samples)
 
-    def _test_process__hugging_face_to_google_cloud_storage__loads_then_saves(
+    def _test_process__hf_to_gcs__loads_then_saves(
         self, code_cov, project_type):
         repo_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
             'resources', 'repositories', project_type, 'guess-the-number')
@@ -161,7 +161,7 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
             self._code_cov_api, 'maven')
 
     def test_process__code_cov_api_hf_to_gcs_maven__loads_then_saves(self):
-        self._test_process__memory_to_memory__processes_correctly(
+        self._test_process__hf_to_gcs__loads_then_saves(
             self._code_cov_api, 'maven')
 
     def test_process__code_cov_cli_mem_to_mem_maven__processes_correctly(self):
@@ -169,7 +169,7 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
             self._code_cov_cli, 'maven')
 
     def test_process__code_cov_cli_hf_to_gcs_maven__loads_then_saves(self):
-        self._test_process__memory_to_memory__processes_correctly(
+        self._test_process__hf_to_gcs__loads_then_saves(
             self._code_cov_cli, 'maven')
 
     def test_process__code_cov_api_mem_to_mem_gradle__processes_correctly(self):
@@ -177,7 +177,7 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
             self._code_cov_api, 'gradle')
 
     def test_process__code_cov_api_hf_to_gcs_gradle__loads_then_saves(self):
-        self._test_process__memory_to_memory__processes_correctly(
+        self._test_process__hf_to_gcs__loads_then_saves(
             self._code_cov_api, 'gradle')
 
     def test_process__code_cov_cli_mem_to_mem_gradle__processes_correctly(self):
@@ -185,5 +185,5 @@ class CoverageSamplesProcessorTest(unittest.TestCase):
             self._code_cov_cli, 'gradle')
 
     def test_process__code_cov_cli_hf_to_gcs_gradle__loads_then_saves(self):
-        self._test_process__memory_to_memory__processes_correctly(
+        self._test_process__hf_to_gcs__loads_then_saves(
             self._code_cov_cli, 'gradle')
