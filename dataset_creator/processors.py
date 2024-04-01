@@ -1,6 +1,7 @@
 import abc
 import copy
 import logging
+import os
 import tempfile
 import traceback
 from typing import Any
@@ -128,9 +129,12 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
             repository_url = with_coverage_focal_method_data['repository_url']
             repository_hexsha = (
                 with_coverage_focal_method_data['repository_hexsha'])
+            project_rel_pathname = (
+                with_coverage_focal_method_data['project_rel_pathname'])
             logging.info(f'repository {repository_index}: generating samples')
             for sample in self._generate_samples(repository_url,
-                repository_hexsha, with_coverage_focal_method_sample):
+                repository_hexsha, project_rel_pathname,
+                with_coverage_focal_method_sample):
                 yield sample
 
     def _create_with_coverage_focal_method_data_generator(
@@ -152,6 +156,8 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                 'repository_index': repository_index,
                 'repository_url': focal_method_data['repository_url'],
                 'repository_hexsha': focal_method_data['repository_hexsha'],
+                'project_rel_pathname': (
+                    focal_method_data['project_rel_pathname']),
                 'with_coverage_focal_method_sample':
                     with_coverage_focal_method_sample,
             }
@@ -166,6 +172,8 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
             repository_index: int = project_data['repository_index']
             root_pathname: str = project_data['root_pathname']
             project_pathname: str = project_data['project_pathname']
+            project_rel_pathname = (
+                os.path.relpath(project_pathname, root_pathname))
             logging.info(f'project dir: {project_pathname}')
             try:
                 project = (
@@ -194,6 +202,7 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                     'repository_url': project_data['repository_url'],
                     'repository_hexsha': project_data['repository_hexsha'],
                     'project_pathname': project_pathname,
+                    'project_rel_pathname': project_rel_pathname,
                     'classpath_pathnames': classpath_pathnames,
                     'focal_classpath': focal_classpath,
                     'focal_method_sample': focal_method_sample,
@@ -294,6 +303,7 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
         self: Self,
         repository_url: str,
         repository_hexsha: str,
+        project_dir_pathname: str,
         focal_method_sample: dict[str, Any],
     ) -> Generator[dict[str, str], None, None]:
         focal_method: dict[str, Any] = focal_method_sample['focal_method']
@@ -386,6 +396,7 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                 )
                 sample = dict(
                     repository=sample_repository,
+                    project_path=project_dir_pathname,
                     focal_file=focal_file,
                     focal_class=sample_focal_class,
                     focal_method=sample_focal_method,

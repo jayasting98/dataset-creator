@@ -4,6 +4,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
         "focal_class": {
             "package": "com.example.guessthenumber.logic",
@@ -62,6 +63,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
         "focal_class": {
             "package": "com.example.guessthenumber.logic",
@@ -124,6 +126,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
         "focal_class": {
             "package": "com.example.guessthenumber.logic",
@@ -182,6 +185,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
         "focal_class": {
             "package": "com.example.guessthenumber.logic",
@@ -242,6 +246,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
         "focal_class": {
             "package": "com.example.guessthenumber.logic",
@@ -302,6 +307,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
         "focal_class": {
             "package": "com.example.guessthenumber.logic",
@@ -368,6 +374,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
         "focal_class": {
             "package": "com.example.guessthenumber.logic",
@@ -434,6 +441,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
         "focal_class": {
             "package": "com.example.guessthenumber.logic",
@@ -500,6 +508,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
         "focal_class": {
             "package": "com.example.guessthenumber.logic",
@@ -566,6 +575,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
         "focal_class": {
             "package": "com.example.guessthenumber.logic",
@@ -632,6 +642,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/logic/StandardLogic.java",
         "focal_class": {
             "package": "com.example.guessthenumber.logic",
@@ -698,6 +709,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -800,6 +812,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -890,6 +903,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -960,6 +974,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1030,6 +1045,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1094,6 +1110,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1166,6 +1183,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1230,6 +1248,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1294,6 +1313,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1366,6 +1386,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1430,6 +1451,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1500,6 +1522,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1570,6 +1593,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1636,6 +1660,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1702,6 +1727,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1768,6 +1794,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1838,6 +1865,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
@@ -1908,6 +1936,7 @@
             "repository_url": "https://github.com/username/guess-the-number",
             "repository_hexsha": "hexsha"
         },
+        "project_path": ".",
         "focal_file": "src/main/java/com/example/guessthenumber/ui/CommandLineUi.java",
         "focal_class": {
             "package": "com.example.guessthenumber.ui",
