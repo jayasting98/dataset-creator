@@ -34,6 +34,11 @@ class Project(abc.ABC):
     def root_dir_pathname(self: Self) -> str:
         raise NotImplementedError()
 
+    @property
+    @abc.abstractmethod
+    def project_dir_pathname(self: Self) -> str:
+        raise NotImplementedError()
+
 
 class MavenProject(Project):
     def __init__(
@@ -107,6 +112,10 @@ class MavenProject(Project):
     @property
     def root_dir_pathname(self: Self) -> str:
         return self._root_dir_pathname
+
+    @property
+    def project_dir_pathname(self: Self) -> str:
+        return self._project_dir_pathname
 
     def _find_test_classpath(self: Self) -> str:
         args = ['mvn', 'help:evaluate',
@@ -238,6 +247,10 @@ class GradleProject(Project):
     @property
     def root_dir_pathname(self: Self) -> str:
         return self._root_dir_pathname
+
+    @property
+    def project_dir_pathname(self: Self) -> str:
+        return self._project_dir_pathname
 
     def _find_project_name(self: Self) -> str:
         try:

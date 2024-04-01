@@ -183,7 +183,7 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                     + 'finding focal method samples')
                 focal_method_samples = (find_map_test_cases
                     .find_focal_method_samples(
-                        project.root_dir_pathname, self.parser))
+                        project.project_dir_pathname, self.parser))
             except Exception as exception:
                 logging.warn(f'repository {repository_index}: {exception}')
                 logging.debug(f'{traceback.format_exc()}')
