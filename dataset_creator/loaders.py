@@ -1,4 +1,5 @@
 import abc
+import json
 from typing import Any
 from typing import Generic
 from typing import Iterator
@@ -84,3 +85,14 @@ class HuggingFaceMultiLoader(Loader[dict[str, Any]]):
                     break
         iterator = utilities.GeneratorFunctionIterator(create_generator)
         return iterator
+
+
+class JsonlFileLoader(Loader[dict[str, Any]]):
+    def __init__(self: Self, pathname: str) -> None:
+        self._pathname = pathname
+
+    def load(self: Self) -> Iterator[dict[str, Any]]:
+        with open(self._pathname) as jsonl_file:
+            sample_strs = jsonl_file.readlines()
+        samples = map(json.loads, sample_strs)
+        return samples
