@@ -129,6 +129,42 @@ class TheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
         return processor
 
 
+@argument_parsers.parser_argument_choice('--creator', 'local_stack_gcs')
+class LocalTheStackRepositoryHuggingFaceGoogleCloudStorageFactory(
+    CreatorFactory[dict[str, Any], dict[str, str]],
+):
+    def __init__(
+        self: Self,
+        config: dict[str, Any],
+        args: argparse.Namespace,
+    ) -> None:
+        self._token = args.token
+        self._loader_config: dict[str, Any] = config['loader']
+        self._saver_config: dict[str, Any] = config['saver']
+
+    def create_loader(self: Self) -> loaders.Loader[dict[str, Any]]:
+        pathname: str = self._loader_config['pathname']
+        loader = loaders.JsonlFileLoader(pathname)
+        return loader
+
+    def create_saver(self: Self) -> savers.Saver[dict[str, str]]:
+        project_id = self._saver_config['project_id']
+        bucket_name = self._saver_config['bucket_name']
+        pathname = self._saver_config['pathname']
+        limit = self._saver_config.get('limit')
+        saver = savers.HuggingFaceGoogleCloudStorageSaver(
+            project_id, bucket_name, pathname, token=self._token, limit=limit)
+        return saver
+
+    def create_processor(
+        self: Self,
+        loader: loaders.Loader[dict[str, Any]],
+        saver: savers.Saver[dict[str, str]],
+    ) -> processors.Processor[dict[str, Any], dict[str, str]]:
+        processor = processors.TheStackRepositoryProcessor(loader, saver)
+        return processor
+
+
 @argument_parsers.parser_argument_choice('--creator', 'gcs_local')
 class HuggingFaceGoogleCloudStorageToLocalDataFactory(
     CreatorFactory[dict[str, Any], dict[str, Any]],
