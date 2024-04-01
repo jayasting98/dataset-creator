@@ -164,10 +164,12 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
         for project_data in (
             self._create_project_data_generator(repository_samples)):
             repository_index: int = project_data['repository_index']
+            root_pathname: str = project_data['root_pathname']
             project_pathname: str = project_data['project_pathname']
             logging.info(f'project dir: {project_pathname}')
             try:
-                project = projects.create_project(project_pathname)
+                project = (
+                    projects.create_project(root_pathname, project_pathname))
                 logging.info(f'repository {repository_index}: compiling')
                 project.compile()
                 logging.info(
@@ -210,7 +212,8 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                 try:
                     repo = (
                         git.Repo.clone_from(repository_url, temp_dir_pathname))
-                    project = projects.create_project(temp_dir_pathname)
+                    project = (projects
+                        .create_project(temp_dir_pathname, temp_dir_pathname))
                     subproject_pathnames = (
                         project.find_subproject_pathnames())
                 except Exception as exception:
@@ -222,6 +225,7 @@ class CoverageSamplesProcessor(Processor[dict[str, Any], dict[str, Any]]):
                         'repository_index': i,
                         'repository_url': repository_url,
                         'repository_hexsha': repo.head.commit.hexsha,
+                        'root_pathname': temp_dir_pathname,
                         'project_pathname': subproject_pathname,
                     }
                     yield project_data

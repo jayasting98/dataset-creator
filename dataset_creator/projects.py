@@ -36,8 +36,13 @@ class Project(abc.ABC):
 
 
 class MavenProject(Project):
-    def __init__(self: Self, root_dir_pathname: str) -> None:
+    def __init__(
+        self: Self,
+        root_dir_pathname: str,
+        project_dir_pathname: str,
+    ) -> None:
         self._root_dir_pathname = root_dir_pathname
+        self._project_dir_pathname = project_dir_pathname
 
     def find_subproject_pathnames(self: Self) -> list[str]:
         pathnames = [self._root_dir_pathname]
@@ -70,14 +75,14 @@ class MavenProject(Project):
 
     def compile(self: Self) -> None:
         args = ['mvn', 'test-compile']
-        with utilities.WorkingDirectory(self._root_dir_pathname):
+        with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = subprocess.run(args, stdout=subprocess.DEVNULL)
         completed_process.check_returncode()
 
     def find_classpath_pathnames(self: Self) -> list[str]:
         args = ['mvn', 'dependency:build-classpath',
             '-Dmdep.outputFile=/dev/stdout', '-q']
-        with utilities.WorkingDirectory(self._root_dir_pathname):
+        with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
@@ -92,7 +97,7 @@ class MavenProject(Project):
     def find_focal_classpath(self: Self) -> str:
         args = ['mvn', 'help:evaluate',
             '-Dexpression=project.build.outputDirectory', '-q', '-DforceStdout']
-        with utilities.WorkingDirectory(self._root_dir_pathname):
+        with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
@@ -107,7 +112,7 @@ class MavenProject(Project):
         args = ['mvn', 'help:evaluate',
             '-Dexpression=project.build.testOutputDirectory', '-q',
             '-DforceStdout']
-        with utilities.WorkingDirectory(self._root_dir_pathname):
+        with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
@@ -118,7 +123,7 @@ class MavenProject(Project):
         args = ['mvn', 'help:evaluate',
             '-Dexpression=project.build.resources[0].directory', '-q',
             '-DforceStdout']
-        with utilities.WorkingDirectory(self._root_dir_pathname):
+        with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
@@ -129,7 +134,7 @@ class MavenProject(Project):
         args = ['mvn', 'help:evaluate',
             '-Dexpression=project.build.testResources[0].directory',
             '-q', '-DforceStdout']
-        with utilities.WorkingDirectory(self._root_dir_pathname):
+        with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
@@ -142,10 +147,15 @@ _gradle_init_script_pathname = (
 
 
 class GradleProject(Project):
-    def __init__(self: Self, root_dir_pathname: str) -> None:
+    def __init__(
+        self: Self,
+        root_dir_pathname: str,
+        project_dir_pathname: str,
+    ) -> None:
         self._root_dir_pathname = root_dir_pathname
+        self._project_dir_pathname = project_dir_pathname
         self._init_script_rel_pathname = (os.path
-            .relpath(_gradle_init_script_pathname, self._root_dir_pathname))
+            .relpath(_gradle_init_script_pathname, self._project_dir_pathname))
 
     def find_subproject_pathnames(self: Self) -> list[str]:
         pathnames = [self._root_dir_pathname]
@@ -186,7 +196,7 @@ class GradleProject(Project):
     def compile(self: Self) -> None:
         project_name = self._find_project_name()
         args = ['gradle', f'{project_name}:testClasses']
-        with utilities.WorkingDirectory(self._root_dir_pathname):
+        with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = subprocess.run(
                 args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         completed_process.check_returncode()
@@ -195,7 +205,7 @@ class GradleProject(Project):
         project_name = self._find_project_name()
         args = ['gradle', '-q', '--init-script', self._init_script_rel_pathname,
             f'{project_name}:buildTestRuntimeClasspath']
-        with utilities.WorkingDirectory(self._root_dir_pathname):
+        with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
@@ -211,7 +221,7 @@ class GradleProject(Project):
         project_name = self._find_project_name()
         args = ['gradle', '-q', '--init-script', self._init_script_rel_pathname,
             f'{project_name}:buildTestRuntimeClasspath']
-        with utilities.WorkingDirectory(self._root_dir_pathname):
+        with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = (
                 subprocess.run(args, capture_output=True, text=True))
         completed_process.check_returncode()
@@ -231,30 +241,25 @@ class GradleProject(Project):
         try:
             return self._project_name
         except AttributeError:
-            args = ['gradle', '-q',
-                '--init-script', self._init_script_rel_pathname,
-                ':findProjectDir']
-            with utilities.WorkingDirectory(self._root_dir_pathname):
-                completed_process = (
-                    subprocess.run(args, capture_output=True, text=True))
-            completed_process.check_returncode()
-            output = completed_process.stdout
-            root_project_pathname = output.strip()
-            if root_project_pathname == self._root_dir_pathname:
+            if self._root_dir_pathname == self._project_dir_pathname:
                 self._project_name = str()
                 return self._project_name
-            project_rel_pathname = (
-                os.path.relpath(self._root_dir_pathname, root_project_pathname))
+            project_rel_pathname = (os.path
+                .relpath(self._project_dir_pathname, self._root_dir_pathname))
             project_name = ':' + project_rel_pathname.replace(os.path.sep, ':')
             self._project_name = project_name
             return self._project_name
 
-def create_project(root_dir_pathname: str) -> Project:
-    if os.path.isfile(os.path.join(root_dir_pathname, 'pom.xml')):
-        return MavenProject(root_dir_pathname)
-    if (os.path.isfile(os.path.join(root_dir_pathname, 'build.gradle'))
-        or os.path.isfile(os.path.join(root_dir_pathname, 'build.gradle.kts'))):
-        return GradleProject(root_dir_pathname)
+def create_project(
+    root_dir_pathname: str,
+    project_dir_pathname: str,
+) -> Project:
+    if os.path.isfile(os.path.join(project_dir_pathname, 'pom.xml')):
+        return MavenProject(root_dir_pathname, project_dir_pathname)
+    if (os.path.isfile(os.path.join(project_dir_pathname, 'build.gradle'))
+        or (os.path
+            .isfile(os.path.join(project_dir_pathname, 'build.gradle.kts')))):
+        return GradleProject(root_dir_pathname, project_dir_pathname)
     possible_build_gradle_pathnames = (glob
         .glob('**/build.gradle', recursive=True, root_dir=root_dir_pathname))
     possible_build_gradle_pathnames.extend(glob.glob(
@@ -262,5 +267,5 @@ def create_project(root_dir_pathname: str) -> Project:
     for file_pathname in possible_build_gradle_pathnames:
         file_full_pathname = os.path.join(root_dir_pathname, file_pathname)
         if os.path.isfile(file_full_pathname):
-            return GradleProject(root_dir_pathname)
+            return GradleProject(root_dir_pathname, project_dir_pathname)
     raise ValueError()

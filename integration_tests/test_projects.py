@@ -10,16 +10,20 @@ from dataset_creator import projects
 
 class MavenProjectTest(unittest.TestCase):
     def setUp(self) -> None:
+        self._root_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
+            'resources', 'repositories', 'maven', 'guess-the-number')
         self._proj_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
             'resources', 'repositories', 'maven', 'guess-the-number')
-        self._proj = projects.MavenProject(self._proj_dir_pathname)
+        self._proj = (projects
+            .MavenProject(self._root_dir_pathname, self._proj_dir_pathname))
         self._home_dir_pathname = str(pathlib.Path.home())
 
     def test_find_subproject_pathnames__has_subprojects__finds_correctly(self):
         parent_proj_dir_pathname = os.path.join(os.getcwd(),
             'integration_tests', 'resources', 'repositories', 'maven',
             'parent-project')
-        parent_proj = projects.MavenProject(parent_proj_dir_pathname)
+        parent_proj = (projects
+            .MavenProject(parent_proj_dir_pathname, parent_proj_dir_pathname))
         expected_subproject_pathnames = [
             os.path.join(parent_proj_dir_pathname),
             os.path.join(parent_proj_dir_pathname, 'project'),
@@ -31,7 +35,7 @@ class MavenProjectTest(unittest.TestCase):
             expected_subproject_pathnames, actual_subproject_pathnames)
 
     def test_find_subproject_pathnames__no_subprojects__finds_correctly(self):
-        expected_subproject_pathnames = [self._proj_dir_pathname]
+        expected_subproject_pathnames = [self._root_dir_pathname]
         actual_subproject_pathnames = self._proj.find_subproject_pathnames()
         self.assertEqual(
             expected_subproject_pathnames, actual_subproject_pathnames)
@@ -45,7 +49,7 @@ class MavenProjectTest(unittest.TestCase):
 
     def test_compile__fails__raises_error(self):
         with tempfile.TemporaryDirectory() as dir:
-            proj = projects.MavenProject(dir)
+            proj = projects.MavenProject(dir, dir)
             with self.assertRaises(subprocess.CalledProcessError):
                 proj.compile()
 
@@ -88,16 +92,20 @@ class MavenProjectTest(unittest.TestCase):
 
 class GradleProjectTest(unittest.TestCase):
     def setUp(self) -> None:
+        self._root_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
+            'resources', 'repositories', 'gradle', 'guess-the-number')
         self._proj_dir_pathname = os.path.join(os.getcwd(), 'integration_tests',
             'resources', 'repositories', 'gradle', 'guess-the-number', 'app')
-        self._proj = projects.GradleProject(self._proj_dir_pathname)
+        self._proj = (projects
+            .GradleProject(self._root_dir_pathname, self._proj_dir_pathname))
         self._home_dir_pathname = str(pathlib.Path.home())
 
     def test_find_subproject_pathnames__has_subprojects__finds_correctly(self):
         parent_proj_dir_pathname = os.path.join(os.getcwd(),
             'integration_tests', 'resources', 'repositories', 'gradle',
             'parent-project')
-        parent_proj = projects.GradleProject(parent_proj_dir_pathname)
+        parent_proj = (projects
+            .GradleProject(parent_proj_dir_pathname, parent_proj_dir_pathname))
         expected_subproject_pathnames = [
             os.path.join(parent_proj_dir_pathname),
             os.path.join(parent_proj_dir_pathname, 'app'),
@@ -114,7 +122,8 @@ class GradleProjectTest(unittest.TestCase):
         parent_proj_dir_pathname = os.path.join(os.getcwd(),
             'integration_tests', 'resources', 'repositories', 'gradle',
             'simple-project')
-        parent_proj = projects.GradleProject(parent_proj_dir_pathname)
+        parent_proj = (projects
+            .GradleProject(parent_proj_dir_pathname, parent_proj_dir_pathname))
         expected_subproject_pathnames = [parent_proj_dir_pathname]
         actual_subproject_pathnames = parent_proj.find_subproject_pathnames()
         self.assertEqual(
@@ -129,7 +138,7 @@ class GradleProjectTest(unittest.TestCase):
 
     def test_compile__fails__raises_error(self):
         with tempfile.TemporaryDirectory() as dir:
-            proj = projects.GradleProject(dir)
+            proj = projects.GradleProject(dir, dir)
             with self.assertRaises(subprocess.CalledProcessError):
                 proj.compile()
 
@@ -178,18 +187,20 @@ class GradleProjectTest(unittest.TestCase):
 
 class ProjectsTest(unittest.TestCase):
     def test_create_project__maven_project__creates_correctly(self):
-        proj_dir_pathname = os.path.join('integration_tests',
+        root_dir_pathname = os.path.join('integration_tests',
             'resources', 'repositories', 'maven', 'guess-the-number')
-        proj = projects.create_project(proj_dir_pathname)
+        proj_dir_pathname = root_dir_pathname
+        proj = projects.create_project(root_dir_pathname, proj_dir_pathname)
         self.assertIsInstance(proj, projects.MavenProject)
 
     def test_create_project__gradle_project__creates_correctly(self):
-        proj_dir_pathname = os.path.join('integration_tests',
+        root_dir_pathname = os.path.join('integration_tests',
             'resources', 'repositories', 'gradle', 'guess-the-number')
-        proj = projects.create_project(proj_dir_pathname)
+        proj_dir_pathname = root_dir_pathname
+        proj = projects.create_project(root_dir_pathname, proj_dir_pathname)
         self.assertIsInstance(proj, projects.GradleProject)
 
     def test_create_project__unsupported_project_type__creates_correctly(self):
         with (tempfile.TemporaryDirectory() as dir,
             self.assertRaises(ValueError)):
-            projects.create_project(dir)
+            projects.create_project(dir, dir)
