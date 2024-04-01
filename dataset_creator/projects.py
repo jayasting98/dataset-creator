@@ -171,8 +171,8 @@ class GradleProject(Project):
             subproject_pathnames.append(pathname)
             init_script_rel_pathname = (os.path
                 .relpath(_gradle_init_script_pathname, pathname))
-            args = ['gradle', '-q', '--init-script', init_script_rel_pathname,
-                f'{path}:listSubprojectPaths']
+            args = [self.gradle_command, '-q', '--init-script',
+                init_script_rel_pathname, f'{path}:listSubprojectPaths']
             with utilities.WorkingDirectory(pathname):
                 completed_process = (
                     subprocess.run(args, capture_output=True, text=True))
@@ -195,7 +195,7 @@ class GradleProject(Project):
 
     def compile(self: Self) -> None:
         project_name = self._find_project_name()
-        args = ['gradle', f'{project_name}:testClasses']
+        args = [self.gradle_command, f'{project_name}:testClasses']
         with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = subprocess.run(
                 args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -203,7 +203,8 @@ class GradleProject(Project):
 
     def find_classpath_pathnames(self: Self) -> list[str]:
         project_name = self._find_project_name()
-        args = ['gradle', '-q', '--init-script', self._init_script_rel_pathname,
+        args = [self.gradle_command, '-q', '--init-script',
+            self._init_script_rel_pathname,
             f'{project_name}:buildTestRuntimeClasspath']
         with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = (
@@ -219,7 +220,8 @@ class GradleProject(Project):
 
     def find_focal_classpath(self: Self) -> str:
         project_name = self._find_project_name()
-        args = ['gradle', '-q', '--init-script', self._init_script_rel_pathname,
+        args = [self.gradle_command, '-q', '--init-script',
+            self._init_script_rel_pathname,
             f'{project_name}:buildTestRuntimeClasspath']
         with utilities.WorkingDirectory(self._project_dir_pathname):
             completed_process = (
@@ -249,6 +251,24 @@ class GradleProject(Project):
             project_name = ':' + project_rel_pathname.replace(os.path.sep, ':')
             self._project_name = project_name
             return self._project_name
+
+    @property
+    def gradle_command(self: Self) -> str:
+        try:
+            return self._gradle_command
+        except AttributeError:
+            is_windows = os.name == 'nt'
+            if is_windows:
+                gradlew_pathname = (
+                    os.path.join(self._root_dir_pathname, 'gradlew.bat'))
+            else:
+                gradlew_pathname = (
+                    os.path.join(self._root_dir_pathname, 'gradlew'))
+            if os.path.isfile(gradlew_pathname):
+                self._gradle_command = gradlew_pathname
+            else:
+                self._gradle_command = 'gradle'
+            return self._gradle_command
 
 def create_project(
     root_dir_pathname: str,
